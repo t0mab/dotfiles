@@ -1,6 +1,7 @@
 apt-file
 build-essential
 chromium-browser
+default-jre
 git
 htop
 inkscape
