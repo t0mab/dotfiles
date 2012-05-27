@@ -1,4 +1,5 @@
 apt-file
+build-essential
 chromium-browser
 git
 htop
@@ -8,6 +9,12 @@ nmap
 octave
 pidgin
 pv
+python-dev
+python-lxml
+python-matplotlib
+python-numpy
+python-scipy
+python-setuptools
 ssh
 tmux
 ubuntu-restricted-extras
