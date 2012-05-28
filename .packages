@@ -5,7 +5,8 @@ default-jre
 git
 htop
 inkscape
-ipython
+ipython-notebook
+ipython-qtconsole
 nmap
 octave
 pidgin
