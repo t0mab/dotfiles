@@ -3,6 +3,10 @@ build-essential
 chromium-browser
 default-jre
 git
+gmt
+gmt-doc-pdf
+gmt-examples
+gmt-tutorial-pdf
 htop
 inkscape
 ipython-notebook
