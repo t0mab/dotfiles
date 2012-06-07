@@ -1,3 +1,19 @@
+" Enable 256 color in vim.
+set t_Co=256
+
+" Set a fancy status bar.
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [POSITION=%04l,%04v][%p%%]\ [LEN=%L]\ [GIT-BRANCH=%{GitBranch()}]
+
+" All yanking and pasting works with the actual system clipboard. Does not
+" work with all vim version but other ways to achieve this behaviour also
+" exist.
+set clipboard=unnamed
+
+" Save all temporary files in a central directory. Very useful.
+set backupdir=~/.vim-tmp
+set directory=~/.vim-tmp
+
+
 " Activate plugin and indent
 filetype indent on
 filetype plugin on
@@ -7,7 +23,9 @@ set autoindent
 
 " Activate and choose nice colors
 syntax on
-colorscheme elflord
+" set background=dark
+set background=light
+colorscheme solarized
 
 " Show line numbers by default
 set number

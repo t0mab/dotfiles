@@ -37,3 +37,5 @@ source $ZSH/oh-my-zsh.sh
 export PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
 
 PATH=$PATH:$HOME/Scripts
+
+alias maj="sudo apt-get update && sudo apt-get dist-upgrade"

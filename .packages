@@ -3,6 +3,7 @@ build-essential
 chromium-browser
 default-jre
 exif
+exiv2
 git
 gmt
 gmt-doc-pdf
@@ -26,6 +27,7 @@ ssh
 tidy
 tmux
 ubuntu-restricted-extras
+ufraw-batch
 vim
 vlc
 wallch
