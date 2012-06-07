@@ -2,6 +2,7 @@ apt-file
 build-essential
 chromium-browser
 default-jre
+exif
 git
 gmt
 gmt-doc-pdf
