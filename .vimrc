@@ -1,8 +1,8 @@
-" Enable 256 color in vim.
-set t_Co=256
+" Enable 16 color in vim.
+set t_Co=16
 
-" Set a fancy status bar.
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [POSITION=%04l,%04v][%p%%]\ [LEN=%L]\ [GIT-BRANCH=%{GitBranch()}]
+" Enable solarized bg toggle plugin
+call togglebg#map("<F8>")
 
 " All yanking and pasting works with the actual system clipboard. Does not
 " work with all vim version but other ways to achieve this behaviour also
@@ -13,7 +13,6 @@ set clipboard=unnamed
 set backupdir=~/.vim-tmp
 set directory=~/.vim-tmp
 
-
 " Activate plugin and indent
 filetype indent on
 filetype plugin on
@@ -23,8 +22,7 @@ set autoindent
 
 " Activate and choose nice colors
 syntax on
-" set background=dark
-set background=light
+set background=dark
 colorscheme solarized
 
 " Show line numbers by default
@@ -65,9 +63,6 @@ inoremap <Nul> <C-x><C-o>
 
 " Remove automatically all trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
-
-" Javascript folding
-" let javaScript_fold=1
 
 " Arduino
 autocmd BufNewFile,BufRead *.pde set ft=arduino
