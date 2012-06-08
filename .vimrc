@@ -71,3 +71,14 @@ autocmd BufNewFile,BufRead *.pde set tabstop=2
 autocmd BufNewFile,BufRead *.pde set softtabstop=2
 autocmd BufNewFile,BufRead *.pde set shiftwidth=2
 autocmd BufNewFile,BufRead *.pde set autoindent
+
+" Learn the hard way
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
