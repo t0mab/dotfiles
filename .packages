@@ -25,6 +25,9 @@ python-numpy
 python-scipy
 python-setuptools
 ssh
+texlive
+texlive-lang-french
+texlive-latex-extra
 tidy
 tmux
 ubuntu-restricted-extras
