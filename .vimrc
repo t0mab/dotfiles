@@ -82,3 +82,6 @@ imap <up> <nop>
 imap <down> <nop>
 imap <left> <nop>
 imap <right> <nop>
+
+" Add mouse support
+set mouse=a
