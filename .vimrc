@@ -85,3 +85,12 @@ imap <right> <nop>
 
 " Add mouse support
 set mouse=a
+
+" Unix like tab completion.
+set wildmenu
+set wildmode=longest,list
+
+" Avoid many press enter to continue prompts and more. See :help shortmess for
+" the breakdown of what this changes. You can also pare things down further if
+" you like.
+set shortmess=atI
