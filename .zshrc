@@ -36,8 +36,12 @@ source $ZSH/oh-my-zsh.sh
 # Customize to your needs...
 export PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
 
-PATH=$PATH:$HOME/Scripts:$HOME/.gnome-terminal-solarized
-TERM=xterm-256color
-eval $(dircolors ~/.dircolors-solarized/dircolors.256dark)
+PATH=$PATH:$HOME/Scripts
+
+DIRCOLORS_LIGHT=$(dircolors ~/.dircolors-solarized/dircolors.ansi-light)
+DIRCOLORS_DARK=$(dircolors ~/.dircolors-solarized/dircolors.ansi-dark)
+
+alias light='eval $DIRCOLORS_LIGHT && ~/.gnome-terminal-solarized/set_light.sh'
+alias dark='eval $DIRCOLORS_LIGHT && ~/.gnome-terminal-solarized/set_dark.sh'
 
 alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
