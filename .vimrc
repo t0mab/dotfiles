@@ -47,6 +47,7 @@ autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
 autocmd FileType python set autoindent
+autocmd FileType python set foldmethod=indent
 
 " Define a template for new Python files
 autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
