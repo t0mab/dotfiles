@@ -1,3 +1,10 @@
+" Cheat sheet :
+" `za` - toggles
+" `zc` - closes
+" `zo` - opens
+" `zR` - open all
+" `zM` - close all
+
 " Enable 16 color in vim.
 set t_Co=16
 
