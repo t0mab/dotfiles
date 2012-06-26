@@ -76,8 +76,11 @@ autocmd FileType html set softtabstop=2
 autocmd FileType html set shiftwidth=2
 autocmd FileType html set autoindent
 
-" Autocompletion for Python
+" Autocompletion
 autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 " A better keybinding for the Autocompletion
 inoremap <Nul> <C-x><C-o>
