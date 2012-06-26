@@ -8,6 +8,9 @@
 " Enable 16 color in vim.
 set t_Co=16
 
+" Ignore some files
+set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
+
 " Enable solarized bg toggle plugin
 call togglebg#map("<F8>")
 
