@@ -5,6 +5,7 @@ set t_Co=16
 call togglebg#map("<F8>")
 
 " Save all temporary files in a central directory. Very useful.
+set backup
 set backupdir=~/.vim-tmp
 set directory=~/.vim-tmp
 
@@ -17,10 +18,16 @@ filetype plugin on
 " Keep the previous indentation
 set autoindent
 
+" Show line numbers, rulers, etc
+set ruler
+
 " Activate and choose nice colors
 syntax on
 set background=dark
 colorscheme solarized
+
+" Indicates a fast terminal connection
+set ttyfast
 
 " Show line numbers by default
 set number
