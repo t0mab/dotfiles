@@ -22,6 +22,8 @@ pidgin
 pixelize
 pv
 pwgen
+pyflakes
+pylint
 python-dev
 python-lxml
 python-matplotlib
