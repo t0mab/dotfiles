@@ -14,6 +14,13 @@ set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
 " Enable solarized bg toggle plugin
 call togglebg#map("<F8>")
 
+" Enable Tagbar
+nmap <F9> :TagbarToggle<CR>
+let g:tagbar_usearrows = 1
+let g:tagbar_autofocus = 1
+let g:tagbar_compact = 1
+let g:tagbar_foldlevel = 0
+
 " Save all temporary files in a central directory. Very useful.
 set backup
 set backupdir=~/.vim-tmp

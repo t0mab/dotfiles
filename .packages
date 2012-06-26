@@ -4,6 +4,7 @@ chromium-browser
 default-jre
 exif
 exiv2
+exuberant-ctags
 git
 gmt
 gmt-doc-pdf
