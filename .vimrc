@@ -4,17 +4,14 @@ set t_Co=16
 " Enable solarized bg toggle plugin
 call togglebg#map("<F8>")
 
-" All yanking and pasting works with the actual system clipboard. Does not
-" work with all vim version but other ways to achieve this behaviour also
-" exist.
-set clipboard=unnamed
-
 " Save all temporary files in a central directory. Very useful.
 set backupdir=~/.vim-tmp
 set directory=~/.vim-tmp
 
 " Activate plugin and indent
+filetype on
 filetype indent on
+filetype plugin indent on
 filetype plugin on
 
 " Keep the previous indentation
