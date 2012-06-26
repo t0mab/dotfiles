@@ -38,6 +38,9 @@ autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
 autocmd FileType python set autoindent
 
+" Define a template for new Python files
+autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
+
 " Proper indentation for Ruby
 autocmd FileType ruby set expandtab
 autocmd FileType ruby set tabstop=2
