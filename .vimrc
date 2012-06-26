@@ -21,6 +21,9 @@ set autoindent
 " Show line numbers, rulers, etc
 set ruler
 
+" Show cursor line
+set cursorline
+
 " Activate and choose nice colors
 syntax on
 set background=dark
