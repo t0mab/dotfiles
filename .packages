@@ -18,8 +18,10 @@ lftp
 moreutils
 nmap
 octave
+pgadmin3
 pidgin
 pixelize
+postgresql-client
 pv
 pwgen
 pyflakes
