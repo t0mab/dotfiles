@@ -10,7 +10,7 @@ Add Solarized colors (http://ethanschoonover.com/solarized) support to :
 * dircolors : https://github.com/seebi/dircolors-solarized
 
 Switch between dark and light colors :
-* VIM : press <F8> key
+* VIM : press F8 key
 * Gnome Terminal and dircolors : "light" and "dark" aliases
 
 VIM
@@ -21,7 +21,7 @@ Some basic stuffs for VIM :
 * Deactivate arrow keys to force myself to learn "hjkl" moves
 * Add some settings to edit Ruby, Python, CSS and HTML files
 * Some settings from Lion Krischer (https://github.com/krischer/dotfiles)
-* Add TagBar plugin (toggle it using <F9> key)
+* Add TagBar plugin (toggle it using F9 key)
 
 Scrips
 ------
