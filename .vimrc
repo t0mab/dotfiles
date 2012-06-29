@@ -5,6 +5,10 @@
 " `zR` - open all
 " `zM` - close all
 
+" Load Pathogen
+call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
+
 " Enable 16 color in vim.
 set t_Co=16
 
