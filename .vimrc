@@ -12,6 +12,9 @@ call pathogen#helptags()
 " Toggle NERD Tree
 map <F3> <Esc>:NERDTreeToggle<CR>
 
+" Copy to system clipboard
+set clipboard=unnamedplus
+
 " Enable 16 color in vim.
 set t_Co=16
 
