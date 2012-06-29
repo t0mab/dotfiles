@@ -21,7 +21,13 @@ Some basic stuffs for VIM :
 * Deactivate arrow keys to force myself to learn "hjkl" moves
 * Add some settings to edit Ruby, Python, CSS and HTML files
 * Some settings from Lion Krischer (https://github.com/krischer/dotfiles)
-* Add TagBar plugin (toggle it using F9 key)
+
+and plugins :
+* NERD Tree
+* Tagbar
+* pyflakes
+* snipmate
+* Pathogen
 
 Scrips
 ------

@@ -25,3 +25,6 @@
 [submodule ".gnome-terminal-solarized"]
 	path = .gnome-terminal-solarized
 	url = https://github.com/sigurdga/gnome-terminal-colors-solarized.git
+[submodule ".vim/bundle/nerdtree"]
+	path = .vim/bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree

@@ -9,6 +9,9 @@
 call pathogen#runtime_append_all_bundles()
 call pathogen#helptags()
 
+" Toggle NERD Tree
+map <F3> <Esc>:NERDTreeToggle<CR>
+
 " Enable 16 color in vim.
 set t_Co=16
 
