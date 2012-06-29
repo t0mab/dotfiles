@@ -23,11 +23,12 @@ Some basic stuffs for VIM :
 * Some settings from Lion Krischer (https://github.com/krischer/dotfiles)
 
 and plugins :
+* Fugitive
 * NERD Tree
+* Pathogen
 * Tagbar
 * pyflakes
 * snipmate
-* Pathogen
 
 Scrips
 ------
