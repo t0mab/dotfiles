@@ -22,3 +22,6 @@
 [submodule ".dircolors-solarized"]
 	path = .dircolors-solarized
 	url = https://github.com/seebi/dircolors-solarized.git
+[submodule ".gnome-terminal-solarized"]
+	path = .gnome-terminal-solarized
+	url = https://github.com/sigurdga/gnome-terminal-colors-solarized.git
