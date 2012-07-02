@@ -47,3 +47,5 @@ alias light='eval $DIRCOLORS_LIGHT && ~/.gnome-terminal-solarized/set_light.sh'
 alias dark='eval $DIRCOLORS_DARK && ~/.gnome-terminal-solarized/set_dark.sh'
 
 alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
+
+xmodmap ~/.Xmodmap
