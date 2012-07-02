@@ -5,6 +5,20 @@
 " `zR` - open all
 " `zM` - close all
 
+" Load Pathogen
+call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
+
+" Activate fugitive
+set laststatus=2
+set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})\ %{fugitive#statusline()}
+
+" Toggle NERD Tree
+map <F3> <Esc>:NERDTreeToggle<CR>
+
+" Copy to system clipboard
+set clipboard=unnamedplus
+
 " Enable 16 color in vim.
 set t_Co=16
 
