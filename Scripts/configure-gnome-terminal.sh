@@ -17,5 +17,6 @@ gconftool-2 --set /apps/gnome-terminal/keybindings/move_tab_right --type string 
 gconftool-2 --set /apps/gnome-terminal/keybindings/move_tab_left --type string "<Primary><Shift>Left"
 gconftool-2 --set /apps/gnome-terminal/keybindings/prev_tab --type string "<Shift>Left"
 gconftool-2 --set /apps/gnome-terminal/keybindings/next_tab --type string "<Shift>Right"
+gconftool-2 --set /apps/gnome-terminal/keybindings/help --type string "disabled"
 
 gconftool-2 --set /apps/gnome-terminal/global/use_menu_accelerators --type bool false
