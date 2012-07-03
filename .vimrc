@@ -16,6 +16,9 @@ set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})\ %{fugitive#statusline()}
 " Toggle NERD Tree
 map <F3> <Esc>:NERDTreeToggle<CR>
 
+" Install the current Python module
+map <F5> :!pyup<CR>
+
 " Copy to system clipboard
 set clipboard=unnamedplus
 

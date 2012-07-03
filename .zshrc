@@ -50,10 +50,3 @@ alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
 
 # Only load .Xmodmap if X server is running.
 [ -n "${XAUTHORITY+x}" ] && xmodmap ~/.Xmodmap
-
-# Go to Git root, execute ./setup.py install and then, go back
-function pyup () {
-	cd $(git rev-parse --show-toplevel)
-	./setup.py install
-	cd -
-}
