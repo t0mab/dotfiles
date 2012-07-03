@@ -50,3 +50,6 @@ alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
 
 # Only load .Xmodmap if X server is running.
 [ -n "${XAUTHORITY+x}" ] && xmodmap ~/.Xmodmap
+
+# Fix Solarized theme in tmux session
+alias tmux="TERM=screen-256color-bce tmux"
