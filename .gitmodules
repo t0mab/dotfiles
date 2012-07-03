@@ -37,3 +37,6 @@
 [submodule ".vim/bundle/buftabs"]
 	path = .vim/bundle/buftabs
 	url = https://github.com/vim-scripts/buftabs.git
+[submodule ".oh-my-zsh"]
+	path = .oh-my-zsh
+	url = https://github.com/robbyrussell/oh-my-zsh.git
