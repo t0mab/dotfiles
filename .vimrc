@@ -13,8 +13,15 @@ call pathogen#helptags()
 set laststatus=2
 set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})\ %{fugitive#statusline()}
 
+" Navigate buffers
+noremap <F1> :bprev<CR>
+noremap <F2> :bnext<CR>
+
 " Toggle NERD Tree
 map <F3> <Esc>:NERDTreeToggle<CR>
+
+" Toggle line numbers and fold column for easy copying
+nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 
 " Install the current Python module
 map <F5> :!pyup<CR>
@@ -71,9 +78,6 @@ set number
 
 " Unwrap lines by default
 set nowrap
-
-" Toggle line numbers and fold column for easy copying
-nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 
 " Proper indentation for Python
 autocmd FileType python set expandtab
