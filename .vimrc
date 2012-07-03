@@ -20,6 +20,9 @@ noremap <F2> :bnext<CR>
 " Toggle NERD Tree
 map <F3> <Esc>:NERDTreeToggle<CR>
 
+" NERD Tree minimal UI
+let NERDTreeMinimalUI = 1
+
 " Toggle line numbers and fold column for easy copying
 nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 
