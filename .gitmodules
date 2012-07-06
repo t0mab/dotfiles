@@ -46,3 +46,6 @@
 [submodule ".vim/bundle/indenthtml"]
 	path = .vim/bundle/indenthtml
 	url = https://github.com/vim-scripts/indenthtml.vim
+[submodule ".vim/bundle/surround"]
+	path = .vim/bundle/surround
+	url = https://github.com/tpope/vim-surround.git
