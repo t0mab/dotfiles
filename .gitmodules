@@ -43,3 +43,6 @@
 [submodule ".vim/bundle/closetag"]
 	path = .vim/bundle/closetag
 	url = https://github.com/vim-scripts/closetag.vim
+[submodule ".vim/bundle/indenthtml"]
+	path = .vim/bundle/indenthtml
+	url = https://github.com/vim-scripts/indenthtml.vim

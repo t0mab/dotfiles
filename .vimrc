@@ -53,15 +53,6 @@ set backup
 set backupdir=~/.vim-tmp
 set directory=~/.vim-tmp
 
-" Activate plugin and indent
-filetype on
-filetype indent on
-filetype plugin indent on
-filetype plugin on
-
-" Keep the previous indentation
-set autoindent
-
 " Show line numbers, rulers, etc
 set ruler
 
@@ -82,12 +73,22 @@ set number
 " Unwrap lines by default
 set nowrap
 
+" Activate plugin and indent
+filetype on
+filetype indent on
+filetype plugin indent on
+filetype plugin on
+
+" Keep the previous indentation
+set autoindent
+
+" Use spaces instead of tabs
+set expandtab
+
 " Proper indentation for Python
-autocmd FileType python set expandtab
 autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
-autocmd FileType python set autoindent
 autocmd FileType python set foldmethod=indent
 autocmd FileType python set foldlevel=1
 
@@ -95,18 +96,20 @@ autocmd FileType python set foldlevel=1
 autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
 
 " Proper indentation for Ruby
-autocmd FileType ruby set expandtab
 autocmd FileType ruby set tabstop=2
 autocmd FileType ruby set softtabstop=2
 autocmd FileType ruby set shiftwidth=2
-autocmd FileType ruby set autoindent
 
 " Proper indentation for HTML
-autocmd FileType html set expandtab
 autocmd FileType html set tabstop=2
 autocmd FileType html set softtabstop=2
 autocmd FileType html set shiftwidth=2
-autocmd FileType html set autoindent
+
+" Proper indentation for Arduino
+autocmd BufNewFile,BufRead *.pde set ft=arduino
+autocmd BufNewFile,BufRead *.pde set tabstop=2
+autocmd BufNewFile,BufRead *.pde set softtabstop=2
+autocmd BufNewFile,BufRead *.pde set shiftwidth=2
 
 " Autocompletion
 autocmd FileType python set omnifunc=pythoncomplete#Complete
@@ -119,14 +122,6 @@ inoremap <Nul> <C-x><C-o>
 
 " Remove automatically all trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
-
-" Arduino
-autocmd BufNewFile,BufRead *.pde set ft=arduino
-autocmd BufNewFile,BufRead *.pde set expandtab
-autocmd BufNewFile,BufRead *.pde set tabstop=2
-autocmd BufNewFile,BufRead *.pde set softtabstop=2
-autocmd BufNewFile,BufRead *.pde set shiftwidth=2
-autocmd BufNewFile,BufRead *.pde set autoindent
 
 " Learn the hard way
 map <up> <nop>
