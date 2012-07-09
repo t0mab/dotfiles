@@ -82,8 +82,8 @@ filetype plugin on
 " Keep the previous indentation
 set autoindent
 
-" Use spaces instead of tabs
-set expandtab
+" Use tabs by default
+set noexpandtab
 
 " Proper indentation for Python
 autocmd FileType python set tabstop=4
@@ -91,6 +91,7 @@ autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
 autocmd FileType python set foldmethod=indent
 autocmd FileType python set foldlevel=1
+autocmd FileType python set expandtab
 
 " Define a template for new Python files
 autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
@@ -99,6 +100,7 @@ autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
 autocmd FileType ruby set tabstop=2
 autocmd FileType ruby set softtabstop=2
 autocmd FileType ruby set shiftwidth=2
+autocmd FileType ruby set expandtab
 
 " Proper indentation for HTML
 autocmd FileType html set tabstop=2
@@ -110,6 +112,7 @@ autocmd BufNewFile,BufRead *.pde set ft=arduino
 autocmd BufNewFile,BufRead *.pde set tabstop=2
 autocmd BufNewFile,BufRead *.pde set softtabstop=2
 autocmd BufNewFile,BufRead *.pde set shiftwidth=2
+autocmd BufNewFile,BufRead *.pde set expandtab
 
 " Autocompletion
 autocmd FileType python set omnifunc=pythoncomplete#Complete
