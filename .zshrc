@@ -53,3 +53,6 @@ alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
 
 # Fix Solarized theme in tmux session
 alias tmux="TERM=screen-256color-bce tmux"
+
+# Ignore HTTPS certificate by default with wget
+alias wget="wget --no-check-certificate"
