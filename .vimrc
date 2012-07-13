@@ -102,10 +102,13 @@ autocmd FileType ruby set softtabstop=2
 autocmd FileType ruby set shiftwidth=2
 autocmd FileType ruby set expandtab
 
+" Fix filetype for Django template files
+autocmd BufNewFile,BufRead *.html set filetype=htmldjango.html
+
 " Proper indentation for HTML
-autocmd FileType html set tabstop=2
-autocmd FileType html set softtabstop=2
-autocmd FileType html set shiftwidth=2
+autocmd BufNewFile,BufRead *.html set tabstop=2
+autocmd BufNewFile,BufRead *.html set softtabstop=2
+autocmd BufNewFile,BufRead *.html set shiftwidth=2
 
 " Proper indentation for Arduino
 autocmd BufNewFile,BufRead *.pde set ft=arduino
