@@ -23,12 +23,24 @@ Some basic stuffs for VIM :
 * Some settings from Lion Krischer (https://github.com/krischer/dotfiles)
 
 and plugins :
-* Fugitive
 * NERD Tree
 * Pathogen
-* Tagbar
+* closetag
+* fugitive
+* indenthtml
 * pyflakes
 * snipmate
+* surround
+* tagbar
+
+Available shortcuts :
+* F1 : previous buffer
+* F2 : next buffer
+* F3 : toggle NERD Tree
+* F4 : toggle line numbers
+* F5 : execute "./setup.py install" in git root directory
+* F8 : toggle between dark and light solarized color schemes
+* F9 : toggle tagbar
 
 Scrips
 ------
