@@ -30,6 +30,7 @@ and plugins :
 * indenthtml
 * pyflakes
 * snipmate
+* supertab
 * surround
 * tagbar
 

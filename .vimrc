@@ -124,7 +124,7 @@ autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 " A better keybinding for the Autocompletion
-inoremap <Nul> <C-x><C-o>
+" inoremap <Nul> <C-x><C-o>
 
 " Remove automatically all trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
@@ -151,3 +151,6 @@ set wildmode=longest,list
 " the breakdown of what this changes. You can also pare things down further if
 " you like.
 set shortmess=atI
+
+" Allow to use OmniComplete with SuperTab
+let g:SuperTabDefaultCompletionType = "context"
