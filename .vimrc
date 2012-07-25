@@ -144,7 +144,7 @@ imap <left> <nop>
 imap <right> <nop>
 
 " Add mouse support
-set mouse=a
+" set mouse=a
 
 " Unix like tab completion.
 set wildmenu
