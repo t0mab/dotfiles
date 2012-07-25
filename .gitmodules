@@ -52,3 +52,4 @@
 [submodule ".vim/bundle/matchit"]
 	path = .vim/bundle/matchit
 	url = https://github.com/benjifisher/matchit.zip.git
+	ignore = dirty
