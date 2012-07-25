@@ -13,6 +13,9 @@ call pathogen#helptags()
 set laststatus=2
 set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})\ %{fugitive#statusline()}
 
+" Change default leader mapping
+let mapleader = ","
+
 " Navigate buffers
 noremap <F1> :bprev<CR>
 noremap <F2> :bnext<CR>
