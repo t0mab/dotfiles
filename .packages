@@ -38,6 +38,7 @@ python-matplotlib
 python-numpy
 python-scipy
 python-setuptools
+rdesktop
 ssh
 texlive
 texlive-lang-french
