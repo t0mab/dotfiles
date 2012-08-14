@@ -21,6 +21,7 @@ ipython-notebook
 ipython-qtconsole
 irssi
 lftp
+libwww-mechanize-perl
 moreutils
 nmap
 octave
