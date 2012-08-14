@@ -39,6 +39,7 @@ python-matplotlib
 python-numpy
 python-scipy
 python-setuptools
+r-base
 rdesktop
 ssh
 texlive
