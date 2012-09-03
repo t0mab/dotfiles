@@ -41,6 +41,7 @@ python-scipy
 python-setuptools
 r-base
 rdesktop
+ruby1.9.3
 ssh
 texlive
 texlive-lang-french
