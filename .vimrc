@@ -113,6 +113,11 @@ autocmd BufNewFile,BufRead *.html set tabstop=2
 autocmd BufNewFile,BufRead *.html set softtabstop=2
 autocmd BufNewFile,BufRead *.html set shiftwidth=2
 
+" Proper indentation for Eruby
+autocmd BufNewFile,BufRead *.erb set tabstop=2
+autocmd BufNewFile,BufRead *.erb set softtabstop=2
+autocmd BufNewFile,BufRead *.erb set shiftwidth=2
+
 " Proper indentation for Arduino
 autocmd BufNewFile,BufRead *.pde set ft=arduino
 autocmd BufNewFile,BufRead *.pde set tabstop=2
