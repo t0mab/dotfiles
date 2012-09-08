@@ -5,6 +5,7 @@ default-jre
 exif
 exiv2
 exuberant-ctags
+fdupes
 gimp
 git
 gmt
