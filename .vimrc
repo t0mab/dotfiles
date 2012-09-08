@@ -27,9 +27,8 @@ Bundle 'indenthtml.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'benjifisher/matchit.zip'
 
-" Load Pathogen
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+" Highlight the 80th column
+set colorcolumn=80
 
 " Activate fugitive
 set laststatus=2
