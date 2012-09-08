@@ -24,7 +24,7 @@ Some basic stuffs for VIM :
 
 and plugins :
 * NERD Tree
-* Pathogen
+* vundle
 * closetag
 * fugitive
 * indenthtml

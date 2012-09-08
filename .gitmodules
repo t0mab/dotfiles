@@ -1,55 +1,12 @@
-[submodule ".vim/bundle/pyflakes"]
-	path = .vim/bundle/pyflakes
-	url = https://github.com/mitechie/pyflakes-pathogen.git
-[submodule ".vim/bundle/snipmate"]
-	path = .vim/bundle/snipmate
-	url = git://github.com/garbas/vim-snipmate.git
-[submodule ".vim/bundle/tlib"]
-	path = .vim/bundle/tlib
-	url = https://github.com/tomtom/tlib_vim.git
-[submodule ".vim/bundle/addon-mw-utils"]
-	path = .vim/bundle/addon-mw-utils
-	url = https://github.com/MarcWeber/vim-addon-mw-utils.git
-[submodule ".vim/bundle/snipmate-snippets"]
-	path = .vim/bundle/snipmate-snippets
-	url = https://github.com/honza/snipmate-snippets.git
-[submodule ".vim/bundle/tagbar"]
-	path = .vim/bundle/tagbar
-	url = git://github.com/majutsushi/tagbar
-[submodule ".vim/bundle/solarized"]
-	path = .vim/bundle/solarized
-	url = git://github.com/altercation/vim-colors-solarized.git
 [submodule ".dircolors-solarized"]
 	path = .dircolors-solarized
 	url = https://github.com/seebi/dircolors-solarized.git
 [submodule ".gnome-terminal-solarized"]
 	path = .gnome-terminal-solarized
 	url = https://github.com/sigurdga/gnome-terminal-colors-solarized.git
-[submodule ".vim/bundle/nerdtree"]
-	path = .vim/bundle/nerdtree
-	url = https://github.com/scrooloose/nerdtree
-[submodule ".vim/bundle/fugitive"]
-	path = .vim/bundle/fugitive
-	url = git://github.com/tpope/vim-fugitive.git
-[submodule ".vim/bundle/jellybeans"]
-	path = .vim/bundle/jellybeans
-	url = https://github.com/nanotech/jellybeans.vim.git
-[submodule ".vim/bundle/buftabs"]
-	path = .vim/bundle/buftabs
-	url = https://github.com/vim-scripts/buftabs.git
 [submodule ".oh-my-zsh"]
 	path = .oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh.git
-[submodule ".vim/bundle/closetag"]
-	path = .vim/bundle/closetag
-	url = https://github.com/vim-scripts/closetag.vim
-[submodule ".vim/bundle/indenthtml"]
-	path = .vim/bundle/indenthtml
-	url = https://github.com/vim-scripts/indenthtml.vim
-[submodule ".vim/bundle/surround"]
-	path = .vim/bundle/surround
-	url = https://github.com/tpope/vim-surround.git
-[submodule ".vim/bundle/matchit"]
-	path = .vim/bundle/matchit
-	url = https://github.com/benjifisher/matchit.zip.git
-	ignore = dirty
+[submodule "/home/fabien/.vim/bundle/vundle"]
+	path = /home/fabien/.vim/bundle/vundle
+	url = http://github.com/gmarik/vundle.git

@@ -1,9 +1,31 @@
+
 " Cheat sheet :
 " `za` - toggles
 " `zc` - closes
 " `zo` - opens
 " `zR` - open all
 " `zM` - close all
+
+" Vundle
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+Bundle 'mitechie/pyflakes-pathogen'
+Bundle 'garbas/vim-snipmate'
+Bundle 'tomtom/tlib_vim'
+Bundle 'MarcWeber/vim-addon-mw-utils'
+Bundle 'honza/snipmate-snippets'
+Bundle 'majutsushi/tagbar'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'scrooloose/nerdtree'
+Bundle 'tpope/vim-fugitive'
+Bundle 'nanotech/jellybeans.vim'
+Bundle 'buftabs'
+Bundle 'closetag.vim'
+Bundle 'indenthtml.vim'
+Bundle 'tpope/vim-surround'
+Bundle 'benjifisher/matchit.zip'
 
 " Load Pathogen
 call pathogen#runtime_append_all_bundles()
