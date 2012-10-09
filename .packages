@@ -62,6 +62,7 @@ tmux
 ubuntu-restricted-extras
 ufraw-batch
 vim
+vim-puppet
 vlc
 wallch
 xz-utils
