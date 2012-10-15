@@ -26,7 +26,6 @@ jpegoptim
 lftp
 libpq-dev
 libwww-mechanize-perl
-mongodb
 moreutils
 nmap
 octave
@@ -60,11 +59,13 @@ texlive-lang-french
 texlive-latex-extra
 tidy
 tmux
+tsung
 ubuntu-restricted-extras
 ufraw-batch
 vim
 vim-puppet
 vlc
 wallch
+xml-twig-tools
 xz-utils
 zsh
