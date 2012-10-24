@@ -1,4 +1,5 @@
 apt-file
+aria2
 build-essential
 chromium-browser
 default-jre
