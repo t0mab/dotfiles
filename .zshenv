@@ -4,3 +4,7 @@ function pyup () {
 	./setup.py install
 	cd -
 }
+
+function activate () {
+	source ~/VirtualEnv/${$(git rev-parse --show-toplevel)##*/}/bin/activate
+}
