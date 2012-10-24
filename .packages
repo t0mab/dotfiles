@@ -41,8 +41,10 @@ python-doc
 python-lxml
 python-matplotlib
 python-numpy
+python-pip
 python-scipy
 python-setuptools
+python3-pip
 r-base
 rdesktop
 ruby1.9.3
