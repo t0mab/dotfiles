@@ -47,6 +47,7 @@ python-setuptools
 python3-pip
 r-base
 rdesktop
+rtmpdump
 ruby1.9.3
 ssh
 texlive
