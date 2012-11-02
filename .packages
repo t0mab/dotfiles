@@ -2,6 +2,7 @@ apt-file
 aria2
 build-essential
 chromium-browser
+curl
 default-jre
 exif
 exiv2
@@ -24,6 +25,7 @@ lftp
 libpq-dev
 libwww-mechanize-perl
 moreutils
+ngrep
 nmap
 octave
 pgadmin3
@@ -49,7 +51,9 @@ r-base
 rdesktop
 rtmpdump
 ruby1.9.3
+siege
 ssh
+sshuttle
 texlive
 texlive-lang-french
 texlive-latex-extra
