@@ -25,6 +25,8 @@ jpegoptim
 lftp
 libpq-dev
 libwww-mechanize-perl
+libxml2-dev
+libxslt1-dev
 moreutils
 ngrep
 nmap
