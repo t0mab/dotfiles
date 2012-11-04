@@ -6,5 +6,7 @@ function pyup () {
 }
 
 function activate () {
-	source ~/VirtualEnv/${$(git rev-parse --show-toplevel)##*/}/bin/activate
+	repository=${$(git rev-parse --show-toplevel)##*/}
+	[ ! -d ~/VirtualEnv/$repository ] && virtualenv ~/VirtualEnv/$repository
+	source ~/VirtualEnv/$repository/bin/activate
 }
