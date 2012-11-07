@@ -23,6 +23,7 @@ ipython3
 irssi
 jpegoptim
 lftp
+libfreetype6-dev
 libpq-dev
 libwww-mechanize-perl
 libxml2-dev
