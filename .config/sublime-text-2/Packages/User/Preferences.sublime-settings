@@ -1,5 +1,7 @@
 {
-    "ignored_packages": [],
-    "trim_trailing_white_space_on_save": true,
-    "vintage_start_in_command_mode": true
+	"ignored_packages":
+	[
+	],
+	"trim_trailing_white_space_on_save": true,
+	"vintage_start_in_command_mode": true
 }
