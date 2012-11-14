@@ -48,6 +48,8 @@ alias dark='eval $DIRCOLORS_DARK && ~/.gnome-terminal-solarized/set_dark.sh'
 
 alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
 
+alias ta="tmux attach"
+
 # Only load .Xmodmap if X server is running.
 [ -n "${XAUTHORITY+x}" ] && xmodmap ~/.Xmodmap
 
