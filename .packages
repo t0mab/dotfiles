@@ -51,6 +51,9 @@ python-scipy
 python-setuptools
 python3-pip
 r-base
+r-cran-ggplot2
+r-cran-maptools
+r-cran-rcolorbrewer
 rdesktop
 rtmpdump
 ruby1.9.3
