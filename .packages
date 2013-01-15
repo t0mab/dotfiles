@@ -24,7 +24,9 @@ irssi
 jpegoptim
 lftp
 libfreetype6-dev
+libgdal-dev
 libpq-dev
+libproj-dev
 libwww-mechanize-perl
 libxml2-dev
 libxslt1-dev
