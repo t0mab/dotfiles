@@ -1,9 +1,6 @@
 [user]
 	name = Fabien Engels
 	email = fabien.engels@gmail.com
-[github]
-	user = fengels
-	token = 0a0d2e03c0d240e83f140166e2a28d72
 [core]
 	editor = vim
 [color]
