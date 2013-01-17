@@ -1,0 +1,29 @@
+$user = 'fabien'
+$home = "/home/$user"
+
+node 'mrtea' {
+	packages::common { 'packages': }
+	packages::dev { 'packages': }
+	packages::desktop { 'packages': }
+	packages::tex { 'packages': }
+
+	home::ssh { $user:
+		home => $home
+	}
+
+	home::tmux { $user:
+		home => $home
+	}
+
+	home::xmodmap { $user:
+		home => $home
+	}
+
+	home::zsh { $user:
+		home => $home
+	}
+
+	git::config { $user:
+		home => $home
+	}
+}
