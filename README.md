@@ -1,6 +1,13 @@
 My home files
 =============
 
+I switched to Pupper, so now to install these files :
+```bash
+git clone https://github.com/fabienengels/dotfiles.git .dotfiles
+cd .dotfiles
+./apply.sh
+```
+
 Solarized
 ---------
 
@@ -23,20 +30,17 @@ Some basic stuffs for VIM :
 * Some settings from Lion Krischer (https://github.com/krischer/dotfiles)
 
 and plugins :
-* NERD Tree
 * vundle
 * closetag
 * fugitive
 * indenthtml
 * pyflakes
-* snipmate
 * surround
 * tagbar
 
 Available shortcuts :
 * F1 : previous buffer
 * F2 : next buffer
-* F3 : toggle NERD Tree
 * F4 : toggle line numbers
 * F5 : execute "./setup.py install" in git root directory
 * F8 : toggle between dark and light solarized color schemes
