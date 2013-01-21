@@ -58,6 +58,19 @@ define home::zsh($home='/home/fabien') {
 
 	user { $title:
 		shell => '/usr/bin/zsh',
-		require => Package[zsh],
+		require => Package[zsh]
+	}
+
+	exec { "$home/.oh-my-zsh":
+		command => "/usr/bin/git clone https://github.com/robbyrussell/oh-my-zsh.git $home/.oh-my-zsh",
+		creates => "$home/.oh-my-zsh",
+	}
+
+	file { "$home/.oh-my-zsh":
+		require => Exec["$home/.oh-my-zsh"],
+		ensure => directory,
+		owner => $title,
+		group => $title,
+		recurse => true
 	}
 }
