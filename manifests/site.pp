@@ -6,6 +6,7 @@ node 'mrtea' {
 	packages::dev { 'packages': }
 	packages::desktop { 'packages': }
 	packages::tex { 'packages': }
+	packages::clean { 'packages': }
 
 	vim::config { $user:
 		home => $home
@@ -39,6 +40,7 @@ node 'mrtea' {
 node 'nasty' {
 	packages::common { 'packages': }
 	packages::dev { 'packages': }
+	packages::clean { 'packages': }
 
 	vim::config { $user:
 		home => $home

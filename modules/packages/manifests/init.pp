@@ -78,3 +78,8 @@ define packages::tex() {
 	package { 'texlive-lang-french': ensure => present }
 	package { 'texlive-latex-extra': ensure => present }
 }
+
+define packages::clean() {
+	package { 'python-apport': ensure => purged }
+	package { 'whoopsie': ensure => purged }
+}
