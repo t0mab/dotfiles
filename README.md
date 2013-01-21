@@ -1,7 +1,7 @@
 My home files
 =============
 
-I switched to Pupper, so now to install these files :
+I switched to Puppet, so now to install these files :
 ```bash
 git clone https://github.com/fabienengels/dotfiles.git .dotfiles
 cd .dotfiles
