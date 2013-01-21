@@ -74,3 +74,31 @@ define home::zsh($home='/home/fabien') {
 		recurse => true
 	}
 }
+
+define home::solarized($home='/home/fabien') {
+	exec { "$home/.dircolors-solarized":
+		command => "/usr/bin/git clone https://github.com/seebi/dircolors-solarized.git $home/.dircolors-solarized",
+		creates => "$home/.dircolors-solarized"
+	}
+
+	file { "$home/.dircolors-solarized":
+		require => Exec["$home/.dircolors-solarized"],
+		ensure => directory,
+		owner => $title,
+		group => $title,
+		recurse => true
+	}
+
+	exec { "$home/.gnome-terminal-solarized":
+		command => "/usr/bin/git clone https://github.com/sigurdga/gnome-terminal-colors-solarized.git $home/.gnome-terminal-solarized",
+		creates => "$home/.gnome-terminal-solarized"
+	}
+
+	file { "$home/.gnome-terminal-solarized":
+		require => Exec["$home/.gnome-terminal-solarized"],
+		ensure => directory,
+		owner => $title,
+		group => $title,
+		recurse => true
+	}
+}
