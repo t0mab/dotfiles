@@ -12,7 +12,7 @@ define vim::config($home='/home/fabien') {
 
 	file { "$home/.vim-tmp":
 		ensure => directory,
-		mode => 500,
+		mode => 700,
 		owner => $title,
 		group => $title
 	 }
