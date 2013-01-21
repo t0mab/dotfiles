@@ -17,7 +17,6 @@ define packages::common() {
 	package { 'sshuttle': ensure => present }
 	package { 'tmux': ensure => present }
 	package { 'tsung': ensure => present }
-	package { 'vim': ensure => present }
 	package { 'xz-utils': ensure => present }
 }
 

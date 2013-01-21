@@ -12,15 +12,11 @@ call vundle#rc()
 
 Bundle 'gmarik/vundle'
 Bundle 'mitechie/pyflakes-pathogen'
-Bundle 'garbas/vim-snipmate'
 Bundle 'tomtom/tlib_vim'
 Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'honza/snipmate-snippets'
 Bundle 'majutsushi/tagbar'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'scrooloose/nerdtree'
 Bundle 'tpope/vim-fugitive'
-Bundle 'nanotech/jellybeans.vim'
 Bundle 'buftabs'
 Bundle 'closetag.vim'
 Bundle 'indenthtml.vim'
@@ -40,12 +36,6 @@ let mapleader = ","
 " Navigate buffers
 noremap <F1> :bprev<CR>
 noremap <F2> :bnext<CR>
-
-" Toggle NERD Tree
-map <F3> <Esc>:NERDTreeToggle<CR>
-
-" NERD Tree minimal UI
-let NERDTreeMinimalUI = 1
 
 " Toggle line numbers and fold column for easy copying
 nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>

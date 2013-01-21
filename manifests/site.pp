@@ -7,6 +7,10 @@ node 'mrtea' {
 	packages::desktop { 'packages': }
 	packages::tex { 'packages': }
 
+	vim::config { $user:
+		home => $home
+	}
+
 	home::ssh { $user:
 		home => $home
 	}

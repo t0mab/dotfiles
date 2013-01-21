@@ -10,6 +10,13 @@ define vim::config($home='/home/fabien') {
 		group => $title
 	}
 
+	file { "$home/.vim-tmp":
+		ensure => directory,
+		mode => 500,
+		owner => $title,
+		group => $title
+	 }
+
 	file { "$home/.vim":
 		ensure => directory,
 		mode => 500,
@@ -17,5 +24,18 @@ define vim::config($home='/home/fabien') {
 		recurse => true,
 		owner => $title,
 		group => $title
+	}
+
+	exec { "$home/.vim/bundle/vundle":
+		command => "/usr/bin/git clone https://github.com/gmarik/vundle.git $home/.vim/bundle/vundle",
+		creates => "$home/.vim/bundle/vundle",
+	}
+
+	file { "$home/.vim/bundle":
+		require => File["$home/.vim"],
+		ensure => directory,
+		owner => $title,
+		group => $title,
+		recurse => true
 	}
 }
