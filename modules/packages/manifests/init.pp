@@ -56,6 +56,7 @@ define packages::desktop() {
 	package { 'default-jre': ensure => present }
 	package { 'gimp': ensure => present }
 	package { 'gitg': ensure => present }
+	package { 'gitk': ensure => present }
 	package { 'gource': ensure => present }
 	package { 'indicator-multiload': ensure => present }
 	package { 'indicator-weather': ensure => present }
