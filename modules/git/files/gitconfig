@@ -1,7 +1,15 @@
 [user]
 	name = Fabien Engels
 	email = fabien.engels@gmail.com
+
 [core]
 	editor = vim
+
 [color]
 	ui = auto
+
+[merge]
+	tool = mymeld
+
+[mergetool "mymeld"]
+	cmd = meld $LOCAL $BASE $REMOTE $MERGED
