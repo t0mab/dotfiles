@@ -82,6 +82,16 @@ define packages::tex() {
 }
 
 define packages::clean() {
+	package { 'apport': ensure => purged }
+	package { 'apport-gtk': ensure => purged }
+	package { 'evolution-data-server': ensure => purged }
+	package { 'gnome-bluetooth': ensure => purged }
+	package { 'gwibber': ensure => purged }
+	package { 'gwibber-service': ensure => purged }
+	package { 'indicator-messages': ensure => purged }
 	package { 'python-apport': ensure => purged }
+	package { 'telepathy-indicator': ensure => purged }
+	package { 'unity-lens-shopping': ensure => purged }
+	package { 'update-notifier': ensure => purged }
 	package { 'whoopsie': ensure => purged }
 }
