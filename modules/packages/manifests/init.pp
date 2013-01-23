@@ -61,6 +61,7 @@ define packages::desktop() {
 	package { 'indicator-multiload': ensure => present }
 	package { 'indicator-weather': ensure => present }
 	package { 'inkscape': ensure => present }
+	package { 'meld': ensure => present }
 	package { 'rdesktop': ensure => present }
 	package { 'ubuntu-restricted-extras': ensure => present }
 	package { 'vlc': ensure => present }
