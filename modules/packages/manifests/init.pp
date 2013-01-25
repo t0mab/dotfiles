@@ -63,6 +63,7 @@ define packages::desktop() {
 	package { 'inkscape': ensure => present }
 	package { 'meld': ensure => present }
 	package { 'rdesktop': ensure => present }
+	package { 'scrot': ensure => present }
 	package { 'ubuntu-restricted-extras': ensure => present }
 	package { 'vlc': ensure => present }
 	package { 'wallch': ensure => present }
