@@ -23,6 +23,7 @@ define packages::common() {
 define packages::dev() {
 	package { 'build-essential': ensure => present }
 	package { 'exuberant-ctags': ensure => present }
+	package { 'ghc': ensure => present }
 	package { 'git': ensure => present }
 	package { 'ipython-notebook': ensure => present }
 	package { 'ipython-qtconsole': ensure => present }
