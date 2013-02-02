@@ -91,6 +91,7 @@ define packages::clean() {
 	package { 'gwibber': ensure => purged }
 	package { 'gwibber-service': ensure => purged }
 	package { 'indicator-messages': ensure => purged }
+	package { 'mdadm': ensure => purged }
 	package { 'python-apport': ensure => purged }
 	package { 'telepathy-indicator': ensure => purged }
 	package { 'unity-lens-shopping': ensure => purged }
