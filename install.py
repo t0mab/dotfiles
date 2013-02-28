@@ -41,6 +41,7 @@ def install(sources, destinations):
         print '%s -> %s' % (source, destination)
         symlink(source, destination)
 
+
 if __name__ == '__main__':
     home_directory = environ['HOME']
     working_directory = getcwd()

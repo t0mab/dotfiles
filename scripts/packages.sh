@@ -1,6 +1,6 @@
 #! /bin/sh
 
-sudo apt-get update -yqq
+sudo apt-get update -y
 
 sudo apt-get dist-upgrade -y
 
@@ -76,6 +76,8 @@ sudo apt-get install -y\
 	xml-twig-tools\
 	xz-utils\
 	zsh\
+
+sudo pip install --upgrade flake8
 
 [ "$DISPLAY" != ":0" ] && exit
 
