@@ -22,9 +22,14 @@ Bundle 'closetag.vim'
 Bundle 'indenthtml.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'benjifisher/matchit.zip'
+Bundle 'Syntastic'
 
 " Highlight the 80th column
 set colorcolumn=80
+
+" Syntastic
+let g:syntastic_check_on_open=1
+let g:syntastic_python_checker="flake8"
 
 " Activate fugitive
 set laststatus=2
