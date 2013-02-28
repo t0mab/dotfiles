@@ -1,0 +1,6 @@
+{
+	"default_line_ending": "unix",
+	"trim_trailing_white_space_on_save": true,
+	"rulers": [80],
+    "scroll_speed": 2.0
+}
