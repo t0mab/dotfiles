@@ -34,7 +34,7 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+export PATH=~/.dotfiles/scripts:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
 
 PATH=$PATH:$HOME/Scripts
 
@@ -43,8 +43,8 @@ DIRCOLORS_DARK=$(dircolors ~/.dircolors-solarized/dircolors.ansi-dark)
 
 eval $DIRCOLORS_DARK
 
-alias light='eval $DIRCOLORS_LIGHT && ~/.gnome-terminal-solarized/set_light.sh'
-alias dark='eval $DIRCOLORS_DARK && ~/.gnome-terminal-solarized/set_dark.sh'
+alias light='eval $DIRCOLORS_LIGHT && ~/.gnome-terminal-colors-solarized/set_light.sh'
+alias dark='eval $DIRCOLORS_DARK && ~/.gnome-terminal-colors-solarized/set_dark.sh'
 
 alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
 
