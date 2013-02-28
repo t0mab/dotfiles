@@ -4,9 +4,11 @@ from os import environ, getcwd, symlink, makedirs, unlink, walk
 from os.path import dirname, exists, isdir, isfile, islink, join
 from shutil import rmtree
 
+
 def git_modules():
     lines = map(lambda l: l.split(), open('.gitmodules'))
-    return [ l[2] for l in lines if l[0] == 'path' ]
+    return [l[2] for l in lines if l[0] == 'path']
+
 
 def filenames():
     for root, dirs, files in walk('.'):
@@ -15,22 +17,25 @@ def filenames():
         for filename in files:
             yield join(directory, filename)
 
+
 def filter_filenames(filenames, ignore_list):
     for filename in filenames:
         if any(map(lambda i: filename.startswith(i), ignore_list)): continue
 
         yield filename
 
+
 def install(sources, destinations):
     for source, destination in zip(sources, destinations):
         directory = dirname(destination)
 
-        if not exists(directory): makedirs(directory)
+        if not exists(directory):
+            makedirs(directory)
 
         if exists(destination):
-            if isfile(destination) or islink(destination): unlink(destination)
+            if isfile(destination) or islink(destination):
+                unlink(destination)
             if isdir(destination):
-                print(destination)
                 rmtree(destination)
 
         print '%s -> %s' % (source, destination)
