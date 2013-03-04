@@ -40,6 +40,8 @@ sudo apt-get install -y\
 	lftp\
 	libfreetype6-dev\
 	libgdal-dev\
+	libnet-dbus-perl\
+	libnotify-bin\
 	libpq-dev\
 	libproj-dev\
 	libxml2-dev\
