@@ -85,6 +85,11 @@ def windows(home_directory, working_directory):
         print(destination)
         copyfile(source, destination)
 
+    source = 'gitconfig'
+    destination = join(home_directory, '.gitconfig')
+    print(destination)
+    copyfile(source, destination)
+
 
 if __name__ == '__main__':
     home_directory = environ['HOME']

@@ -3,6 +3,7 @@
 	email = fabien.engels@gmail.com
 
 [core]
+	autocrlf = false
 	editor = vim
 
 [color]
