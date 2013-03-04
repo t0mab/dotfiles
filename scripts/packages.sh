@@ -78,6 +78,8 @@ sudo apt-get install -y\
 	xz-utils\
 	zsh\
 
+sudo apt-get autoremove -y
+
 sudo pip install --upgrade flake8
 
 [ "$DISPLAY" != ":0" ] && exit
