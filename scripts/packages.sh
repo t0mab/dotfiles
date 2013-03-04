@@ -24,6 +24,7 @@ sudo apt-get install -y\
 	aria2\
 	build-essential\
 	curl\
+	dos2unix\
 	exif\
 	exiv2\
 	exuberant-ctags\
