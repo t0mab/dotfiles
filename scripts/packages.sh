@@ -35,6 +35,7 @@ sudo apt-get install -y\
 	ipython-notebook\
 	ipython-qtconsole\
 	ipython3\
+	irssi-scripts\
 	jpegoptim\
 	lftp\
 	libfreetype6-dev\

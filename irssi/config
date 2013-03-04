@@ -277,4 +277,6 @@ settings = {
     autolog = "yes";
     autolog_path = "~/.irclogs/$tag/$0/%Y/%m-%d.log";
   };
+  "perl/core/scripts" = { autoaway_timeout = "600"; };
 };
+logs = { };
