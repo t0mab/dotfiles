@@ -45,7 +45,13 @@ def install(sources, destinations):
 
 def linux(home_directory, working_directory):
     modules = git_modules()
-    ignore_list = ['.git', 'README.md', __file__[2:], 'scripts'] + modules
+    ignore_list = [
+        '.git',
+        'README.md',
+        __file__[2:],
+        'scripts',
+        'regfiles'
+    ] + modules
 
     filenames = list(filter_filenames(filenames(), ignore_list)) + modules
     sources = map(lambda f: join(working_directory, f), filenames)
