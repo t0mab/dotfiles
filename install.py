@@ -53,9 +53,9 @@ def linux(home_directory, working_directory):
         'regfiles'
     ] + modules
 
-    filenames = list(filter_filenames(filenames(), ignore_list)) + modules
-    sources = map(lambda f: join(working_directory, f), filenames)
-    destinations = map(lambda f: join(home_directory, '.'+f), filenames)
+    files = list(filter_filenames(filenames(), ignore_list)) + modules
+    sources = map(lambda f: join(working_directory, f), files)
+    destinations = map(lambda f: join(home_directory, '.'+f), files)
 
     install(sources, destinations)
 
