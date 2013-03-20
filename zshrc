@@ -61,3 +61,6 @@ alias wget="wget --no-check-certificate"
 
 # Activate -O vim's option by default
 alias vi="vim -O"
+
+# Activate virtualenvwrapper
+source /etc/bash_completion.d/virtualenvwrapper

@@ -1,14 +1,18 @@
-# Go to Git root, execute ./setup.py install and then, go back
-function pyup () {
-	cd $(git rev-parse --show-toplevel)
-	./setup.py install
-	cd -
-}
-
 function activate () {
+	python="python2.7"
+
+	cd $(git rev-parse --show-toplevel)
 	repository=${$(git rev-parse --show-toplevel)##*/}
-	[ ! -d ~/VirtualEnv/$repository ] && virtualenv ~/VirtualEnv/$repository
-	source ~/VirtualEnv/$repository/bin/activate
+
+	if [ ! -d "$WORKON_HOME/$repository" ]; then
+		if [ -f requirements.txt ]; then
+			mkvirtualenv -p $python -r requirements.txt $repository
+		else
+			mkvirtualenv -p $python $repository
+		fi
+	fi
+
+	workon $repository
 }
 
 function pull-them-all () {

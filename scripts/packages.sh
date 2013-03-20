@@ -77,6 +77,7 @@ sudo apt-get install -y\
 	ufraw-batch\
 	unattended-upgrades\
 	vim\
+	virtualenvwrapper\
 	xml-twig-tools\
 	xz-utils\
 	zsh\
