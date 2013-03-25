@@ -4,21 +4,6 @@ sudo apt-get update -y
 
 sudo apt-get dist-upgrade -y
 
-sudo apt-get purge -y\
-	apport\
-	apport-gtk\
-	evolution-data-server\
-	gnome-bluetooth\
-	gwibber\
-	gwibber-service\
-	indicator-messages\
-	mdadm\
-	python-apport\
-	telepathy-indicator\
-	unity-lens-shopping\
-	update-notifier\
-	whoopsie\
-
 sudo apt-get install -y\
 	apt-file\
 	aria2\
@@ -49,7 +34,6 @@ sudo apt-get install -y\
 	moreutils\
 	ngrep\
 	nmap\
-	octave\
 	postgresql-client\
 	pv\
 	pwgen\
@@ -63,7 +47,6 @@ sudo apt-get install -y\
 	python-pip\
 	python-scipy\
 	python-setuptools\
-	python3-pip\
 	rtmpdump\
 	siege\
 	ssh\
@@ -104,3 +87,18 @@ sudo apt-get install -y\
 	ubuntu-restricted-extras\
 	vlc\
 	wallch\
+
+sudo apt-get purge -y\
+	apport\
+	apport-gtk\
+	evolution-data-server\
+	gnome-bluetooth\
+	gwibber\
+	gwibber-service\
+	indicator-messages\
+	mdadm\
+	python-apport\
+	telepathy-indicator\
+	unity-lens-shopping\
+	update-notifier\
+	whoopsie\
