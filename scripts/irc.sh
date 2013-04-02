@@ -9,4 +9,4 @@ if [ $? != 0 ]; then
 	tmux set-option -t $SESSION status off
 fi
 
-tmux attach -t $SESSION
+tmux attach -dt $SESSION
