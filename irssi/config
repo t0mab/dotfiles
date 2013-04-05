@@ -106,6 +106,7 @@ channels = (
   { name = "#irssi"; chatnet = "ircnet"; autojoin = "No"; },
   { name = "silc"; chatnet = "silc"; autojoin = "No"; },
   { name = "#pyconsxb"; chatnet = "freenode"; autojoin = "Yes"; }
+  { name = "#afpy"; chatnet = "freenode"; autojoin = "Yes"; }
 );
 
 aliases = {
