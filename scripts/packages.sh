@@ -48,6 +48,7 @@ sudo apt-get install -y\
 	python-pip\
 	python-scipy\
 	python-setuptools\
+	python-software-properties\
 	rtmpdump\
 	siege\
 	ssh\
