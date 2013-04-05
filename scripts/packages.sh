@@ -34,6 +34,7 @@ sudo apt-get install -y\
 	moreutils\
 	ngrep\
 	nmap\
+	npm\
 	postgresql-client\
 	pv\
 	pwgen\
@@ -68,6 +69,8 @@ sudo apt-get install -y\
 sudo apt-get autoremove -y
 
 sudo pip install --upgrade flake8
+
+sudo npm install -g coffee-script
 
 [ "$DISPLAY" != ":0" ] && exit
 
