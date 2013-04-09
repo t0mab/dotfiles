@@ -23,6 +23,7 @@ Bundle 'indenthtml.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'benjifisher/matchit.zip'
 Bundle 'Syntastic'
+Bundle 'kchmck/vim-coffee-script'
 
 " Highlight the 80th column
 set colorcolumn=80
@@ -122,10 +123,23 @@ autocmd FileType ruby set expandtab
 " Fix filetype for Django template files
 autocmd BufNewFile,BufRead *.html set filetype=htmldjango.html
 
+" Fix filetype for CoffeeScript files
+autocmd BufNewFile,BufRead *.coffee set filetype=coffee
+
+" Proper indentation for HTML
+autocmd BufNewFile,BufRead *.coffee set tabstop=2
+autocmd BufNewFile,BufRead *.coffee set softtabstop=2
+autocmd BufNewFile,BufRead *.coffee set shiftwidth=2
+autocmd BufNewFile,BufRead *.coffee set expandtab
+
+" Automatically run CoffeeCompile watch vertical on CoffeeScript files
+"autocmd BufNewFile,BufRead *.coffee :CoffeeCompile watch vertical
+
 " Proper indentation for HTML
 autocmd BufNewFile,BufRead *.html set tabstop=2
 autocmd BufNewFile,BufRead *.html set softtabstop=2
 autocmd BufNewFile,BufRead *.html set shiftwidth=2
+autocmd BufNewFile,BufRead *.html set expandtab
 
 " Proper indentation for Eruby
 autocmd BufNewFile,BufRead *.erb set tabstop=2
