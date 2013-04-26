@@ -1,0 +1,8 @@
+{
+	"default_line_ending": "unix",
+	"trim_trailing_white_space_on_save": true,
+	"rulers": [79],
+	"scroll_speed": 2.0,
+	"ignored_packages": [],
+	"vintage_start_in_command_mode": true
+}
