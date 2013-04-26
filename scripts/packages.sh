@@ -16,6 +16,7 @@ sudo apt-get install -y\
 	fdupes\
 	ghc\
 	git\
+	golang\
 	htop\
 	ipython-notebook\
 	ipython-qtconsole\
