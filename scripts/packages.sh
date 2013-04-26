@@ -8,6 +8,7 @@ sudo apt-get install -y\
 	apt-file\
 	aria2\
 	build-essential\
+	ccache\
 	curl\
 	dos2unix\
 	exif\
@@ -16,7 +17,6 @@ sudo apt-get install -y\
 	fdupes\
 	ghc\
 	git\
-	golang\
 	htop\
 	ipython-notebook\
 	ipython-qtconsole\
@@ -32,6 +32,7 @@ sudo apt-get install -y\
 	libproj-dev\
 	libxml2-dev\
 	libxslt1-dev\
+	mercurial\
 	moreutils\
 	ngrep\
 	nmap\

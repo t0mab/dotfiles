@@ -34,9 +34,9 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=~/.dotfiles/scripts:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-
-PATH=$PATH:$HOME/Scripts
+PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PATH=~/.dotfiles/scripts:$PATH
+PATH=/usr/lib/ccache:$PATH
 
 DIRCOLORS_LIGHT=$(dircolors ~/.dircolors-solarized/dircolors.ansi-light)
 DIRCOLORS_DARK=$(dircolors ~/.dircolors-solarized/dircolors.ansi-dark)
