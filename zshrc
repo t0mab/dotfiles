@@ -64,3 +64,6 @@ alias vi="vim -O"
 
 # Activate virtualenvwrapper
 source /etc/bash_completion.d/virtualenvwrapper
+
+# Fix GOPATH variable
+export GOPATH=~/Dropbox/go
