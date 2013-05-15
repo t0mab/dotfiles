@@ -10,6 +10,10 @@
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+" Go
+set rtp+=~/.vim/go/
+au BufRead,BufNewFile *.go set filetype=go
+
 Bundle 'gmarik/vundle'
 Bundle 'mitechie/pyflakes-pathogen'
 Bundle 'tomtom/tlib_vim'
