@@ -82,8 +82,11 @@ set cursorline
 
 " Activate and choose nice colors
 syntax on
-set background=dark
+
+" Some nice colors
+let g:solarized_termtrans = 1
 colorscheme solarized
+set background=dark
 
 " Indicates a fast terminal connection
 set ttyfast
@@ -191,6 +194,3 @@ set shortmess=atI
 
 " Allow to use OmniComplete with SuperTab
 let g:SuperTabDefaultCompletionType = "context"
-
-" Fix solarized transparency
-let g:solarized_termtrans = 1
