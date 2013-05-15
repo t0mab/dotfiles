@@ -49,8 +49,8 @@ nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 " Copy to system clipboard
 set clipboard=unnamedplus
 
-" Enable 256 color in vim.
-set t_Co=256
+" Enable 16 color in vim.
+set t_Co=16
 
 " Ignore some files
 set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
