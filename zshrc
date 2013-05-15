@@ -35,7 +35,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-PATH=~/.dotfiles/scripts:$PATH
+PATH=~/go/bin:~/.dotfiles/scripts:$PATH
 PATH=/usr/lib/ccache:$PATH
 
 DIRCOLORS_LIGHT=$(dircolors ~/.dircolors-solarized/dircolors.ansi-light)

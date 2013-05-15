@@ -10,6 +10,10 @@
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+" Go
+set rtp+=~/.vim/go/
+au BufRead,BufNewFile *.go set filetype=go
+
 Bundle 'gmarik/vundle'
 Bundle 'mitechie/pyflakes-pathogen'
 Bundle 'tomtom/tlib_vim'
@@ -46,9 +50,6 @@ noremap <F2> :bnext<CR>
 " Toggle line numbers and fold column for easy copying
 nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 
-" Install the current Python module
-map <F5> :!pyup<CR>
-
 " Copy to system clipboard
 set clipboard=unnamedplus
 
@@ -81,8 +82,11 @@ set cursorline
 
 " Activate and choose nice colors
 syntax on
-set background=dark
+
+" Some nice colors
+let g:solarized_termtrans = 1
 colorscheme solarized
+set background=dark
 
 " Indicates a fast terminal connection
 set ttyfast
