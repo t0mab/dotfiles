@@ -46,14 +46,11 @@ noremap <F2> :bnext<CR>
 " Toggle line numbers and fold column for easy copying
 nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 
-" Install the current Python module
-map <F5> :!pyup<CR>
-
 " Copy to system clipboard
 set clipboard=unnamedplus
 
-" Enable 16 color in vim.
-set t_Co=16
+" Enable 256 color in vim.
+set t_Co=256
 
 " Ignore some files
 set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
@@ -190,3 +187,6 @@ set shortmess=atI
 
 " Allow to use OmniComplete with SuperTab
 let g:SuperTabDefaultCompletionType = "context"
+
+" Fix solarized transparency
+let g:solarized_termtrans = 1
