@@ -31,6 +31,7 @@ sudo apt-get install -y\
 	libproj-dev\
 	libxml2-dev\
 	libxslt1-dev\
+	lynis\
 	mercurial\
 	moreutils\
 	ngrep\
