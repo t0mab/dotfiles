@@ -15,7 +15,6 @@ sudo apt-get install -y\
 	exiv2\
 	exuberant-ctags\
 	fdupes\
-	ghc\
 	git\
 	htop\
 	ipython-notebook\
@@ -45,10 +44,7 @@ sudo apt-get install -y\
 	python-dev\
 	python-doc\
 	python-lxml\
-	python-matplotlib\
-	python-numpy\
 	python-pip\
-	python-scipy\
 	python-setuptools\
 	python-software-properties\
 	rtmpdump\
@@ -61,7 +57,6 @@ sudo apt-get install -y\
 	tidy\
 	tmux\
 	tsung\
-	ufraw-batch\
 	unattended-upgrades\
 	vim\
 	virtualenvwrapper\
@@ -89,7 +84,6 @@ sudo apt-get install -y\
 	indicator-weather\
 	inkscape\
 	meld\
-	rdesktop\
 	scrot\
 	ubuntu-restricted-extras\
 	vlc\
