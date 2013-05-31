@@ -37,6 +37,7 @@ set colorcolumn=80
 " Syntastic
 let g:syntastic_check_on_open=1
 let g:syntastic_python_checker="flake8"
+let g:syntastic_python_checker_args='--ignore=E501'
 
 " Change default leader mapping
 let mapleader = ","
