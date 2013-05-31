@@ -72,6 +72,9 @@ sudo pip install --upgrade flake8
 sudo npm install -g coffee-script
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 
+fc-cache -vf ~/.fonts
+pip install --user git+git://github.com/Lokaltog/powerline
+
 [ "$DISPLAY" != ":0" ] && exit
 
 sudo apt-get install -y\

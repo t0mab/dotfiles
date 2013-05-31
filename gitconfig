@@ -17,3 +17,7 @@
 	cmd = meld $LOCAL $BASE $REMOTE $MERGED
 [push]
 	default = simple
+
+[alias]
+	incoming = !git fetch && git log --oneline ..@{u}
+	outgoing = log @{u}..
