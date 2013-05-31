@@ -6,22 +6,19 @@
 " `zR` - open all
 " `zM` - close all
 
-" Vundle
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-
 " Go
 set rtp+=~/.vim/go/
 au BufRead,BufNewFile *.go set filetype=go
+
+" Vundle
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
 
 Bundle 'gmarik/vundle'
 Bundle 'mitechie/pyflakes-pathogen'
 Bundle 'tomtom/tlib_vim'
 Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'majutsushi/tagbar'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'tpope/vim-fugitive'
-Bundle 'buftabs'
 Bundle 'closetag.vim'
 Bundle 'indenthtml.vim'
 Bundle 'tpope/vim-surround'
@@ -29,16 +26,17 @@ Bundle 'benjifisher/matchit.zip'
 Bundle 'Syntastic'
 Bundle 'kchmck/vim-coffee-script'
 
+" Powerline
+set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
+set laststatus=2
+set noshowmode
+
 " Highlight the 80th column
 set colorcolumn=80
 
 " Syntastic
 let g:syntastic_check_on_open=1
 let g:syntastic_python_checker="flake8"
-
-" Activate fugitive
-set laststatus=2
-set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})\ %{fugitive#statusline()}
 
 " Change default leader mapping
 let mapleader = ","
@@ -53,21 +51,14 @@ nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 " Copy to system clipboard
 set clipboard=unnamedplus
 
-" Enable 16 color in vim.
-set t_Co=16
+" Enable 256 color in vim.
+set t_Co=256
 
 " Ignore some files
 set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
 
 " Enable solarized bg toggle plugin
 call togglebg#map("<F8>")
-
-" Enable Tagbar
-nmap <F9> :TagbarToggle<CR>
-let g:tagbar_usearrows = 1
-let g:tagbar_autofocus = 1
-let g:tagbar_compact = 1
-let g:tagbar_foldlevel = 0
 
 " Save all temporary files in a central directory. Very useful.
 set backup
@@ -84,7 +75,7 @@ set cursorline
 syntax on
 
 " Some nice colors
-let g:solarized_termtrans = 1
+let g:solarized_termtrans = 0
 colorscheme solarized
 set background=dark
 
