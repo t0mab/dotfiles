@@ -52,6 +52,7 @@ sudo apt-get install -y\
 	siege\
 	ssh\
 	sshuttle\
+	task\
 	texlive-lang-french\
 	texlive-latex-extra\
 	texlive\
