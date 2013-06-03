@@ -24,3 +24,12 @@ function pull-them-all () {
 		cd ..
 	done
 }
+
+function pgrights () {
+	database=$1
+	user=$2
+
+	for table in $(echo "select tablename from pg_catalog.pg_tables where schemaname='public';" | sudo -u postgres psql -qtXA $database); do
+		echo "ALTER TABLE $table OWNER TO $user;" | sudo -u postgres psql $database
+	done
+}

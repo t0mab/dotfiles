@@ -15,7 +15,6 @@ sudo apt-get install -y\
 	exiv2\
 	exuberant-ctags\
 	fdupes\
-	ghc\
 	git\
 	htop\
 	ipython-notebook\
@@ -46,23 +45,20 @@ sudo apt-get install -y\
 	python-dev\
 	python-doc\
 	python-lxml\
-	python-matplotlib\
-	python-numpy\
 	python-pip\
-	python-scipy\
 	python-setuptools\
 	python-software-properties\
 	rtmpdump\
 	siege\
 	ssh\
 	sshuttle\
+	task\
 	texlive-lang-french\
 	texlive-latex-extra\
 	texlive\
 	tidy\
 	tmux\
 	tsung\
-	ufraw-batch\
 	unattended-upgrades\
 	vim\
 	virtualenvwrapper\
@@ -77,6 +73,9 @@ sudo pip install --upgrade flake8
 sudo npm install -g coffee-script
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 
+fc-cache -vf ~/.fonts
+pip install --user git+git://github.com/Lokaltog/powerline
+
 [ "$DISPLAY" != ":0" ] && exit
 
 sudo apt-get install -y\
@@ -90,7 +89,6 @@ sudo apt-get install -y\
 	indicator-weather\
 	inkscape\
 	meld\
-	rdesktop\
 	scrot\
 	ubuntu-restricted-extras\
 	vlc\

@@ -33,9 +33,12 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+# Fix GOPATH variable
+export GOPATH=~/Dropbox/Go
+
 # Customize to your needs...
 PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-PATH=~/go/bin:~/.dotfiles/scripts:$PATH
+PATH=$PATH:~/go/bin:~/.dotfiles/scripts:$GOPATH/bin
 PATH=/usr/lib/ccache:$PATH
 
 DIRCOLORS_LIGHT=$(dircolors ~/.dircolors-solarized/dircolors.ansi-light)
@@ -65,5 +68,5 @@ alias vi="vim -O"
 # Activate virtualenvwrapper
 source /etc/bash_completion.d/virtualenvwrapper
 
-# Fix GOPATH variable
-export GOPATH=~/Dropbox/go
+# Task aliases
+alias tl="task list"
