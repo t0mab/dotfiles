@@ -52,6 +52,7 @@ sudo apt-get install -y\
 	siege\
 	ssh\
 	sshuttle\
+	task\
 	texlive-lang-french\
 	texlive-latex-extra\
 	texlive\
@@ -85,7 +86,6 @@ sudo apt-get install -y\
 	gitk\
 	gource\
 	indicator-multiload\
-	indicator-weather\
 	inkscape\
 	meld\
 	scrot\
