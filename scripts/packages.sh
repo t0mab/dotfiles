@@ -33,6 +33,7 @@ sudo apt-get install -y\
 	libxslt1-dev\
 	lynis\
 	mercurial\
+	minicom\
 	moreutils\
 	ngrep\
 	nmap\
