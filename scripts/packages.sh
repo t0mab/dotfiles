@@ -91,6 +91,7 @@ sudo apt-get install -y\
 	meld\
 	scrot\
 	ubuntu-restricted-extras\
+	unetbootin\
 	vlc\
 	wallch\
 
