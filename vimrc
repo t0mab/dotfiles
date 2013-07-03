@@ -15,16 +15,13 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle 'gmarik/vundle'
-Bundle 'mitechie/pyflakes-pathogen'
-Bundle 'tomtom/tlib_vim'
-Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'closetag.vim'
-Bundle 'indenthtml.vim'
-Bundle 'tpope/vim-surround'
 Bundle 'benjifisher/matchit.zip'
-Bundle 'Syntastic'
+Bundle 'davidhalter/jedi-vim'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'scrooloose/syntastic'
+Bundle 'vim-scripts/closetag.vim'
+Bundle 'vim-scripts/indenthtml.vim'
 
 " Powerline
 set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
@@ -106,6 +103,7 @@ autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
 autocmd FileType python set expandtab
+autocmd FileType python set completeopt-=preview
 
 " Define a template for new Python files
 autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
