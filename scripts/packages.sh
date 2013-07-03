@@ -77,6 +77,8 @@ sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 fc-cache -vf ~/.fonts
 pip install --user git+git://github.com/Lokaltog/powerline
 
+go get -u github.com/nsf/gocode
+
 [ "$DISPLAY" != ":0" ] && exit
 
 sudo apt-get install -y\

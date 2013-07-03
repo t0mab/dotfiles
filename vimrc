@@ -15,6 +15,7 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle 'gmarik/vundle'
+Bundle 'Blackrush/vim-gocode'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'benjifisher/matchit.zip'
 Bundle 'davidhalter/jedi-vim'
@@ -27,6 +28,7 @@ Bundle 'vim-scripts/indenthtml.vim'
 set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
 set laststatus=2
 set noshowmode
+set completeopt-=preview
 
 " Highlight the 80th column
 set colorcolumn=80
@@ -91,6 +93,7 @@ filetype on
 filetype indent on
 filetype plugin indent on
 filetype plugin on
+set omnifunc=syntaxcomplete#Complete
 
 " Keep the previous indentation
 set autoindent
@@ -103,7 +106,6 @@ autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
 autocmd FileType python set expandtab
-autocmd FileType python set completeopt-=preview
 
 " Define a template for new Python files
 autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
