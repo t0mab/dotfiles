@@ -8,6 +8,7 @@ sudo apt-get install -y\
 	apt-file\
 	aria2\
 	build-essential\
+	bzr\
 	ccache\
 	curl\
 	dos2unix\
