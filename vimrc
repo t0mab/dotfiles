@@ -1,42 +1,45 @@
+" Airline
+set rtp+=~/.vim/airline/
+set completeopt-=preview
+set laststatus=2
+set noshowmode
+let g:airline_powerline_fonts=1
+let g:airline_theme='solarized2'
 
-" Cheat sheet :
-" `za` - toggles
-" `zc` - closes
-" `zo` - opens
-" `zR` - open all
-" `zM` - close all
+" CloseTag
+set rtp+=~/.vim/closetag/
+
+" Fugitive
+set rtp+=~/.vim/fugitive/
+
+" Coffee Script
+set rtp+=~/.vim/coffeescript/
 
 " Go
 set rtp+=~/.vim/go/
 au BufRead,BufNewFile *.go set filetype=go
 
-" Vundle
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+" IndentHTML
+set rtp+=~/.vim/indenthtml/
 
-Bundle 'gmarik/vundle'
-Bundle 'Blackrush/vim-gocode'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'benjifisher/matchit.zip'
-Bundle 'davidhalter/jedi-vim'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'scrooloose/syntastic'
-Bundle 'vim-scripts/closetag.vim'
-Bundle 'vim-scripts/indenthtml.vim'
+" Matchit
+set rtp+=~/.vim/matchit/
 
-" Powerline
-set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
-set laststatus=2
-set noshowmode
-set completeopt-=preview
-
-" Highlight the 80th column
-set colorcolumn=80
+" Solarized
+set rtp+=~/.vim/solarized/
+call togglebg#map("<F8>")
+let g:solarized_termtrans = 0
+colorscheme solarized
+set background=dark
 
 " Syntastic
+set rtp+=~/.vim/syntastic
 let g:syntastic_check_on_open=1
 let g:syntastic_python_checker="flake8"
 let g:syntastic_python_checker_args='--ignore=E501'
+
+" Highlight the 80th column
+set colorcolumn=80
 
 " Change default leader mapping
 let mapleader = ","
@@ -57,9 +60,6 @@ set t_Co=256
 " Ignore some files
 set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
 
-" Enable solarized bg toggle plugin
-call togglebg#map("<F8>")
-
 " Save all temporary files in a central directory. Very useful.
 set backup
 set backupdir=~/.vim-tmp
@@ -73,11 +73,6 @@ set cursorline
 
 " Activate and choose nice colors
 syntax on
-
-" Some nice colors
-let g:solarized_termtrans = 0
-colorscheme solarized
-set background=dark
 
 " Indicates a fast terminal connection
 set ttyfast
@@ -172,9 +167,6 @@ imap <down> <nop>
 imap <left> <nop>
 imap <right> <nop>
 
-" Add mouse support
-" set mouse=a
-
 " Unix like tab completion.
 set wildmenu
 set wildmode=longest,list
@@ -183,6 +175,3 @@ set wildmode=longest,list
 " the breakdown of what this changes. You can also pare things down further if
 " you like.
 set shortmess=atI
-
-" Allow to use OmniComplete with SuperTab
-let g:SuperTabDefaultCompletionType = "context"
