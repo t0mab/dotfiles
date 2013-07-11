@@ -22,6 +22,9 @@ au BufRead,BufNewFile *.go set filetype=go
 " IndentHTML
 set rtp+=~/.vim/indenthtml/
 
+" Jedi
+set rtp+=~/.vim/jedi/
+
 " Matchit
 set rtp+=~/.vim/matchit/
 
