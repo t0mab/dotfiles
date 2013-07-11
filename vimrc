@@ -23,7 +23,7 @@ au BufRead,BufNewFile *.go set filetype=go
 set rtp+=~/.vim/indenthtml/
 
 " Jedi
-set rtp+=~/.vim/jedi/
+" set rtp+=~/.vim/jedi/
 
 " Matchit
 set rtp+=~/.vim/matchit/
