@@ -16,8 +16,11 @@ set rtp+=~/.vim/fugitive/
 set rtp+=~/.vim/coffeescript/
 
 " Go
-set rtp+=~/.vim/go/
 au BufRead,BufNewFile *.go set filetype=go
+set rtp+=~/.vim/go/
+
+" Gocode
+set rtp+=~/.vim/gocode/
 
 " IndentHTML
 set rtp+=~/.vim/indenthtml/
@@ -37,9 +40,14 @@ set background=dark
 
 " Syntastic
 set rtp+=~/.vim/syntastic
-let g:syntastic_check_on_open=1
+let g:syntastic_check_on_open=0
 let g:syntastic_python_checker="flake8"
 let g:syntastic_python_checker_args='--ignore=E501'
+
+" Reactivate filetype after plugin loads
+filetype on
+filetype plugin indent on
+syntax on
 
 " Highlight the 80th column
 set colorcolumn=80
@@ -73,9 +81,6 @@ set ruler
 
 " Show cursor line
 set cursorline
-
-" Activate and choose nice colors
-syntax on
 
 " Indicates a fast terminal connection
 set ttyfast
