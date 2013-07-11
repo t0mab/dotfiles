@@ -76,7 +76,6 @@ sudo npm install -g coffee-script
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 
 fc-cache -vf ~/.fonts
-pip install --user git+git://github.com/Lokaltog/powerline
 
 go get -u github.com/nsf/gocode
 
