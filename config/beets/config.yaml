@@ -1,2 +1,4 @@
 import:
         move:   yes
+threaded:       yes
+color:          yes
