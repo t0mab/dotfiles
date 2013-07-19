@@ -1,43 +1,56 @@
-
-" Cheat sheet :
-" `za` - toggles
-" `zc` - closes
-" `zo` - opens
-" `zR` - open all
-" `zM` - close all
-
-" Go
-set rtp+=~/.vim/go/
-au BufRead,BufNewFile *.go set filetype=go
-
-" Vundle
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-
-Bundle 'gmarik/vundle'
-Bundle 'mitechie/pyflakes-pathogen'
-Bundle 'tomtom/tlib_vim'
-Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'closetag.vim'
-Bundle 'indenthtml.vim'
-Bundle 'tpope/vim-surround'
-Bundle 'benjifisher/matchit.zip'
-Bundle 'Syntastic'
-Bundle 'kchmck/vim-coffee-script'
-
-" Powerline
-set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
+" Airline
+set rtp+=~/.vim/airline/
+set completeopt-=preview
 set laststatus=2
 set noshowmode
+let g:airline_powerline_fonts=1
+let g:airline_theme='solarized2'
+
+" CloseTag
+set rtp+=~/.vim/closetag/
+
+" Fugitive
+set rtp+=~/.vim/fugitive/
+
+" Coffee Script
+set rtp+=~/.vim/coffeescript/
+
+" Go
+au BufRead,BufNewFile *.go set filetype=go
+set rtp+=~/.vim/go/
+
+" Gocode
+set rtp+=~/.vim/gocode/
+
+" IndentHTML
+set rtp+=~/.vim/indenthtml/
+
+" Jedi
+" set rtp+=~/.vim/jedi/
+
+" Matchit
+set rtp+=~/.vim/matchit/
+
+" Solarized
+set rtp+=~/.vim/solarized/
+call togglebg#map("<F8>")
+let g:solarized_termtrans = 0
+colorscheme solarized
+set background=dark
+
+" Syntastic
+set rtp+=~/.vim/syntastic
+let g:syntastic_check_on_open=0
+let g:syntastic_python_checker="flake8"
+let g:syntastic_python_checker_args='--ignore=E501'
+
+" Reactivate filetype after plugin loads
+filetype on
+filetype plugin indent on
+syntax on
 
 " Highlight the 80th column
 set colorcolumn=80
-
-" Syntastic
-let g:syntastic_check_on_open=1
-let g:syntastic_python_checker="flake8"
-let g:syntastic_python_checker_args='--ignore=E501'
 
 " Change default leader mapping
 let mapleader = ","
@@ -58,9 +71,6 @@ set t_Co=256
 " Ignore some files
 set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
 
-" Enable solarized bg toggle plugin
-call togglebg#map("<F8>")
-
 " Save all temporary files in a central directory. Very useful.
 set backup
 set backupdir=~/.vim-tmp
@@ -71,14 +81,6 @@ set ruler
 
 " Show cursor line
 set cursorline
-
-" Activate and choose nice colors
-syntax on
-
-" Some nice colors
-let g:solarized_termtrans = 0
-colorscheme solarized
-set background=dark
 
 " Indicates a fast terminal connection
 set ttyfast
@@ -94,6 +96,7 @@ filetype on
 filetype indent on
 filetype plugin indent on
 filetype plugin on
+set omnifunc=syntaxcomplete#Complete
 
 " Keep the previous indentation
 set autoindent
@@ -172,9 +175,6 @@ imap <down> <nop>
 imap <left> <nop>
 imap <right> <nop>
 
-" Add mouse support
-" set mouse=a
-
 " Unix like tab completion.
 set wildmenu
 set wildmode=longest,list
@@ -183,6 +183,3 @@ set wildmode=longest,list
 " the breakdown of what this changes. You can also pare things down further if
 " you like.
 set shortmess=atI
-
-" Allow to use OmniComplete with SuperTab
-let g:SuperTabDefaultCompletionType = "context"
