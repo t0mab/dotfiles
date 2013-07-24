@@ -7,8 +7,8 @@ from shutil import copyfile, rmtree
 
 
 def git_modules():
-    lines = map(lambda l: l.split(), open('.gitmodules'))
-    return [l[2] for l in lines if l[0] == 'path']
+    lines = map(lambda l: l.split(' = '), open('.gitmodules'))
+    return [l[1].strip() for l in lines if l[0].endswith('path')]
 
 
 def filenames():

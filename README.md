@@ -5,7 +5,8 @@ I switched to Puppet, so now to install these files :
 ```bash
 git clone https://github.com/fabienengels/dotfiles.git .dotfiles
 cd .dotfiles
-./apply.sh
+git submodule update --init --recursive
+./install.py
 ```
 
 Solarized

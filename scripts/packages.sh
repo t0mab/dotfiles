@@ -8,6 +8,7 @@ sudo apt-get install -y\
 	apt-file\
 	aria2\
 	build-essential\
+	bzr\
 	ccache\
 	curl\
 	dos2unix\
@@ -70,12 +71,12 @@ sudo apt-get install -y\
 sudo apt-get autoremove -y
 
 sudo pip install --upgrade flake8
+sudo pip install --upgrade beets
 
 sudo npm install -g coffee-script
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 
 fc-cache -vf ~/.fonts
-pip install --user git+git://github.com/Lokaltog/powerline
 
 go get -u github.com/nsf/gocode
 
