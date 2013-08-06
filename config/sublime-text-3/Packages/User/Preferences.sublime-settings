@@ -9,9 +9,9 @@
 		79
 	],
 	"scroll_speed": 2.0,
-	"trim_trailing_white_space_on_save": true,
-	"vintage_start_in_command_mode": true,
-	"theme": "Soda Dark.sublime-theme",
 	"soda_classic_tabs": true,
-	"soda_folder_icons": true
+	"soda_folder_icons": true,
+	"theme": "Soda Dark.sublime-theme",
+	"trim_trailing_white_space_on_save": true,
+	"vintage_start_in_command_mode": true
 }
