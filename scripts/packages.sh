@@ -81,6 +81,7 @@ sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 fc-cache -vf ~/.fonts
 
 go get -u github.com/nsf/gocode
+go get -u github.com/jstemmer/gotags
 
 [ "$DISPLAY" != ":0" ] && exit
 
