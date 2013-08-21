@@ -39,7 +39,9 @@ sudo apt-get install -y\
 	ngrep\
 	nmap\
 	npm\
+	pm-utils\
 	postgresql-client\
+	powertop\
 	pv\
 	pwgen\
 	pyflakes\
