@@ -4,7 +4,7 @@ set completeopt-=preview
 set laststatus=2
 set noshowmode
 let g:airline_powerline_fonts=1
-let g:airline_theme='solarized2'
+let g:airline_theme='solarized'
 
 " CloseTag
 set rtp+=~/.vim/closetag/
