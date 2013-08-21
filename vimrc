@@ -27,6 +27,8 @@ set rtp+=~/.vim/indenthtml/
 
 " Jedi
 " set rtp+=~/.vim/jedi/
+" let g:jedi#show_function_definition = 0
+" let g:jedi#use_tabs_not_buffers = 0
 
 " Matchit
 set rtp+=~/.vim/matchit/
