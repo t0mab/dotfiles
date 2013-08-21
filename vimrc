@@ -4,7 +4,7 @@ set completeopt-=preview
 set laststatus=2
 set noshowmode
 let g:airline_powerline_fonts=1
-let g:airline_theme='solarized2'
+let g:airline_theme='solarized'
 
 " CloseTag
 set rtp+=~/.vim/closetag/
@@ -27,6 +27,8 @@ set rtp+=~/.vim/indenthtml/
 
 " Jedi
 " set rtp+=~/.vim/jedi/
+" let g:jedi#show_function_definition = 0
+" let g:jedi#use_tabs_not_buffers = 0
 
 " Matchit
 set rtp+=~/.vim/matchit/

@@ -70,3 +70,6 @@ source /etc/bash_completion.d/virtualenvwrapper
 
 # Task aliases
 alias tl="task list"
+
+# Launch a small webserver
+alias ws="python -m SimpleHTTPServer"
