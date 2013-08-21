@@ -10,7 +10,6 @@
 	ui = auto
 
 [merge]
-	ff = false
 	tool = mymeld
 
 [mergetool "mymeld"]
