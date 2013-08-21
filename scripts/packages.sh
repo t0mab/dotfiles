@@ -112,5 +112,7 @@ sudo apt-get purge -y\
 	python-apport\
 	telepathy-indicator\
 	unity-lens-shopping\
+	unity-lens-video\
+	unity-scope-musicstores\
 	update-notifier\
 	whoopsie\
