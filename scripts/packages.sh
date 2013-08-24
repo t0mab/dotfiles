@@ -74,8 +74,8 @@ sudo apt-get install -y\
 
 sudo apt-get autoremove -y
 
-sudo pip install --upgrade flake8
-sudo pip install --upgrade beets
+pip install --upgrade --user flake8
+pip install --upgrade --user beets
 
 sudo npm install -g coffee-script
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node
