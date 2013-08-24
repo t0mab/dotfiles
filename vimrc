@@ -17,7 +17,7 @@ set rtp+=~/.vim/coffeescript/
 
 " Go
 au BufRead,BufNewFile *.go set filetype=go
-au FileType go au BufWritePre <buffer> Fmt
+" au FileType go au BufWritePre <buffer> Fmt
 set rtp+=~/.vim/go/
 
 " Gocode

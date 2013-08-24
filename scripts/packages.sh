@@ -7,6 +7,7 @@ sudo apt-get dist-upgrade -y
 sudo apt-get install -y\
 	apt-file\
 	aria2\
+	aufs-tools\
 	build-essential\
 	bzr\
 	ccache\
@@ -32,6 +33,7 @@ sudo apt-get install -y\
 	libproj-dev\
 	libxml2-dev\
 	libxslt1-dev\
+	lxc\
 	lynis\
 	mercurial\
 	minicom\
