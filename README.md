@@ -39,13 +39,16 @@ and plugins :
 * [Indenthtml](https://github.com/vim-scripts/indenthtml.vim)
 * [CoffeeScript](https://github.com/kchmck/vim-coffee-script)
 * [MatchIt](https://github.com/vim-scripts/matchit.zip.git)
+* [Supertab](https://github.com/ervandew/supertab)
 * [Syntastic](https://github.com/scrooloose/syntastic.git)
+* [Tagbar](https://github.com/majutsushi/tagbar)
 
 Available shortcuts :
 * F1 : previous buffer
 * F2 : next buffer
 * F4 : toggle line numbers
 * F8 : toggle between dark and light solarized color schemes
+* F9 : toggle Tagbar
 
 Scrips
 ------
