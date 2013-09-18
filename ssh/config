@@ -3,7 +3,7 @@ User root
 
 # From : http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/
 ControlMaster auto
-ControlPath .ssh/%r@%h:%p
+ControlPath ~/.ssh/%r@%h:%p
 ControlPersist yes
 
 # Allow completion on hostnames
