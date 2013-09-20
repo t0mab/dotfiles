@@ -32,6 +32,7 @@ sudo apt-get install -y\
 	libpq-dev\
 	libproj-dev\
 	libxml2-dev\
+	libxml2-utils \
 	libxslt1-dev\
 	lxc\
 	lynis\
