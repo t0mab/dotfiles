@@ -38,6 +38,7 @@ export GOPATH=~/Go
 
 # Customize to your needs...
 PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PATH=~/.local/bin:$PATH
 PATH=$PATH:~/go/bin:~/.dotfiles/scripts:$GOPATH/bin
 PATH=/usr/lib/ccache:$PATH
 

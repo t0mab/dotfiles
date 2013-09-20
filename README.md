@@ -1,8 +1,10 @@
 My home files
 =============
 
-I switched to Puppet, so now to install these files :
+Finally, after using Vim Bundle, I decided to switch back to git submodules.
+So to install these dotfiles, the procedure is the following :
 ```bash
+cd
 git clone https://github.com/fabienengels/dotfiles.git .dotfiles
 cd .dotfiles
 git submodule update --init --recursive
@@ -31,36 +33,35 @@ Some basic stuffs for VIM :
 * Some settings from Lion Krischer (https://github.com/krischer/dotfiles)
 
 and plugins :
-* vundle
-* closetag
-* fugitive
-* indenthtml
-* pyflakes
-* surround
-* tagbar
+* [Airline](https://github.com/bling/vim-airline) (much faster than powerline !)
+* [Closetag](https://github.com/vim-scripts/closetag.vim)
+* [Fugitive](https://github.com/tpope/vim-fugitive)
+* [Indenthtml](https://github.com/vim-scripts/indenthtml.vim)
+* [CoffeeScript](https://github.com/kchmck/vim-coffee-script)
+* [MatchIt](https://github.com/vim-scripts/matchit.zip.git)
+* [Supertab](https://github.com/ervandew/supertab)
+* [Syntastic](https://github.com/scrooloose/syntastic.git)
+* [Tagbar](https://github.com/majutsushi/tagbar)
 
 Available shortcuts :
 * F1 : previous buffer
 * F2 : next buffer
 * F4 : toggle line numbers
-* F5 : execute "./setup.py install" in git root directory
 * F8 : toggle between dark and light solarized color schemes
-* F9 : toggle tagbar
+* F9 : toggle Tagbar
 
 Scrips
 ------
 
 Provide various scrips :
 * configure-gnome-terminal.sh : set my favorite settings for Gnome Terminal using gconf command
-* install*.sh: some installation scripts for various projects I use
 * nef-backups.sh : backup every NEF files from many card reader to one directory
 * nef-to-jpg.sh : convert NEF files to JPEG
-* packages.sh : install every packages listed in ~/.packages
+* packages.sh : install many packages that I'm used to
 
 TMUX
 ----
 
 Tmux configuration :
-* change prefix to ctrl-a (like Screen)
 * change some colors
 * change some shortcuts (horizontal split -> prefix -, etc)

@@ -7,6 +7,7 @@ sudo apt-get dist-upgrade -y
 sudo apt-get install -y\
 	apt-file\
 	aria2\
+	aufs-tools\
 	build-essential\
 	bzr\
 	ccache\
@@ -32,6 +33,7 @@ sudo apt-get install -y\
 	libproj-dev\
 	libxml2-dev\
 	libxslt1-dev\
+	lxc\
 	lynis\
 	mercurial\
 	minicom\
@@ -39,7 +41,9 @@ sudo apt-get install -y\
 	ngrep\
 	nmap\
 	npm\
+	pm-utils\
 	postgresql-client\
+	powertop\
 	pv\
 	pwgen\
 	pyflakes\
@@ -70,8 +74,8 @@ sudo apt-get install -y\
 
 sudo apt-get autoremove -y
 
-sudo pip install --upgrade flake8
-sudo pip install --upgrade beets
+pip install --upgrade --user flake8
+pip install --upgrade --user beets
 
 sudo npm install -g coffee-script
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node
@@ -79,6 +83,7 @@ sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 fc-cache -vf ~/.fonts
 
 go get -u github.com/nsf/gocode
+go get -u github.com/jstemmer/gotags
 
 [ "$DISPLAY" != ":0" ] && exit
 

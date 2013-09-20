@@ -4,7 +4,7 @@ set completeopt-=preview
 set laststatus=2
 set noshowmode
 let g:airline_powerline_fonts=1
-let g:airline_theme='solarized2'
+let g:airline_theme='solarized'
 
 " CloseTag
 set rtp+=~/.vim/closetag/
@@ -17,6 +17,7 @@ set rtp+=~/.vim/coffeescript/
 
 " Go
 au BufRead,BufNewFile *.go set filetype=go
+" au FileType go au BufWritePre <buffer> Fmt
 set rtp+=~/.vim/go/
 
 " Gocode
@@ -27,22 +28,60 @@ set rtp+=~/.vim/indenthtml/
 
 " Jedi
 " set rtp+=~/.vim/jedi/
+" let g:jedi#show_function_definition = 0
+" let g:jedi#use_tabs_not_buffers = 0
 
 " Matchit
 set rtp+=~/.vim/matchit/
 
 " Solarized
 set rtp+=~/.vim/solarized/
-call togglebg#map("<F8>")
+call togglebg#map("<F9>")
 let g:solarized_termtrans = 0
 colorscheme solarized
 set background=dark
+
+" Supertab
+set rtp+=~/.vim/supertab/
+let g:SuperTabDefaultCompletionType = "context"
 
 " Syntastic
 set rtp+=~/.vim/syntastic
 let g:syntastic_check_on_open=0
 let g:syntastic_python_checker="flake8"
 let g:syntastic_python_checker_args='--ignore=E501'
+
+" Tagbar
+set rtp+=~/.vim/tagbar
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'i:imports:1',
+        \ 'c:constants',
+        \ 'v:variables',
+        \ 't:types',
+        \ 'n:interfaces',
+        \ 'w:fields',
+        \ 'e:embedded',
+        \ 'm:methods',
+        \ 'r:constructor',
+        \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 't' : 'ctype',
+        \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+        \ 'ctype' : 't',
+        \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent'
+\ }
+
 
 " Reactivate filetype after plugin loads
 filetype on
