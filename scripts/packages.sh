@@ -113,6 +113,7 @@ sudo apt-get purge -y\
 	gwibber-service\
 	indicator-messages\
 	mdadm\
+	mplayer\
 	python-apport\
 	telepathy-indicator\
 	unity-lens-shopping\
