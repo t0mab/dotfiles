@@ -3,13 +3,13 @@ servers = (
   { address = "eu.irc6.net"; chatnet = "IRCnet"; port = "6667"; },
   { address = "open.ircnet.net"; chatnet = "IRCnet"; port = "6667"; },
   { address = "irc.efnet.org"; chatnet = "EFNet"; port = "6667"; },
-  {
+  { 
     address = "irc.undernet.org";
     chatnet = "Undernet";
     port = "6667";
   },
   { address = "irc.dal.net"; chatnet = "DALnet"; port = "6667"; },
-  {
+  { 
     address = "irc.quakenet.org";
     chatnet = "QuakeNet";
     port = "6667";
@@ -43,7 +43,7 @@ chatnets = {
     max_whois = "4";
     max_query_chans = "5";
   };
-  EFNet = {
+  EFNet = { 
     type = "IRC";
     max_kicks = "4";
     max_msgs = "3";
@@ -67,7 +67,7 @@ chatnets = {
     max_msgs = "3";
     max_whois = "30";
   };
-  OFTC = {
+  OFTC = { 
     type = "IRC";
     max_kicks = "1";
     max_msgs = "3";
@@ -85,7 +85,7 @@ chatnets = {
     max_msgs = "3";
     max_whois = "30";
   };
-  Rizon = {
+  Rizon = { 
     type = "IRC";
     max_kicks = "1";
     max_msgs = "3";
@@ -105,7 +105,7 @@ chatnets = {
 channels = (
   { name = "#irssi"; chatnet = "ircnet"; autojoin = "No"; },
   { name = "silc"; chatnet = "silc"; autojoin = "No"; },
-  { name = "#pyconsxb"; chatnet = "freenode"; autojoin = "Yes"; }
+  { name = "#pyconsxb"; chatnet = "freenode"; autojoin = "Yes"; },
   { name = "#afpy"; chatnet = "freenode"; autojoin = "Yes"; }
 );
 
@@ -277,10 +277,15 @@ settings = {
   "fe-common/core" = {
     autolog = "yes";
     autolog_path = "~/.irclogs/$tag/$0/%Y/%m-%d.log";
+    theme = "xchat";
   };
   "perl/core/scripts" = {
     autoaway_timeout = "600";
     nicklist_width = "20";
+    pushover_debug = "no";
+    pushover_token = "uTZFtuFTgohtUnNSpFKrd3wkVYJ8JL";
+    pushover_apptoken = "a8XPAEJMrMTtNi3dpkP1QvYjuh2CRc";
+    pushover_sound = "gamelan";
   };
 };
 logs = { };

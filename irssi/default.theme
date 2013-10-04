@@ -293,5 +293,5 @@ abstracts = {
   sb_act_hilight_color = "$0$1-%n";
 };
 formats = {
-  "fe-common/core" = { pubmsg = "%b<%w$2\00303$[-11]0%b> %K|%n $1"; };
+  "fe-common/core" = { pubmsg = "%b<%w$2\00307$[-11]0%b> %K|%n $1"; };
 };

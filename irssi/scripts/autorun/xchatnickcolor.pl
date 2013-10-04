@@ -4,12 +4,12 @@ use vars qw($VERSION %IRSSI);
 $VERSION = "1";
 %IRSSI = (
     authors     => "Timo Sirainen, Ian Peters",
-    contact	=> "tss\@iki.fi", 
+    contact => "tss\@iki.fi", 
     name        => "Nick Color",
     description => "assign a different color for each nick",
-    license	=> "Public Domain",
-    url		=> "http://irssi.org/",
-    changed	=> "2002-03-04T22:47+0100"
+    license => "Public Domain",
+    url     => "http://irssi.org/",
+    changed => "2002-03-04T22:47+0100"
 );
 
 # hm.. i should make it possible to use the existing one..
@@ -47,7 +47,8 @@ sub save_colors {
 }
 
 # If someone we've colored (either through the saved colors, or the hash
-# function) changes their nick, we'd like to keep the same color associated
+# function) changes their nick, we'd like to keep the same color
+# associated
 # with them (but only in the session_colors, ie a temporary mapping).
 
 sub sig_nick {
@@ -105,8 +106,10 @@ sub sig_public {
   }
 
   $color = "0".$color if ($color < 10);
-  $server->command('/^format pubmsg %b<%w$2'.chr(3).$color.'$[-11]0%b> %K|%n $1');
- # $server->command('/^format action_public {pubaction '.chr(3).$color.'$0}$1');
+  $server->command('/^format pubmsg %b<%w$2'.chr(3).$color.'$[-11]0%b>
+%K|%n $1');
+ # $server->command('/^format action_public {pubaction
+ # '.chr(3).$color.'$0}$1');
 }
 
 sub cmd_color {
@@ -139,7 +142,7 @@ sub cmd_color {
     Irssi::print ("\nSaved Colors:");
     foreach my $nick (keys %saved_colors) {
       Irssi::print (chr (3) . "$saved_colors{$nick}$nick" .
-		    chr (3) . "1 ($saved_colors{$nick})");
+          chr (3) . "1 ($saved_colors{$nick})");
     }
   } elsif ($op eq "preview") {
     Irssi::print ("\nAvailable colors:");
