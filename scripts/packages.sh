@@ -32,6 +32,7 @@ sudo apt-get install -y\
 	libpq-dev\
 	libproj-dev\
 	libxml2-dev\
+	libxml2-utils \
 	libxslt1-dev\
 	lxc\
 	lynis\
@@ -112,6 +113,7 @@ sudo apt-get purge -y\
 	gwibber-service\
 	indicator-messages\
 	mdadm\
+	mplayer\
 	python-apport\
 	telepathy-indicator\
 	unity-lens-shopping\
