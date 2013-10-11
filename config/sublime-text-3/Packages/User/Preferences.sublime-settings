@@ -2,8 +2,8 @@
 	"default_line_ending": "unix",
 	"ignored_packages":
 	[
-		"Pretty JSON",
-		"Vintage"
+		"Vintage",
+		"Pretty JSON"
 	],
 	"rulers":
 	[
