@@ -34,7 +34,6 @@ sudo apt-get install -y\
 	libxml2-dev\
 	libxml2-utils \
 	libxslt1-dev\
-	lxc\
 	lynis\
 	mercurial\
 	minicom\
@@ -60,6 +59,7 @@ sudo apt-get install -y\
 	ssh\
 	sshuttle\
 	task\
+	tcpdump\
 	texlive-lang-french\
 	texlive-latex-extra\
 	texlive\
@@ -75,8 +75,10 @@ sudo apt-get install -y\
 
 sudo apt-get autoremove -y
 
-pip install --upgrade --user flake8
 pip install --upgrade --user beets
+pip install --upgrade --user flake8
+pip install --upgrade --user periscope
+pip install --upgrade --user subliminal
 
 sudo npm install -g coffee-script
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node
@@ -98,11 +100,11 @@ sudo apt-get install -y\
 	indicator-multiload\
 	inkscape\
 	meld\
+	mplayer\
 	scrot\
 	ubuntu-restricted-extras\
 	unetbootin\
 	vlc\
-	wallch\
 
 sudo apt-get purge -y\
 	apport\
@@ -113,11 +115,9 @@ sudo apt-get purge -y\
 	gwibber-service\
 	indicator-messages\
 	mdadm\
-	mplayer\
 	python-apport\
 	telepathy-indicator\
 	unity-lens-shopping\
-	unity-lens-video\
 	unity-scope-musicstores\
 	update-notifier\
 	whoopsie\
