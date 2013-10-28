@@ -6,5 +6,9 @@ ControlMaster auto
 ControlPath ~/.ssh/%r@%h:%p
 ControlPersist yes
 
+# But useless fot GitHub as the timeout is short
+Host github.com
+	ControlMaster no
+
 # Allow completion on hostnames
 HashKnownHosts no
