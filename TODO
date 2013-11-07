@@ -1,2 +1,14 @@
 https://github.com/robbyrussell/oh-my-zsh.git
 https://github.com/seebi/dircolors-solarized.git
+https://github.com/altercation/vim-colors-solarized.git
+https://github.com/bling/vim-airline.git
+https://github.com/vim-scripts/matchit.zip.git
+https://github.com/scrooloose/syntastic.git
+https://github.com/kchmck/vim-coffee-script.git
+https://github.com/vim-scripts/indenthtml.vim.git
+https://github.com/vim-scripts/closetag.vim.git
+https://github.com/tpope/vim-fugitive.git
+https://github.com/davidhalter/jedi-vim.git
+https://github.com/Blackrush/vim-gocode.git
+https://github.com/majutsushi/tagbar.git
+https://github.com/ervandew/supertab.git
