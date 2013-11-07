@@ -1,0 +1,16 @@
+pkg.installed:
+  - pkgs:
+    - chromium-browser
+    - default-jre
+    - gimp
+    - gitg
+    - gitk
+    - gource
+    - indicator-multiload
+    - inkscape
+    - meld
+    - mplayer
+    - scrot
+    - ubuntu-restricted-extras
+    - unetbootin
+    - vlc
