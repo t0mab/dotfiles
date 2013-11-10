@@ -9,7 +9,6 @@ pkg.installed:
     - indicator-multiload
     - inkscape
     - meld
-    - mplayer
     - scrot
     - ubuntu-restricted-extras
     - unetbootin
