@@ -59,3 +59,7 @@ https://github.com/majutsushi/tagbar.git:
 https://github.com/ervandew/supertab.git:
   git.latest:
     - target: /home/fabien/.vim/supertab
+
+flake8:
+  pip.installed:
+    - upgrade: True
