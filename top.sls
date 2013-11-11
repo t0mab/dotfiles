@@ -9,6 +9,7 @@ base:
     - packages.gui
     - shell
     - ssh
+    - st3
     - tools.beets
     - tools.coffeescript
     - tools.subtitles
