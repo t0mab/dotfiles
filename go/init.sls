@@ -23,3 +23,17 @@ go get -u github.com/jstemmer/gotags:
     - env:
       - GOPATH: /home/fabien/Go
       - PATH: {{ grains['path'] }}:/home/fabien/go/bin
+
+go get -u github.com/voxelbrain/goptions:
+  cmd.run:
+    - user: fabien
+    - env:
+      - GOPATH: /home/fabien/Go
+      - PATH: {{ grains['path'] }}:/home/fabien/go/bin
+
+go get labix.org/v2/mgo:
+  cmd.run:
+    - user: fabien
+    - env:
+      - GOPATH: /home/fabien/Go
+      - PATH: {{ grains['path'] }}:/home/fabien/go/bin
