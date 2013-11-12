@@ -18,3 +18,5 @@ cleanup:
     - name: /usr/local/sbin/fixubuntu.sh
     - source: salt://packages/fixubuntu.sh
     - mode: 555
+  cmd.run:
+    - name: /usr/local/sbin/fixubuntu.sh
