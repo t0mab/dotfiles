@@ -11,7 +11,10 @@ cleanup:
       - mdadm
       - python-apport
       - telepathy-indicator
-      - unity-lens-shopping
       - unity-scope-musicstores
       - update-notifier
       - whoopsie
+  file.managed:
+    - name: /usr/local/sbin/fixubuntu.sh
+    - source: salt://packages/fixubuntu.sh
+    - mode: 555
