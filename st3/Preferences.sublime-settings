@@ -10,7 +10,6 @@
 	"font_size": 12,
 	"font_options": ["subpixel_antialias", "no_bold"],
 	"highlight_line": true,
-	"rulers": [72, 79],
 	"file_exclude_patterns": [
 		".DS_Store",
 		"*.pyc"
