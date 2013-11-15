@@ -15,4 +15,11 @@ https://github.com/jonschlinkert/sublime-monokai-extended.git:
     - source: salt://st3/Preferences.sublime-settings
     - user: fabien
     - group: fabien
-    - mode: 644
+    - mode: 444
+
+/home/fabien/.config/sublime-text-3/Packages/User/GoSublime.sublime-settings:
+  file.managed:
+    - source: salt://st3/GoSublime.sublime-settings
+    - user: fabien
+    - group: fabien
+    - mode: 444
