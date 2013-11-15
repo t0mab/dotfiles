@@ -5,5 +5,18 @@
 	"scroll_past_end": true,
 	"soda_classic_tabs": true,
 	"soda_folder_icons": true,
-	"theme": "Soda Dark 3.sublime-theme"
+	"theme": "Soda Dark 3.sublime-theme",
+	"font_face": "Ubuntu Mono",
+	"font_size": 12,
+	"font_options": ["subpixel_antialias", "no_bold"],
+	"highlight_line": true,
+	"rulers": [72, 79],
+	"file_exclude_patterns": [
+		".DS_Store",
+		"*.pyc"
+	],
+	"folder_exclude_patterns": [
+		".git",
+		"__pycache__"
+	]
 }
