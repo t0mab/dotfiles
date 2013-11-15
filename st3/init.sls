@@ -42,3 +42,17 @@ https://github.com/jonschlinkert/sublime-monokai-extended.git:
     - user: fabien
     - group: fabien
     - mode: 444
+
+/home/fabien/.config/sublime-text-3/Packages/User/HTML.sublime-settings:
+  file.managed:
+    - source: salt://st3/HTML.sublime-settings
+    - user: fabien
+    - group: fabien
+    - mode: 444
+
+/home/fabien/.config/sublime-text-3/Packages/User/Python.sublime-settings:
+  file.managed:
+    - source: salt://st3/Python.sublime-settings
+    - user: fabien
+    - group: fabien
+    - mode: 444
