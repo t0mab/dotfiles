@@ -1,5 +1,5 @@
 {
 	"use_icons": true,
-	"run_on_save": true,
+	"run_on_save": false,
 	"message_stay": true
 }
