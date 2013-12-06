@@ -16,7 +16,7 @@ https://github.com/DisposaBoy/GoSublime.git:
 
 https://github.com/buymeasoda/soda-theme.git:
   git.latest:
-    - target: "/home/fabien/.config/sublime-text-3/Packages/Theme - Soda"
+    - target: '/home/fabien/.config/sublime-text-3/Packages/Theme - Soda'
 
 https://github.com/jonschlinkert/sublime-monokai-extended.git:
   git.latest:
@@ -24,35 +24,35 @@ https://github.com/jonschlinkert/sublime-monokai-extended.git:
 
 /home/fabien/.config/sublime-text-3/Packages/User/Preferences.sublime-settings:
   file.managed:
-    - source: salt://st3/Preferences.sublime-settings
+    - source: salt://editors/st3/Preferences.sublime-settings
     - user: fabien
     - group: fabien
     - mode: 444
 
 /home/fabien/.config/sublime-text-3/Packages/User/GoSublime.sublime-settings:
   file.managed:
-    - source: salt://st3/GoSublime.sublime-settings
+    - source: salt://editors/st3/GoSublime.sublime-settings
     - user: fabien
     - group: fabien
     - mode: 444
 
 /home/fabien/.config/sublime-text-3/Packages/User/Pylinter.sublime-settings:
   file.managed:
-    - source: salt://st3/Pylinter.sublime-settings
+    - source: salt://editors/st3/Pylinter.sublime-settings
     - user: fabien
     - group: fabien
     - mode: 444
 
 /home/fabien/.config/sublime-text-3/Packages/User/HTML.sublime-settings:
   file.managed:
-    - source: salt://st3/HTML.sublime-settings
+    - source: salt://editors/st3/HTML.sublime-settings
     - user: fabien
     - group: fabien
     - mode: 444
 
 /home/fabien/.config/sublime-text-3/Packages/User/Python.sublime-settings:
   file.managed:
-    - source: salt://st3/Python.sublime-settings
+    - source: salt://editors/st3/Python.sublime-settings
     - user: fabien
     - group: fabien
     - mode: 444

@@ -1,4 +1,4 @@
-gui:
+commandline:
   pkg.installed:
     - pkgs:
         - apt-file

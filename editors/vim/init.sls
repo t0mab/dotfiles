@@ -1,6 +1,6 @@
 /home/fabien/.vimrc:
   file.managed:
-    - source: salt://vim/vimrc
+    - source: salt://editors/vim/vimrc
     - user: fabien
     - group: fabien
     - mode: 444
@@ -13,7 +13,7 @@
 
 /home/fabien/.vim/templates/python.py:
   file.managed:
-    - source: salt://vim/python.py
+    - source: salt://editors/vim/python.py
     - user: fabien
     - group: fabien
     - mode: 444
