@@ -16,6 +16,13 @@
     - group: fabien
     - mode: 444
 
+/home/fabien/.fonts/Ubuntu+Mono+derivative+Powerline.ttf:
+  file.managed:
+    - source: salt://editors/fonts/Ubuntu+Mono+derivative+Powerline.ttf
+    - user: fabien
+    - group: fabien
+    - mode: 444
+
 fc-cache -vf ~/.fonts:
   cmd.run:
     - user: fabien
