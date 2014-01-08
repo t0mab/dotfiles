@@ -66,7 +66,11 @@ alias wget="wget --no-check-certificate"
 alias vi="vim -O"
 
 # Activate virtualenvwrapper
-source /etc/bash_completion.d/virtualenvwrapper
+if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
+	source /usr/local/bin/virtualenvwrapper.sh
+else
+	source /etc/bash_completion.d/virtualenvwrapper
+fi
 
 # Task aliases
 alias tl="task list"
