@@ -77,3 +77,6 @@ alias tl="task list"
 
 # Launch a small webserver
 alias ws="python -m SimpleHTTPServer"
+
+# Pip variables
+export PIP_DOWNLOAD_CACHE=~/.pip/cache
