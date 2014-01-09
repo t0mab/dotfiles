@@ -5,5 +5,5 @@ function git_clone()
 
 	[ ! -d "$target" ] && git clone $url "$target"
 
-	cd "$target" && git pull
+	cd "$target" && git pull && git submodule update --init
 }

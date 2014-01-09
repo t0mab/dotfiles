@@ -1,3 +1,6 @@
+" Change the leader key
+let mapleader=","
+
 " Airline
 set rtp+=~/.vim/airline/
 set completeopt-=preview
@@ -27,7 +30,7 @@ set rtp+=~/.vim/gocode/
 set rtp+=~/.vim/indenthtml/
 
 " Jedi
-" set rtp+=~/.vim/jedi/
+set rtp+=~/.vim/jedi/
 " let g:jedi#show_function_definition = 0
 " let g:jedi#use_tabs_not_buffers = 0
 
