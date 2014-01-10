@@ -1,6 +1,9 @@
 " Change the leader key
 let mapleader=","
 
+" Fix backspace under Mac OS
+set backspace=indent,eol,start
+
 " Airline
 set rtp+=~/.vim/airline/
 set completeopt-=preview
@@ -105,7 +108,7 @@ noremap <F2> :bnext<CR>
 nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 
 " Copy to system clipboard
-set clipboard=unnamedplus
+" set clipboard=unnamedplus
 
 " Enable 256 color in vim.
 set t_Co=256
