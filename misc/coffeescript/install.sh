@@ -1,3 +1,6 @@
-sudo npm install -g coffee-script
+#! /bin/sh
 
-sudo ln -s /usr/local/bin/node /usr/bin/nodejs
+[ -f /usr/local/bin/node ] && sudo rm -fv /usr/local/bin/node
+sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+
+sudo npm install -g coffee-script
