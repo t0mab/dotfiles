@@ -14,6 +14,7 @@ git_clone https://github.com/vim-scripts/closetag.vim.git ~/.vim/closetag
 git_clone https://github.com/kchmck/vim-coffee-script.git ~/.vim/coffeescript
 git_clone https://github.com/tpope/vim-fugitive.git ~/.vim/fugitive
 git_clone https://github.com/Blackrush/vim-gocode.git ~/.vim/gocode
+git_clone https://github.com/jnwhiteh/vim-golang.git ~/.vim/golang
 git_clone https://github.com/vim-scripts/indenthtml.vim.git ~/.vim/indenthtml
 git_clone https://github.com/davidhalter/jedi-vim.git ~/.vim/jedi
 git_clone https://github.com/vim-scripts/matchit.zip.git ~/.vim/matchit
