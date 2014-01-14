@@ -62,9 +62,6 @@ alias tmux="TERM=screen-256color-bce tmux"
 # Ignore HTTPS certificate by default with wget
 alias wget="wget --no-check-certificate"
 
-# Activate -O vim's option by default
-alias vi="vim -O"
-
 # Activate virtualenvwrapper
 if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
 	source /usr/local/bin/virtualenvwrapper.sh
