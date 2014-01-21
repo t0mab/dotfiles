@@ -77,3 +77,6 @@ alias ws="python -m SimpleHTTPServer"
 
 # Pip variables
 export PIP_DOWNLOAD_CACHE=~/.pip/cache
+
+# NPR Radio
+alias npr="mplayer http://nprdmp.ic.llnwd.net/stream/nprdmp_live01_mp3"
