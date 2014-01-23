@@ -1,6 +1,3 @@
-" Change the leader key
-let mapleader=","
-
 " Fix backspace under Mac OS
 set backspace=indent,eol,start
 
