@@ -80,3 +80,6 @@ export PIP_DOWNLOAD_CACHE=~/.pip/cache
 
 # NPR Radio
 alias npr="mplayer http://nprdmp.ic.llnwd.net/stream/nprdmp_live01_mp3"
+
+# Flush memcached objects
+alias flush_memcached="echo flush_all | nc 127.0.0.1 11211"
