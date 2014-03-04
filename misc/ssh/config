@@ -8,7 +8,7 @@ ControlPersist yes
 
 # But useless fot GitHub as the timeout is short
 Host github.com
-	ControlMaster no
+	ControlPersist no
 
 # Allow completion on hostnames
 HashKnownHosts no
