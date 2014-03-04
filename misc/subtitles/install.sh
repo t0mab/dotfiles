@@ -1,3 +1,3 @@
-sudo pip install BeautifulSoup
-sudo pip install periscope
-sudo pip install subliminal
+sudo pip install --upgrade BeautifulSoup
+sudo pip install --upgrade periscope
+sudo pip install --upgrade subliminal
