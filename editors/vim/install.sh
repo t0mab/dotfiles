@@ -23,4 +23,4 @@ git_clone https://github.com/scrooloose/syntastic.git ~/.vim/syntastic
 git_clone https://github.com/majutsushi/tagbar.git ~/.vim/tagbar
 git_clone https://github.com/ervandew/supertab.git ~/.vim/supertab
 
-sudo pip install flake8
+sudo pip install --upgrade flake8
