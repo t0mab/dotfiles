@@ -5,8 +5,9 @@ cd ~/go/src && ./all.bash
 
 [ ! -d ~/Go ] && mkdir ~/Go
 
-GOPATH=~/Go ~/go/bin/go get github.com/jstemmer/gotags
-GOPATH=~/Go ~/go/bin/go get github.com/lib/pq
-GOPATH=~/Go ~/go/bin/go get github.com/nsf/gocode
-GOPATH=~/Go ~/go/bin/go get github.com/voxelbrain/goptions
-GOPATH=~/Go ~/go/bin/go get labix.org/v2/mgo
+GOPATH=~/Go ~/go/bin/go get -v -u github.com/jstemmer/gotags
+GOPATH=~/Go ~/go/bin/go get -v -u github.com/lib/pq
+GOPATH=~/Go ~/go/bin/go get -v -u github.com/nsf/gocode
+GOPATH=~/Go ~/go/bin/go get -v -u github.com/streadway/amqp
+GOPATH=~/Go ~/go/bin/go get -v -u github.com/voxelbrain/goptions
+GOPATH=~/Go ~/go/bin/go get -v -u labix.org/v2/mgo
