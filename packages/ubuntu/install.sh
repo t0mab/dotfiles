@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 
-. ./fixubuntu.sh
-
 sudo apt-get purge -y \
 	apport \
 	apport-gtk \
@@ -20,21 +18,15 @@ sudo apt-get install -y \
 	build-essential \
 	bzr \
 	ccache \
-	chromium-browser \
 	curl \
-	default-jre \
 	dos2unix \
 	exif \
 	exiv2 \
 	exuberant-ctags \
 	fdupes \
-	gimp \
-	gitg \
-	gitk \
 	gource \
 	htop \
 	indicator-multiload \
-	inkscape \
 	ipython-notebook \
 	ipython-qtconsole \
 	ipython3 \
@@ -50,7 +42,6 @@ sudo apt-get install -y \
 	libxml2-utils \
 	libxslt1-dev \
 	lynis \
-	meld \
 	mercurial \
 	minicom \
 	moreutils \
@@ -86,6 +77,14 @@ sudo apt-get install -y \
 	unattended-upgrades \
 	unetbootin \
 	virtualenvwrapper \
-	vlc \
 	xml-twig-tools \
-	xz-utils \
+	xz-utils
+
+	#chromium-browser \
+	#default-jre \
+	#gimp \
+	#gitg \
+	#gitk \
+	#inkscape \
+	#meld \
+	#vlc \
