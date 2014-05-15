@@ -29,7 +29,7 @@ DISABLE_AUTO_UPDATE="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(brew coffee debian docker encode64 fabric git pip python redis-cli sublime vagrant virtualenvwrapper)
+plugins=(brew coffee debian docker encode64 fabric git pip python redis-cli sublime vagrant virtualenvwrapper wd)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -83,3 +83,6 @@ alias npr="mplayer http://nprdmp.ic.llnwd.net/stream/nprdmp_live01_mp3"
 
 # Flush memcached objects
 alias flush_memcached="echo flush_all | nc 127.0.0.1 11211"
+
+# We want VIM all the time
+alias vi="vim"
