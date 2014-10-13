@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-. ../../helpers.sh
+. ../helpers.sh
 
 cp -v vimrc ~/.vimrc
 
