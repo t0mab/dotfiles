@@ -16,26 +16,15 @@ let g:airline_theme='solarized'
 " YouCompleteMe
 set rtp+=~/.vim/ycm
 
-" CloseTag
-set rtp+=~/.vim/closetag/
-
 " Fugitive
 set rtp+=~/.vim/fugitive/
-
-" Coffee Script
-set rtp+=~/.vim/coffeescript/
 
 " Go
 au BufRead,BufNewFile *.go set filetype=go
 set rtp+=~/.vim/go/
-set rtp+=~/.vim/gocode/
-au FileType go au BufWritePre <buffer> Fmt
 
 " IndentHTML
 set rtp+=~/.vim/indenthtml/
-
-" Matchit
-set rtp+=~/.vim/matchit/
 
 " Solarized
 set rtp+=~/.vim/solarized/
