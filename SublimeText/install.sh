@@ -12,6 +12,9 @@ fi
 
 cp -v *.sublime-settings "$prefix/Packages/User"
 
+# CoffeeScript
+git_clone https://github.com/aponxi/sublime-better-coffeescript.git "$prefix/Packages/Better CoffeeScript"
+
 # Golang
 git_clone https://github.com/DisposaBoy/GoSublime.git "$prefix/Packages/GoSublime"
 
