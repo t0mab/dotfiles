@@ -214,6 +214,7 @@ binaries=(
 	handbrake
 	hugin
 	libreoffice
+	retinizer
 	spotify
 	transmission
 	tunnelblick
