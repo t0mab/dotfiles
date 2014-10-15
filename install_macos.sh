@@ -208,6 +208,7 @@ binaries=(
 	firefox
 	flash
 	flux
+	gimp
 	google-chrome
 	google-earth
 	gpgtools
