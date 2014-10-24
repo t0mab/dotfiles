@@ -193,12 +193,16 @@ binaries=(
 	gcc
 	git
 	hg
+	htop-osx
 	hugo
 	npm
 	pass
+	postgresql
 	python
+	python3
 	vim
 	syncthing
+	ssh-copy-id
 	zsh
 	nmap
 	mongo
