@@ -1,21 +1,36 @@
 {
 	"bold_folder_labels": true,
-	"color_scheme": "Packages/sublime-monokai-extended/Monokai Extended.tmTheme",
+	"color_scheme": "Packages/User/Monokai (SL).tmTheme",
+	"file_exclude_patterns":
+	[
+		".DS_Store",
+		"*.pyc"
+	],
+	"folder_exclude_patterns":
+	[
+		".git",
+		"__pycache__"
+	],
+	"font_face": "Ubuntu Mono",
+	"font_options":
+	[
+		"subpixel_antialias",
+		"no_bold"
+	],
+	"font_size": 14,
+	"highlight_line": true,
 	"highlight_modified_tabs": true,
+	"ignored_packages":
+	[
+		"Vintage",
+		"Markdown"
+	],
 	"scroll_past_end": true,
 	"soda_classic_tabs": true,
 	"soda_folder_icons": true,
 	"theme": "Soda Dark 3.sublime-theme",
-	"font_face": "Ubuntu Mono",
-	"font_size": 12,
-	"font_options": ["subpixel_antialias", "no_bold"],
+	"translate_tabs_to_spaces": true,
+	"rulers": [80],
 	"highlight_line": true,
-	"file_exclude_patterns": [
-		".DS_Store",
-		"*.pyc"
-	],
-	"folder_exclude_patterns": [
-		".git",
-		"__pycache__"
-	]
+	"trim_trailing_white_space_on_save": true,
 }
