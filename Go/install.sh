@@ -1,6 +1,6 @@
 [ ! -d ~/go/.hg ] && hg clone -u release https://code.google.com/p/go ~/go
 
-cd ~/go && hg update release
+cd ~/go && hg pull && hg update release
 cd ~/go/src && ./all.bash
 
 [ ! -d ~/Go ] && mkdir ~/Go
