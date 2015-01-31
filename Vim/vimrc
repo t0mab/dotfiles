@@ -16,6 +16,9 @@ let g:airline_theme='solarized'
 " YouCompleteMe
 set rtp+=~/.vim/ycm
 
+" Gitv
+set rtp+=~/.vim/gitv
+
 " Fugitive
 set rtp+=~/.vim/fugitive/
 
