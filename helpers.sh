@@ -1,5 +1,4 @@
-function git_clone()
-{
+function git_clone() {
 	url=$1
 	target=$2
 
@@ -9,4 +8,8 @@ function git_clone()
 
 	cd "$target" && git pull && git submodule update --init --recursive
 	cd -
+}
+
+function pip_install() {
+	pip install --user --upgrade $1
 }
