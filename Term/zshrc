@@ -41,6 +41,7 @@ PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:
 PATH=~/.local/bin:$PATH
 PATH=$PATH:~/go/bin:~/.dotfiles/scripts:$GOPATH/bin
 PATH=/usr/lib/ccache:$PATH
+PATH=$PATH:~/Library/Python/2.7/bin
 
 [ -f /usr/bin/dircolors ] && DIRCOLORS_LIGHT=$(dircolors ~/.dircolors-solarized/dircolors.ansi-light)
 [ -f /usr/bin/dircolors ] && DIRCOLORS_DARK=$(dircolors ~/.dircolors-solarized/dircolors.ansi-dark)
