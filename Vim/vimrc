@@ -2,7 +2,7 @@
 set backspace=indent,eol,start
 
 " Airline
-set rtp+=~/.vim/airline/
+set rtp+=~/.vim/airline
 set completeopt-=preview
 set laststatus=2
 set noshowmode
@@ -13,31 +13,45 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline_powerline_fonts=1
 let g:airline_theme='solarized'
 
-" YouCompleteMe
-set rtp+=~/.vim/ycm
+" NeoComplete
+set rtp+=~/.vim/neocomplete
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
+
+" Fugitive
+set rtp+=~/.vim/fugitive
 
 " Gitv
 set rtp+=~/.vim/gitv
 
-" Fugitive
-set rtp+=~/.vim/fugitive/
+" GitGutter
+set rtp+=~/.vim/gitgutter
+let g:gitgutter_map_keys = 0 " Just use it to visualize change, nothing else
 
 " Go
 au BufRead,BufNewFile *.go set filetype=go
-set rtp+=~/.vim/go/
+set rtp+=~/.vim/go
+let g:go_fmt_command = "goimports"
+au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+au FileType go nmap <Leader>gd <Plug>(go-doc)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>c <Plug>(go-coverage)
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>t <Plug>(go-test)
 
 " IndentHTML
-set rtp+=~/.vim/indenthtml/
+set rtp+=~/.vim/indenthtml
 
 " Solarized
-set rtp+=~/.vim/solarized/
+set rtp+=~/.vim/solarized
 call togglebg#map("<F9>")
 let g:solarized_termtrans = 0
+" let g:solarized_contrast = 'high'
 colorscheme solarized
 set background=dark
 
 " Supertab
-set rtp+=~/.vim/supertab/
+set rtp+=~/.vim/supertab
 let g:SuperTabDefaultCompletionType = "context"
 
 " Syntastic
@@ -77,11 +91,25 @@ let g:tagbar_type_go = {
     \ 'ctagsargs' : '-sort -silent'
 \ }
 
-
-" Reactivate filetype after plugin loads
-filetype on
-filetype plugin indent on
+" Activate plugin and indent
 syntax on
+filetype on
+filetype indent on
+filetype plugin indent on
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+
+" Set 10 lines to the cursor when moving vertically
+set so=10
+
+" Highlight matching brackets
+set showmatch
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
+map <space> /
+map <c-space> ?
 
 " Highlight the 80th column
 set colorcolumn=80
@@ -124,13 +152,6 @@ set number
 
 " Unwrap lines by default
 set nowrap
-
-" Activate plugin and indent
-filetype on
-filetype indent on
-filetype plugin indent on
-filetype plugin on
-set omnifunc=syntaxcomplete#Complete
 
 " Keep the previous indentation
 set autoindent
@@ -191,6 +212,7 @@ autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType go set omnifunc=go#complete#Complete
 
 " A better keybinding for the Autocompletion
 " inoremap <Nul> <C-x><C-o>
@@ -217,3 +239,6 @@ set wildmode=longest,list
 " the breakdown of what this changes. You can also pare things down further if
 " you like.
 set shortmess=atI
+
+" Fix background color (Gitgutter/Solarized)
+hi clear SignColumn
