@@ -69,14 +69,9 @@
 *color14:                 S_base1
 *color15:                 S_base3
 
-! URxvt.font: xft:monaco:size=8
-! URxvt.font:  xft:DejaVuSansMono:size=10
-!URxvt.letterSpace: -5
-!URxvt*font: xft:Monospace:pixelsize=11
-!URxvt*boldFont: xft:Monospace:pixelsize=11
 
-URxvt*font: xft:Ubuntu Mono:size=14
-URxvt*boldFont: xft:Ubuntu Mono:size=15
+URxvt*font: xft:Ubuntu Mono derivative Powerline:size=14
+URxvt*boldFont: xft:Ubuntu Mono derivative Powerline:size=15
 URxvt*letterSpace: -1
 URxvt*scrollBar: false
 URxvt*fading: 20
