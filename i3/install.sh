@@ -2,6 +2,9 @@
 
 set -e
 
+sudo cp -v i3lock.service /etc/systemd/system
+sudo systemctl enable i3lock.service
+
 mkdir -p ~/.i3 ~/.config/i3status
 
 cp -v gtkrc-2.0 ~/.gtkrc-2.0
