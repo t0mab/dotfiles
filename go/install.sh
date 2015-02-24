@@ -12,6 +12,7 @@ cd ~/go/src && ./all.bash
 GOPATH=~/Go ~/go/bin/go get -v -u code.google.com/p/go.tools/cmd/goimports
 GOPATH=~/Go ~/go/bin/go get -v -u code.google.com/p/go.tools/cmd/oracle
 GOPATH=~/Go ~/go/bin/go get -v -u code.google.com/p/rog-go/exp/cmd/godef
+GOPATH=~/Go ~/go/bin/go get -v -u github.com/coreos/etcd-ca
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/golang/lint/golint
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/jstemmer/gotags
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/kisielk/errcheck
