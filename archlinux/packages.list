@@ -18,6 +18,7 @@ gcc-fortran
 gnome-keyring
 gnu-netcat
 gparted
+gptfdisk
 gummiboot
 ifuse
 iotop
@@ -30,6 +31,7 @@ mesa-demos
 minbif
 mongodb
 mplayer
+mutt
 ncdu
 network-manager-applet
 networkmanager
@@ -82,3 +84,4 @@ xorg-xmodmap
 xorg-xprop
 xorg-xrandr
 xorg-xrdb
+youtube-dl
