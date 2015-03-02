@@ -40,7 +40,7 @@ bindsym $mod+Control+L exec i3lock -d -c 000000
 bindsym $mod+Shift+A kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+bindsym $mod+d exec i3-dmenu-desktop --entry-type=name --dmenu="dmenu_run -l 20 -fn 'Ubuntu 16'"
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
