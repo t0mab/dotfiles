@@ -81,3 +81,6 @@ alias flush_memcached="echo flush_all | nc 127.0.0.1 11211"
 
 # We want VIM all the time
 alias vi="vim"
+
+# Only play audio on video files
+alias listen_video="mplayer -novideo"
