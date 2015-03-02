@@ -19,7 +19,7 @@ DISABLE_AUTO_UPDATE="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(brew coffee debian docker encode64 fabric git pip python redis-cli sublime virtualenvwrapper)
+plugins=(archlinux brew docker encode64 git gpg-agent pass pip python sublime sudo systemd virtualenvwrapper)
 
 source $ZSH/oh-my-zsh.sh
 
