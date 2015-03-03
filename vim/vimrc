@@ -248,5 +248,11 @@ set wildmode=longest,list
 " you like.
 set shortmess=atI
 
+" Split on the right side by default
+set splitright
+
+" Split below by default
+set splitbelow
+
 " Fix background color (Gitgutter/Solarized)
 hi clear SignColumn
