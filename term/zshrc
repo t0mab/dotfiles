@@ -87,3 +87,7 @@ alias vi="vim"
 
 # Only play audio on video files
 alias listen_video="mplayer -novideo"
+
+# Download subtitles for all mkv files of current directory
+ alias sub_en="ls -1 *.mkv | xargs -n 1 subdl --lang=eng; subliminal *.mkv -l en"
+ alias sub_fr="ls -1 *.mkv | xargs -n 1 subdl --lang=fre; subliminal *.mkv -l fr"

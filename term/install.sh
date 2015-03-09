@@ -25,9 +25,7 @@ mkdir -p ~/.mplayer
 cp -v mplayer_config ~/.mplayer/config
 
 # Subtitles
-#pip_install BeautifulSoup
-#pip_install periscope
-#pip_install subliminal
+pip2_install subliminal
 
 # SSH
 mkdir -p ~/.ssh
