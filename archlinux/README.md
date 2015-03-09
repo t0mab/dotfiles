@@ -130,3 +130,5 @@ sudo systemctl start syncthing@fabien
 sudo systemctl enable syncthing@fabien
 
 sudo timedatectl set-ntp true
+
+sudo systemctl enable org.cups.cupsd.service
