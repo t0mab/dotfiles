@@ -7,6 +7,7 @@ base-devel
 btrfs-progs
 chromium
 ctags
+cups
 docker
 dosfstools
 dstat
@@ -16,16 +17,20 @@ feh
 firefox
 fsarchiver
 gcc-fortran
+ghostscript
 gnome-keyring
 gnu-netcat
 gparted
 gptfdisk
 graphviz
+gsfonts
 gummiboot
+hplib
 ifuse
 iotop
 isync
 jre8-openjdk
+libcups
 libplist
 libreoffice
 lm_sensors
@@ -45,6 +50,8 @@ ntp
 openssh
 par2cmdline
 pass
+pkgfile
+postgresql
 postgresql
 powertop
 pulseaudio
@@ -54,6 +61,7 @@ python-matplotlib
 python-numpy
 python-pexpect
 python-pip
+python-pyqt4
 python-virtualenvwrapper
 python2-matplotlib
 python2-numpy
