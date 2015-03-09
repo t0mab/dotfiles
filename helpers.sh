@@ -13,3 +13,7 @@ function git_clone() {
 function pip_install() {
 	pip install --user --upgrade $1
 }
+
+function pip2_install() {
+	pip2 install --user --upgrade $1
+}
