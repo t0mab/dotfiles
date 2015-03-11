@@ -19,4 +19,5 @@ Slave :fastmail-local:
 Pattern "*"
 Sync All
 Create Both
+Expunge Both
 SyncState *
