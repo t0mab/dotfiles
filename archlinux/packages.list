@@ -41,6 +41,8 @@ mesa-demos
 minbif
 mongodb
 mplayer
+msmtp
+msmtp-mta
 mutt
 ncdu
 network-manager-applet
@@ -87,6 +89,7 @@ vim
 virtualbox-host-dkms
 weechat
 wget
+whois
 wpa_supplicant
 xbindkeys
 xf86-input-evdev

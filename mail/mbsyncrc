@@ -1,0 +1,54 @@
+IMAPAccount fastmail
+Host mail.messagingengine.com
+Port 993
+User fabienengels@fastmail.com
+PassCmd "pass Divers/fabienengels@fastmail.com"
+UseIMAPS yes
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+Create Both
+Expunge Both
+SyncState *
+
+MaildirStore fastmail-local
+Path ~/.mail/fastmail/
+Inbox ~/.mail/fastmail/Inbox
+
+IMAPStore fastmail-remote
+Account fastmail
+
+Channel fastmail-inbox
+Master ":fastmail-remote:INBOX"
+Slave ":fastmail-local:Inbox"
+
+Channel fastmail-sent
+Master ":fastmail-remote:INBOX/Sent Items"
+Slave ":fastmail-local:Sent"
+
+Channel fastmail-archive
+Master ":fastmail-remote:INBOX/Archive"
+Slave ":fastmail-local:Archive"
+
+Channel fastmail-drafts
+Master ":fastmail-remote:INBOX/Drafts"
+Slave ":fastmail-local:Drafts"
+
+Channel fastmail-perles
+Master ":fastmail-remote:INBOX/Perles"
+Slave ":fastmail-local:Perles"
+
+Channel fastmail-voyages
+Master ":fastmail-remote:INBOX/Voyages"
+Slave ":fastmail-local:Voyages"
+
+Channel fastmail-later
+Master ":fastmail-remote:INBOX/Later"
+Slave ":fastmail-local:Later"
+
+Channel fastmail-trash
+Master ":fastmail-remote:INBOX/Trash"
+Slave ":fastmail-local:Trash"
+
+Channel fastmail-spam
+Master ":fastmail-remote:INBOX/Junk Mail"
+Slave ":fastmail-local:Spam"

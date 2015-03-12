@@ -1,0 +1,53 @@
+# Colors
+source ~/.mutt/vombatidae.mutt
+
+# Paths
+set folder=$HOME/.mail/fastmail
+set alias_file=~/.mutt/alias
+set header_cache=~/.cache/mutt/headers
+set message_cachedir=~/.cache/mutt/bodies
+set mailcap_path=~/.mutt/mailcap
+set signature=~/.mutt/signature
+set tmpdir=~/.mutt/temp
+
+# Basic options
+set mbox_type=Maildir
+set send_charset="utf-8"
+alternative_order text/plain text/html
+set sleep_time=0
+set my_name="Fabien Engels"
+set editor=vim
+
+# Remove useless stuff
+set wait_key=no
+set delete
+set quit
+unset mark_old
+unset confirmappend
+
+set spoolfile=+Inbox
+mailboxes +Inbox  \
+          +Archive
+set record =+Sent
+set postponed=+Drafts
+set mbox=+Archive
+
+# Sorting
+set sort_aux=reverse-last-date-received
+set sort=threads
+set sort_browser=date
+
+# Send
+set from="fabien.engels@unistra.fr"
+set realname="Fabien Engels"
+set sendmail="/usr/bin/msmtp"
+set edit_headers=yes
+
+# Bindings
+bind index gg first-entry
+bind index G last-entry
+
+# Feels like Fastmail
+macro index,pager y "<save-message>+Archive<enter><sync-mailbox>" "archive message"
+macro index d "<save-message>+Trash<enter><sync-mailbox>" "delete message"
+macro index ! "<save-message>+Spam<enter><sync-mailbox>" "mark message as spam"
