@@ -73,7 +73,7 @@
 URxvt*font: xft:Ubuntu Mono derivative Powerline:size=14
 URxvt*boldFont: xft:Ubuntu Mono derivative Powerline:size=15
 ! URxvt*font: xft:Ubuntu Mono:size=14
-URxvt*boldFont: xft:Ubuntu Mono:size=15
+! URxvt*boldFont: xft:Ubuntu Mono:size=15
 URxvt*letterSpace: -1
 URxvt*scrollBar: false
 URxvt*fading: 20
