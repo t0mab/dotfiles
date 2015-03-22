@@ -14,3 +14,4 @@ cp -v xbindkeysrc ~/.xbindkeysrc
 cp -v xinitrc ~/.xinitrc
 cp -v Xresources ~/.Xresources
 cp -v Xresources-light ~/.Xresources-light
+cp -v compton.conf ~/.config/compton.conf

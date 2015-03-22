@@ -3,6 +3,7 @@ loadkeys fr
 gdisk /dev/sda
 
 o
+Y
 n
 <ENTER>
 <ENTER>
@@ -14,26 +15,16 @@ n
 +0
 <ENTER>
 w
+Y
 
 mkfs.vfat -n BOOT -F 32 /dev/sda1
 cryptsetup -v --cipher aes-xts-plain64 --key-size 256 -y luksFormat /dev/sda2
 cryptsetup luksOpen /dev/sda2 archlinux
-pvcreate /dev/mapper/archlinux
-vgcreate vgroot /dev/mapper/archlinux
-lvcreate -L 16G -n swap vgroot
-lvcreate -L 10G -n docker vgroot
-lvcreate -L 500G -n root vgroot
-vgchange --available y
+mkfs.btrfs -L ROOT /dev/mapper/archlinux
 
-mkswap -L swap /dev/mapper/vgroot-swap
-mkfs.btrfs -L docker /dev/mapper/vgroot-docker
-mkfs.ext4 -m 1 -L root /dev/mapper/vgroot-root
-
-mount /dev/mapper/vgroot-root /mnt
-mkdir -p /mnt/boot /mnt/var/lib/docker
+mount /dev/mapper/archlinux /mnt
+mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
-mount /dev/mapper/vgroot-docker /mnt/var/lib/docker
-swapon /dev/mapper/vgroot-swap
 
 pacstrap /mnt
 genfstab -p /mnt >> /mnt/etc/fstab
@@ -41,9 +32,21 @@ arch-chroot /mnt
 pacman -Syu
 pacman -S vim
 echo kyufix > /etc/hostname
-ln -sf /usr/share/zoneinfo/Europe/Paris
+ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
+echo "en_US.UTF-8 UTF-8 > /etc/locale.gen"
 locale-gen
+passwd
 
+mkinitcpio.conf :
+HOOKS="base udev autodetect modconf block consolefont keymap keyboard encrypt filesystems fsck"
+
+vconsole.conf :
+KEYMAP=fr
+FONT=sun12x22
+
+mkinitcpio -p linux
+
+###### UEFI :
 pacman -S gummiboot
 gummiboot install
 mkdir -p /boot/loader/entries
@@ -56,11 +59,28 @@ default Archlinux
 title Archlinux
 linux vmlinuz-linux
 initrd initramfs-linux.img
-options cryptdevice=/dev/sda2:vgroot:allow-discards root=/dev/mapper/vgroot-root rw
+options cryptdevice=/dev/sda2:archlinux:allow-discards root=/dev/mapper/archlinux rw
 
-pacman -S openssh
+###### BIOS :
+pacman -S syslinux gptfdisk
+syslinux-install_update -i -m -a
+
+/boot/syslinux/syslinux.cfg :
+APPEND cryptdevice=/dev/sda2:archlinux:allow-discards root=/dev/mapper/archlinux rw
+
+### Reboot !
+reboot
+
+#### SSH
+
+pacman -S openssh ufw
 systemctl enable sshd.service
 systemctl start sshd.service
+ufw allow 22
+ufw enable
+
+
+### Script
 
 systemctl enable suppress-gpe66.service
 
@@ -79,8 +99,6 @@ systemctl enable dhcpcd@wlp3s0
 hostname set-hostname namazu
 locale set-locale LANG=en_US.utf8
 locale set-keymap fr
-locale-gen
-ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
 /etc/systemd/network/wired.network
 [Match]
@@ -93,7 +111,6 @@ DHCP=v4
 gummiboot install
 gummiboot update
 
-mkinitcpio -p linux
 
 
 passwd fabien

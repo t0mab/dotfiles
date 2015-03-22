@@ -2,6 +2,8 @@
 
 set -e
 
+mkdir -p ~/.mutt/temp
+
 # isync
 cp -v mbsyncrc ~/.mbsyncrc
 
