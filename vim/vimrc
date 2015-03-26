@@ -1,6 +1,10 @@
 " Fix backspace under Mac OS
 set backspace=indent,eol,start
 
+" base16 colorscheme
+let base16colorspace=256
+colorscheme base16-default
+
 " Airline
 set rtp+=~/.vim/airline
 set completeopt-=preview
@@ -11,7 +15,8 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline_powerline_fonts=1
-let g:airline_theme='solarized'
+"let g:airline_theme='solarized'
+let g:airline_theme='base16'
 
 " NeoComplete
 set rtp+=~/.vim/neocomplete
@@ -51,12 +56,12 @@ au FileType go nmap <Leader>e <Plug>(go-rename)
 set rtp+=~/.vim/indenthtml
 
 " Solarized
-set rtp+=~/.vim/solarized
-call togglebg#map("<F9>")
-let g:solarized_termtrans = 0
+" set rtp+=~/.vim/solarized
+" call togglebg#map("<F9>")
+" let g:solarized_termtrans = 0
 " let g:solarized_contrast = 'high'
-colorscheme solarized
-set background=dark
+" colorscheme solarized
+" set background=dark
 
 " Supertab
 set rtp+=~/.vim/supertab

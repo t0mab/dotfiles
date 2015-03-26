@@ -15,7 +15,7 @@ set $mod Mod1
 # is used in the bar {} block below.
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:Ubuntu 12
+font pango:Ubuntu 10
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # The font above is very space-efficient, that is, it looks good, sharp and
@@ -154,15 +154,29 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# Colors
+#
+# class border background text indicator
+client.focused          #000000 #383838 #f8f8f8 #a1b56c
+client.focused_inactive #000000 #202020 #aaaaaa
+client.unfocused        #000000 #202020 #aaaaaa
+client.urgent           #000000 #ab4642 #f8f8f8
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
+	position bottom
+	colors {
+		statusline #888888
+		separator  #000000
+		focused_workspace  #000000 #000000 #a1b56c
+		inactive_workspace #000000 #000000 #888888
+		urgent_workspace   #000000 #000000 #ab4642
+	}
+	status_command ~/.i3/conky_wrapper
 }
 
 for_window [class="feh"] floating enable
-
-exec compton -CG
 
 exec --no-startup-id i3-msg 'exec urxvt;'
 exec --no-startup-id i3-msg 'workspace 2; exec urxvt;'

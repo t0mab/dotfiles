@@ -6,6 +6,7 @@ aspell
 base-devel
 btrfs-progs
 chromium
+conky
 ctags
 cups
 docker
@@ -19,6 +20,7 @@ fsarchiver
 gcc-fortran
 gdal
 ghostscript
+gimp
 git
 gnome-keyring
 gnu-netcat
@@ -42,9 +44,11 @@ lm_sensors
 luajit
 lxappearance
 mc
+mercurial
 mesa-demos
 minbif
 mongodb
+mpd
 mplayer
 msmtp
 msmtp-mta
@@ -56,6 +60,7 @@ ntfs-3g
 ntp
 nvidia
 openssh
+openvpn
 par2cmdline
 pass
 pkgfile
@@ -75,10 +80,12 @@ python-virtualenvwrapper
 python2-matplotlib
 python2-numpy
 python2-pip
+ranger
 rdiff-backup
 rsync
 rxvt-unicode
 rxvt-unicode-terminfo
+screenfetch
 scrot
 slim
 smartmontools
@@ -99,6 +106,7 @@ unzip
 usbmuxd
 vim
 virtualbox-host-dkms
+vlc
 weechat
 wget
 whois

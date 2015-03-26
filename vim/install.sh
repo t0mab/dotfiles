@@ -7,7 +7,10 @@ pip_install flake8
 cp -v vimrc ~/.vimrc
 
 [ ! -d ~/.vim-tmp ] && mkdir ~/.vim-tmp
-[ ! -d ~/.vim/templates ] && mkdir -p ~/.vim/templates
+mkdir -p ~/.vim/templates
+
+mkdir -p ~/.vim/colors
+cp -v base16-default.vim ~/.vim/colors
 
 cp -v python.py ~/.vim/templates
 
@@ -16,8 +19,7 @@ git_clone https://github.com/Shougo/neocomplete.vim.git ~/.vim/neocomplete
 git_clone https://github.com/ervandew/supertab.git ~/.vim/supertab
 
 # Colors
-git_clone https://github.com/altercation/vim-colors-solarized.git ~/.vim/solarized
-git_clone https://github.com/tomasr/molokai.git ~/.vim/molokai
+# git_clone https://github.com/altercation/vim-colors-solarized.git ~/.vim/solarized
 
 # Interface
 git_clone https://github.com/bling/vim-airline.git ~/.vim/airline

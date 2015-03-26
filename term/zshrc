@@ -36,12 +36,7 @@ PATH=$PATH:~/go/bin:~/.dotfiles/scripts:$GOPATH/bin
 PATH=/usr/lib/ccache:$PATH
 PATH=$PATH:~/Library/Python/2.7/bin
 
-[ -f /usr/bin/dircolors ] && DIRCOLORS_LIGHT=$(dircolors ~/.dircolors-solarized/dircolors.ansi-light)
-[ -f /usr/bin/dircolors ] && DIRCOLORS_DARK=$(dircolors ~/.dircolors-solarized/dircolors.ansi-dark)
-[ -f /usr/bin/dircolors ] && eval $DIRCOLORS_DARK
-
-alias light='eval $DIRCOLORS_LIGHT && ~/.gnome-terminal-colors-solarized/set_light.sh'
-alias dark='eval $DIRCOLORS_DARK && ~/.gnome-terminal-colors-solarized/set_dark.sh'
+source ~/.base16/base16-default.dark.sh
 
 alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
 
