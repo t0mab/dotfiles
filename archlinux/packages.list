@@ -16,6 +16,7 @@ duplicity
 evince
 feh
 firefox
+flashplugin
 fsarchiver
 gcc-fortran
 gdal
@@ -36,6 +37,7 @@ i3status
 ifuse
 iotop
 isync
+jq
 jre8-openjdk
 libcups
 libplist
