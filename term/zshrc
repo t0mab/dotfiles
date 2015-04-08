@@ -80,6 +80,12 @@ alias go_dark="xrdb -merge ~/.Xresources"
 # We want VIM all the time
 alias vi="vim"
 
+# Display exif information and fullscreen by default
+alias feh="feh -F --draw-exif"
+
+# Display the whole year with monday as first day and week numbers
+alias cal="cal -3 -y -w"
+
 # Only play audio on video files
 alias listen_video="mplayer -novideo"
 
