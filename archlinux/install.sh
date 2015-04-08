@@ -22,15 +22,16 @@ localectl set-locale LANG=en_US.utf8
 localectl set-keymap fr
 localectl set-x11-keymap fr
 
-systemctl enable postgresql
+systemctl enable acpid
+systemctl enable devmon@fabien
+systemctl enable docker.socket
+systemctl enable fstrim.timer
 systemctl enable mongodb
+systemctl enable postgresql
 systemctl enable slim
 systemctl enable sshd
-systemctl enable ufw
-systemctl enable fstrim.timer
-systemctl enable docker.socket
 systemctl enable syncthing@fabien
-systemctl enable devmon@fabien
+systemctl enable ufw
 timedatectl set-ntp true
 ufw enable
 ufw logging off
