@@ -19,14 +19,6 @@ TEXT
     "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
   },
   {
-    "full_text" : "${if_up wlp3s0} ${addr wlp3s0} - ${wireless_essid wlp3s0} (${wireless_bitrate wlp3s0}${wireless_link_qual_perc wlp3s0}%)${endif}",
-    "color" : "\#a1b56c"
-  },
-  {
-    "full_text" : " ${battery_time} ${battery}",
-    "color" : ${if_match ${battery_percent}>10}"\#888888"${else}"\#ab4642"${endif}
-  },
-  {
     "full_text" : " ${cpu}%@${freq_g}",
     "color" : ${if_match ${cpu}<90}"\#888888"${else}"\#ab4642"${endif}
   },
