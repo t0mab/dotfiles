@@ -3,6 +3,7 @@ acpid
 alsa-firmware
 alsa-plugins
 alsa-utils
+aria2
 aspell
 base-devel
 brasero
@@ -116,6 +117,8 @@ ttf-dejavu
 ttf-ubuntu-font-family
 udevil
 ufw
+uget
+unrar
 unzip
 usbmuxd
 vim
