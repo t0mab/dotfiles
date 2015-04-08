@@ -27,12 +27,12 @@ cp -v ipython_config.py ~/.ipython/profile_default
 mkdir -p ~/.mplayer
 cp -v mplayer_config ~/.mplayer/config
 
-# Subtitles
-pip2_install subliminal
-
 # SSH
 mkdir -p ~/.ssh
 cp -v ssh_config ~/.ssh/config
 
 # psql
 cp -v psqlrc ~/.psqlrc
+
+# Subtitles
+pip2_install subliminal
