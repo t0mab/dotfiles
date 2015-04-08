@@ -3,7 +3,7 @@ Host mail.messagingengine.com
 Port 993
 User fabienengels@fastmail.com
 PassCmd "pass Divers/fabienengels@fastmail.com"
-UseIMAPS yes
+SSLType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 
 Create Both

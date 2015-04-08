@@ -1,5 +1,5 @@
 # Colors
-source ~/.mutt/vombatidae.mutt
+source ~/.mutt/windelicato.mutt
 
 # Paths
 set folder=$HOME/.mail/fastmail
@@ -8,7 +8,7 @@ set header_cache=~/.cache/mutt/headers
 set message_cachedir=~/.cache/mutt/bodies
 set mailcap_path=~/.mutt/mailcap
 set signature=~/.mutt/signature
-set tmpdir=~/.mutt/temp
+set tmpdir=~/.mutt/tmp
 
 # Basic options
 set mbox_type=Maildir
@@ -17,6 +17,35 @@ alternative_order text/plain text/html
 set sleep_time=0
 set my_name="Fabien Engels"
 set editor=vim
+set pager_index_lines=15
+set pager_stop
+set smart_wrap
+
+# HTML
+auto_view text/html
+
+# GPG
+set crypt_autosign=yes
+set crypt_replyencrypt=yes
+set crypt_verify_sig=yes
+set pgp_autosign=yes
+set pgp_clearsign_command="gpg --no-verbose --batch --output - --passphrase-fd 0 --armor --textmode --clearsign %?a?-u %a? %f"
+set pgp_decode_command="gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
+set pgp_decrypt_command="gpg --passphrase-fd 0 --no-verbose --batch --output - %f"
+set pgp_encrypt_only_command="pgpewrap gpg --batch --quiet --no-verbose --output - --encrypt --textmode --armor --always-trust --encrypt-to 0xCBF5E4C9 -- -r %r -- %f"
+set pgp_encrypt_sign_command="pgpewrap gpg --passphrase-fd 0 --batch --quiet --no-verbose --textmode --output - --encrypt --sign %?a?-u %a? --armor --always-trust --encrypt-to 0xA0ACE70A -- -r %r -- %f"
+set pgp_export_command="gpg --no-verbose --export --armor %r"
+set pgp_good_sign="^gpg: Good signature from"
+set pgp_import_command="gpg --no-verbose --import -v %f"
+set pgp_list_pubring_command="gpg --no-verbose --batch --with-colons --list-keys %r"
+set pgp_list_secring_command="gpg --no-verbose --batch --with-colons --list-secret-keys %r"
+set pgp_replyencrypt=yes
+set pgp_sign_as=0xCBF5E4C9
+set pgp_sign_command="gpg --no-verbose --batch --output - --passphrase-fd 0 --armor --detach-sign --textmode %?a?-u %a? %f"
+set pgp_timeout=3600
+set pgp_use_gpg_agent=yes
+set pgp_verify_command="gpg --no-verbose --batch --output - --verify %s %f"
+set pgp_verify_key_command="gpg --no-verbose --batch --fingerprint --check-sigs %r"
 
 # Remove useless stuff
 set wait_key=no
@@ -47,7 +76,21 @@ set edit_headers=yes
 bind index gg first-entry
 bind index G last-entry
 
+# Faster postpone
+bind compose p postpone-message
+bind index p recall-message
+
 # Feels like Fastmail
 macro index,pager y "<save-message>+Archive<enter><sync-mailbox>" "archive message"
-macro index d "<save-message>+Trash<enter><sync-mailbox>" "delete message"
-macro index ! "<save-message>+Spam<enter><sync-mailbox>" "mark message as spam"
+macro index,pager d "<save-message>+Trash<enter><sync-mailbox>" "delete message"
+macro index,pager ! "<save-message>+Spam<enter><sync-mailbox>" "mark message as spam"
+
+# Home sweet home
+macro index i "<change-folder> =Inbox<enter>"
+
+# Notmuch search
+macro index / "<enter-command>set my_old_pipe_decode=\$pipe_decode my_old_wait_key=\$wait_key nopipe_decode nowait_key<enter>\
+               <shell-escape>notmuch-mutt -r --prompt search<enter>\
+               <change-folder-readonly>`echo ${XDG_CACHE_HOME:-$HOME/.cache}/notmuch/mutt/results`<enter>\
+               <enter-command>set pipe_decode=\$my_old_pipe_decode wait_key=\$my_old_wait_key<enter>" \
+               "notmuch: search mail"
