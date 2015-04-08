@@ -51,17 +51,8 @@ au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 au FileType go nmap <Leader>e <Plug>(go-rename)
 
-
 " IndentHTML
 set rtp+=~/.vim/indenthtml
-
-" Solarized
-" set rtp+=~/.vim/solarized
-" call togglebg#map("<F9>")
-" let g:solarized_termtrans = 0
-" let g:solarized_contrast = 'high'
-" colorscheme solarized
-" set background=dark
 
 " Supertab
 set rtp+=~/.vim/supertab
@@ -219,6 +210,9 @@ autocmd BufNewFile,BufRead *.pde set tabstop=2
 autocmd BufNewFile,BufRead *.pde set softtabstop=2
 autocmd BufNewFile,BufRead *.pde set shiftwidth=2
 autocmd BufNewFile,BufRead *.pde set expandtab
+
+" Mutt
+au BufRead ~/.mutt/tmp/mutt-* set tw=72
 
 " Autocompletion
 autocmd FileType python set omnifunc=pythoncomplete#Complete
