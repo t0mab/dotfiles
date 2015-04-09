@@ -34,7 +34,7 @@ bindsym $mod+Return exec urxvt
 bindsym $mod+B exec firefox
 
 # Lock screen
-bindsym $mod+Control+L exec i3lock -d -c 000000
+bindsym $mod+Control+L exec i3lock -d -c 222222
 
 # kill focused window
 bindsym $mod+Shift+a kill
