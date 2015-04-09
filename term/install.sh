@@ -36,3 +36,7 @@ cp -v psqlrc ~/.psqlrc
 
 # Subtitles
 pip2_install subliminal
+
+# Shut up parallel
+mkdir -p ~/.parallel
+touch ~/.parallel/will-cite

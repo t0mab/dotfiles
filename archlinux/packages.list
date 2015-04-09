@@ -76,6 +76,7 @@ nvidia
 openssh
 openvpn
 par2cmdline
+parallel
 pass
 pkgfile
 postgis
