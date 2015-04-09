@@ -29,6 +29,10 @@ set rtp+=~/.vim/fugitive
 " Gitv
 set rtp+=~/.vim/gitv
 
+" YAML
+" Syntax file in 7.4 is fucking slow
+set rtp+=~/.vim/yaml/after
+
 " GitGutter
 set rtp+=~/.vim/gitgutter
 let g:gitgutter_map_keys = 0 " Just use it to visualize change, nothing else

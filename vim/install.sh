@@ -21,6 +21,9 @@ git_clone https://github.com/ervandew/supertab.git ~/.vim/supertab
 # Colors
 # git_clone https://github.com/altercation/vim-colors-solarized.git ~/.vim/solarized
 
+# YAML
+git_clone https://github.com/stephpy/vim-yaml.git ~/.vim/yaml
+
 # Interface
 git_clone https://github.com/bling/vim-airline.git ~/.vim/airline
 git_clone https://github.com/majutsushi/tagbar.git ~/.vim/tagbar
