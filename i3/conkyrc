@@ -23,8 +23,8 @@ TEXT
     "color" : ${if_match ${cpu}<90}"\#888888"${else}"\#ab4642"${endif}
   },
   {
-    "full_text" : " ${fs_free /}",
-    "color" : ${if_match ${fs_free /}<90}"\#888888"${else}"\#ab4642"${endif}
+    "full_text" : " ${fs_free}",
+    "color" : ${if_match ${fs_free_perc}<90}"\#888888"${else}"\#ab4642"${endif}
   },
   {
     "full_text" : " ${memperc}%",
