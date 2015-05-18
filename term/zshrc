@@ -86,8 +86,17 @@ alias feh="feh -F --draw-exif"
 # Display the whole year with monday as first day and week numbers
 alias cal="cal -3 -y -w"
 
+# Change the current wallpaper by picking up a random one
+alias chwall="[[ -d ~/Sync/Wallpapers ]] && feh --randomize --bg-fill ~/Sync/Wallpapers/*"
+
 # Only play audio on video files
 alias listen_video="mplayer -novideo"
+
+# Pretty JSON
+alias pretty_json="python -m json.tool"
+
+# ... with colors
+alias pretty_json_colorized="pretty_json | pygmentize -l javascript"
 
 # Download subtitles for all mkv files of current directory
  alias sub_en="ls -1 *.mkv | xargs -n 1 subdl --lang=eng; subliminal *.mkv -l en"
