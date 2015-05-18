@@ -36,6 +36,11 @@ cp -v psqlrc ~/.psqlrc
 
 # Subtitles
 pip2_install subliminal
+pip2_install guessit
+
+# FlexGet
+pip2_install flexget
+pip2_install transmissionrpc
 
 # Shut up parallel
 mkdir -p ~/.parallel
