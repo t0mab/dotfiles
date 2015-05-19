@@ -23,6 +23,9 @@ cp -v base16-default.* ~/.base16
 mkdir -p ~/.ipython/profile_default
 cp -v ipython_config.py ~/.ipython/profile_default
 
+# GPG Agent
+cp -v gpg-agent.conf ~/.gnupg/gpg-agent.conf
+
 # Mplayer
 mkdir -p ~/.mplayer
 cp -v mplayer_config ~/.mplayer/config
