@@ -4,7 +4,9 @@ alsa-firmware
 alsa-plugins
 alsa-utils
 aria2
+ario
 aspell
+avrdude
 base-devel
 brasero
 btrfs-progs
@@ -66,6 +68,7 @@ mongodb
 mongodb-tools
 moreutils
 mpd
+mpd
 mplayer
 msmtp
 msmtp-mta
@@ -89,7 +92,6 @@ parallel
 pass
 pkgfile
 postgis
-postgresql
 postgresql
 powertop
 pulseaudio
