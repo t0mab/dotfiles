@@ -76,6 +76,9 @@ set edit_headers=yes
 bind index gg first-entry
 bind index G last-entry
 
+# Contacts
+set query_command="abook --mutt-query '%s'"
+
 # Faster postpone
 bind compose p postpone-message
 bind index p recall-message
