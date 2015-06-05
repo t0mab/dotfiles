@@ -91,6 +91,7 @@ par2cmdline
 parallel
 pass
 pkgfile
+poppler
 postgis
 postgresql
 powertop
@@ -106,6 +107,7 @@ python-virtualenvwrapper
 python2-matplotlib
 python2-numpy
 python2-pip
+python2-pylast
 ranger
 rdiff-backup
 redshift
