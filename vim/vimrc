@@ -167,6 +167,12 @@ set autoindent
 " Use tabs by default
 set noexpandtab
 
+" Proper indentation for Shell scripts
+autocmd FileType sh set tabstop=4
+autocmd FileType sh set softtabstop=4
+autocmd FileType sh set shiftwidth=4
+autocmd FileType sh set expandtab
+
 " Proper indentation for Python
 autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
