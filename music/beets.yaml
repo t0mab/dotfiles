@@ -1,0 +1,16 @@
+directory: ~/Music
+library: ~/.config/beets/library.db
+threaded: yes
+ui:
+  color: yes
+import:
+  move: yes
+plugins: embedart fetchart ftintitle lyrics lastgenre lyrics mpdupdate scrub
+mpd:
+  host: localhost
+  port: 6600
+paths:
+  default: $format/Albums/$albumartist/$album%aunique{}/$track $title
+  singleton: $format/Singletons/$artist/$title
+  comp: $format/Compilations/$album%aunique{}/$track $title
+  albumtype:soundtrack: $format/Soundtracks/$album/$track $title
