@@ -78,6 +78,7 @@ bind index G last-entry
 
 # Contacts
 set query_command="abook --mutt-query '%s'"
+bind editor <Tab> complete-query
 
 # Faster postpone
 bind compose p postpone-message
