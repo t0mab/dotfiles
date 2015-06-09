@@ -12,7 +12,6 @@ brasero
 btrfs-progs
 chromium
 cmatrix
-cmus
 conky
 ctags
 cups
@@ -21,13 +20,11 @@ docker
 dos2unix
 dosfstools
 dstat
-duplicity
 evince
 exfat-utils
 feh
 firefox
 flashplugin
-fsarchiver
 fuse-exfat
 gcc-fortran
 gdal
@@ -46,12 +43,10 @@ httpie
 i3-wm
 i3lock
 i3status
-ifuse
 imagemagick
 iotop
 isync
 jq
-jre8-openjdk
 lftp
 libcups
 libplist
@@ -68,7 +63,6 @@ mongodb
 mongodb-tools
 moreutils
 mpd
-mpd
 mplayer
 msmtp
 msmtp-mta
@@ -76,13 +70,10 @@ mutt
 ncdu
 ncmpcpp
 nethogs
-network-manager-applet
-networkmanager
 nmap
 notmuch
 notmuch-mutt
 ntfs-3g
-ntp
 nvidia
 openssh
 openvpn
@@ -135,9 +126,7 @@ ufw
 uget
 unrar
 unzip
-usbmuxd
 vim
-virtualbox-host-dkms
 vlc
 weechat
 wget
