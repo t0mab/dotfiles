@@ -84,7 +84,7 @@ alias vi="vim"
 alias feh="feh -F --draw-exif"
 
 # Display the whole year with monday as first day and week numbers
-alias cal="cal -3 -y -w"
+alias cal="cal -m -3 -y -w"
 
 # Change the current wallpaper by picking up a random one
 alias chwall="[[ -d ~/Sync/Wallpapers ]] && feh --randomize --bg-fill ~/Sync/Wallpapers/*"
