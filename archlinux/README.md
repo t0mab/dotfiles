@@ -8,7 +8,7 @@ n
 <ENTER>
 <ENTER>
 +128M
-0c01
+ef00
 n
 <ENTER>
 <ENTER>
@@ -21,6 +21,8 @@ mkfs.vfat -n BOOT -F 32 /dev/sda1
 cryptsetup -v --cipher aes-xts-plain64 --key-size 256 -y luksFormat /dev/sda2
 cryptsetup luksOpen /dev/sda2 archlinux
 mkfs.btrfs -L ROOT /dev/mapper/archlinux
+OR
+mkfs.ext4 -L ROOT /dev/mapper/archlinux
 
 mount /dev/mapper/archlinux /mnt
 mkdir /mnt/boot
@@ -68,37 +70,11 @@ syslinux-install_update -i -m -a
 /boot/syslinux/syslinux.cfg :
 APPEND cryptdevice=/dev/sda2:archlinux:allow-discards root=/dev/mapper/archlinux rw
 
-### Reboot !
-reboot
-
-#### SSH
-
-pacman -S openssh ufw
-systemctl enable sshd.service
-systemctl start sshd.service
-ufw allow 22
-ufw enable
-
-
-### Script
-
-systemctl enable suppress-gpe66.service
-
-
-
-systemctl enable wpa_supplicant@wlp3s0
-systemctl enable dhcpcd@wlp3s0
-
-
-
-
-
-
-
-
-hostname set-hostname namazu
-locale set-locale LANG=en_US.utf8
-locale set-keymap fr
+### Network
+systemctl enable systemd-networkd
+systemctl enable systemd-resolved
+rm /etc/resolv.conf
+ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
 /etc/systemd/network/wired.network
 [Match]
@@ -107,23 +83,62 @@ Name=en*
 [Network]
 DHCP=v4
 
+### Reboot !
+reboot
 
-gummiboot install
-gummiboot update
+#### SSH
 
+pacman -S openssh ufw
+systemctl enable sshd.service
+ufw allow 22
+ufw enable
+systemctl enable ufw
 
+### Settings
 
+hostname set-hostname namazu
+localectl set-locale LANG=en_US.utf8
+localectl set-keymap fr
+timedatectl set-ntp true
+
+### User
+
+pacman -S zsh
+useradd -m -s /usr/bin/zsh -G wheel,uucp,rfkill,games,lock,network,storage,users,usbmux,docker fabien
 passwd fabien
+
+### Docker
+
+pacman -S docker
+gpasswd -a fabien docker
+systemctl start docker.socket
+
+### Install them all !!!
+
+pacman -S git
+git clone https://github.com/fabienengels/dotfiles
+
+cat dotfiles/archlinux/packages.list | pacman -S -
 
 /etc/slim.conf:
 default_user fabien
 auto_login yes
 
 systemctl enable slim.service
-systemctl enable sshd.service
-systemctl enable ufw.service
-ufw enable
-ufw logging off
+
+### SSD
+sudo systemctl enable fstrim.timer
+
+### Script
+
+(Macbook only)
+systemctl enable suppress-gpe66.service
+
+
+
+systemctl enable wpa_supplicant@wlp3s0
+systemctl enable dhcpcd@wlp3s0
+
 
 wget https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
 tar xvzf package-query.tar.gz
@@ -140,12 +155,7 @@ yaourt -S xf86-input-mtrack
 
 systemctl enable docker.socket
 systemctl start docker.socket
-systemctl enable docker-btrfs.service
-systemctl start docker-btrfs.service
-sudo systemctl enable fstrim.timer
 sudo systemctl start syncthing@fabien
 sudo systemctl enable syncthing@fabien
-
-sudo timedatectl set-ntp true
 
 sudo systemctl enable org.cups.cupsd.service
