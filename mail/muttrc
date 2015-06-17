@@ -1,5 +1,5 @@
 # Colors
-source ~/.mutt/windelicato.mutt
+source ~/.mutt/mutt-colors-solarized-dark-16.muttrc
 
 # Paths
 set folder=$HOME/.mail/fastmail
@@ -65,12 +65,16 @@ set mbox=+Archive
 set sort_aux=reverse-last-date-received
 set sort=threads
 set sort_browser=date
+folder-hook .* 'set strict_threads'
+folder-hook sent-mail 'set sort=date-sent'
 
 # Send
 set from="fabien.engels@unistra.fr"
 set realname="Fabien Engels"
 set sendmail="/usr/bin/msmtp"
 set edit_headers=yes
+#save copy of sent mail in thread
+folder-hook . 'set record="^"'
 
 # Bindings
 bind index gg first-entry
