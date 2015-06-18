@@ -22,6 +22,7 @@ dosfstools
 dstat
 evince
 exfat-utils
+fdupes
 feh
 firefox
 flashplugin
@@ -46,11 +47,13 @@ i3status
 imagemagick
 iotop
 isync
+jhead
 jq
 lftp
 libcups
 libplist
 libreoffice
+libva-vdpau-driver
 lm_sensors
 lsof
 luajit
@@ -62,10 +65,12 @@ minbif
 mongodb
 mongodb-tools
 moreutils
+mpc
 mpd
 mplayer
 msmtp
 msmtp-mta
+mtr
 mutt
 ncdu
 ncmpcpp
@@ -75,6 +80,7 @@ notmuch
 notmuch-mutt
 ntfs-3g
 nvidia
+nvidia-libgl
 openssh
 openvpn
 p7zip
@@ -107,6 +113,7 @@ rxvt-unicode
 rxvt-unicode-terminfo
 screenfetch
 scrot
+siege
 slim
 smartmontools
 strace
@@ -146,6 +153,7 @@ xorg-xmodmap
 xorg-xprop
 xorg-xrandr
 xorg-xrdb
+xorg-xwininfo
 youtube-dl
 zip
 zsh
