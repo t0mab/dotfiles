@@ -99,6 +99,7 @@ systemctl enable ufw
 hostname set-hostname namazu
 localectl set-locale LANG=en_US.utf8
 localectl set-keymap fr
+localectl set-x11-keymap fr
 timedatectl set-ntp true
 
 ### User
@@ -111,9 +112,23 @@ passwd fabien
 
 pacman -S docker
 gpasswd -a fabien docker
+systemctl enable docker.socket
 systemctl start docker.socket
 
 ### Install them all !!!
+
+### Yaourt
+
+curl -O https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
+tar zxvf package-query.tar.gz
+cd package-query
+makepkg -si
+cd ..
+curl -O https://aur.archlinux.org/packages/ya/yaourt/yaourt.tar.gz
+tar zxvf yaourt.tar.gz
+cd yaourt
+makepkg -si
+cd ..
 
 pacman -S git
 git clone https://github.com/fabienengels/dotfiles
@@ -135,27 +150,11 @@ sudo systemctl enable fstrim.timer
 systemctl enable suppress-gpe66.service
 
 
-
-systemctl enable wpa_supplicant@wlp3s0
-systemctl enable dhcpcd@wlp3s0
-
-
-wget https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
-tar xvzf package-query.tar.gz
-cd package-query
-makepkg -s
-cd ..
-rm -rf package-query
-
-wget https://aur.archlinux.org/packages/ya/yaourt/yaourt.tar.gz
-
-yaourt -S broadcom-wl-dkms
-yaourt -S xf86-input-mtrack
-
-
-systemctl enable docker.socket
-systemctl start docker.socket
+### Syncthing
 sudo systemctl start syncthing@fabien
 sudo systemctl enable syncthing@fabien
+ufw allow 21025
+ufw allow 22000
 
+### Cups
 sudo systemctl enable org.cups.cupsd.service
