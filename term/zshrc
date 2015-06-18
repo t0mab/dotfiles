@@ -99,5 +99,8 @@ alias pretty_json="python -m json.tool"
 alias pretty_json_colorized="pretty_json | pygmentize -l javascript"
 
 # Download subtitles for all mkv files of current directory
- alias sub_en="ls -1 *.mkv | xargs -n 1 subdl --lang=eng; subliminal *.mkv -l en"
- alias sub_fr="ls -1 *.mkv | xargs -n 1 subdl --lang=fre; subliminal *.mkv -l fr"
+alias sub_en="ls -1 *.mkv | xargs -n 1 subdl --lang=eng; subliminal *.mkv -l en"
+alias sub_fr="ls -1 *.mkv | xargs -n 1 subdl --lang=fre; subliminal *.mkv -l fr"
+
+# Watch disk flushing
+alias watch_flush="watch grep -e Dirty: -e Writeback: /proc/meminfo"
