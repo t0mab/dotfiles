@@ -24,7 +24,7 @@ mkdir -p ~/.ipython/profile_default
 cp -v ipython_config.py ~/.ipython/profile_default
 
 # GPG Agent
-mkdir ~/.gnupg
+mkdir -p ~/.gnupg
 cp -v gpg-agent.conf ~/.gnupg/gpg-agent.conf
 
 # Mplayer
