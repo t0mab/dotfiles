@@ -12,4 +12,4 @@ Xft.antialias: 1
 Xft.rgba: rgb
 
 urxvt*transparent: true
-urxvt*shading: 10
+urxvt*shading: 25
