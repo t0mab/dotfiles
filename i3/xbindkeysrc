@@ -1,13 +1,11 @@
-# xbacklight and kbdlight (AUR) needed
-
 "amixer set Master playback 5%+"
-    XF86AudioRaiseVolume
+  XF86AudioRaiseVolume
 
 "amixer set Master playback 5%-"
-    XF86AudioLowerVolume
+  XF86AudioLowerVolume
 
 "amixer set Master toggle"
-    XF86AudioMute
+  XF86AudioMute
 
 "xbacklight -dec 10"
   XF86MonBrightnessDown
@@ -20,3 +18,15 @@
 
 "kbdlight down"
   XF86KbdBrightnessDown
+
+"mpc -q toggle"
+  XF86AudioPlay
+
+"mpc -q stop"
+  XF86AudioStop
+
+"mpc -q prev"
+  XF86AudioPrev
+
+"mpc -q next"
+  XF86AudioNext
