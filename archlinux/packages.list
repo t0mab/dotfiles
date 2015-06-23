@@ -8,6 +8,7 @@ ario
 aspell
 avrdude
 base-devel
+bind-tools
 brasero
 btrfs-progs
 chromium
@@ -15,7 +16,6 @@ cmatrix
 conky
 ctags
 cups
-dnsutils
 docker
 dos2unix
 dosfstools
