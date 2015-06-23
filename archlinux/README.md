@@ -157,4 +157,6 @@ ufw allow 21025
 ufw allow 22000
 
 ### Cups
+sudo pacman -S hplip libcups
 sudo systemctl enable org.cups.cupsd.service
+hp-setup -i 10.0.0.200

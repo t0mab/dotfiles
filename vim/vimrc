@@ -271,3 +271,4 @@ set splitbelow
 
 " Fix background color (Gitgutter/Solarized)
 hi clear SignColumn
+set background=dark
