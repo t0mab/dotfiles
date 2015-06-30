@@ -13,10 +13,7 @@ update_interval 1
 use_spacer left
 
 TEXT
-[${if_mpd_playing}
-  {
-    "full_text" : " ${mpd_artist} - ${mpd_title} (${mpd_elapsed}/${mpd_length})"
-  },${endif}
+[
   {
     "full_text" : " ${addr tun0}",
     "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
