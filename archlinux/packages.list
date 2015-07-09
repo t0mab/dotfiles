@@ -7,7 +7,6 @@ aria2
 ario
 aspell
 avrdude
-base-devel
 bind-tools
 brasero
 btrfs-progs
@@ -16,6 +15,7 @@ cmatrix
 conky
 ctags
 cups
+dialog
 docker
 dos2unix
 dosfstools
@@ -32,6 +32,7 @@ gdal
 ghostscript
 gimp
 git
+glances
 gnome-keyring
 gnu-netcat
 gparted
@@ -39,11 +40,13 @@ gptfdisk
 graphviz
 gsfonts
 gummiboot
+hddtemp
 htop
 httpie
 i3-wm
 i3lock
 i3status
+ifplugd
 imagemagick
 iotop
 isync
@@ -74,13 +77,12 @@ mtr
 mutt
 ncdu
 ncmpcpp
+netctl
 nethogs
 nmap
 notmuch
 notmuch-mutt
 ntfs-3g
-nvidia
-nvidia-libgl
 openssh
 openvpn
 p7zip
@@ -95,11 +97,16 @@ powertop
 pulseaudio
 pulseaudio-alsa
 pv
+python-jinja
+python-jsonschema
 python-matplotlib
 python-numpy
 python-pexpect
 python-pip
+python-pymongo
 python-pyqt4
+python-pyzmq
+python-tornado
 python-virtualenvwrapper
 python2-matplotlib
 python2-numpy
@@ -138,6 +145,7 @@ vlc
 weechat
 wget
 whois
+wpa_actiond
 wpa_supplicant
 xbindkeys
 xf86-input-evdev
@@ -156,4 +164,3 @@ xorg-xrdb
 xorg-xwininfo
 youtube-dl
 zip
-zsh
