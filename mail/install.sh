@@ -3,6 +3,7 @@
 set -e
 
 mkdir -p ~/.mutt/tmp
+mkdir -p ~/.mail/fastmail
 
 # isync
 cp -v mbsyncrc ~/.mbsyncrc
