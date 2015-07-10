@@ -9,11 +9,19 @@ own_window no
 short_units yes
 temperature_unit celsius
 total_run_times 0
-update_interval 1
+update_interval 3
 use_spacer left
 
 TEXT
 [
+  ${if_up wlp3s0}{
+    "full_text" : " ${wireless_essid} ${wireless_bitrate wlp3s0} (${wireless_link_qual_perc wlp3s0}%)",
+    "color" : ${if_up wlp3s0}"\#a1b56c"${else}"\#ab4642"${endif}
+  },${endif}
+  {
+    "full_text" : " ${battery} - ${battery_time}",
+    "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
+  },
   {
     "full_text" : " ${addr tun0}",
     "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
