@@ -93,8 +93,16 @@ macro index,pager y "<save-message>+Archive<enter><sync-mailbox>" "archive messa
 macro index,pager d "<save-message>+Trash<enter><sync-mailbox>" "delete message"
 macro index,pager ! "<save-message>+Spam<enter><sync-mailbox>" "mark message as spam"
 
-# Home sweet home
-macro index i "<change-folder> =Inbox<enter>"
+# Let's move !
+macro index gi "<change-folder> =Inbox<enter>"
+macro index ga "<change-folder> =Archive<enter>"
+macro index gd "<change-folder> =Drafts<enter>"
+macro index gs "<change-folder> =Sent<enter>"
+macro index gj "<change-folder> =Spam<enter>"
+macro index gt "<change-folder> =Trash<enter>"
+macro index gp "<change-folder> =Perles<enter>"
+macro index gv "<change-folder> =Voyages<enter>"
+macro index gl "<change-folder> =Later<enter>"
 
 # Notmuch search
 macro index / "<enter-command>set my_old_pipe_decode=\$pipe_decode my_old_wait_key=\$wait_key nopipe_decode nowait_key<enter>\
