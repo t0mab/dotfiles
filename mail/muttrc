@@ -79,6 +79,10 @@ set edit_headers=yes
 # Bindings
 bind index gg first-entry
 bind index G last-entry
+bind index j next-entry
+bind index k previous-entry
+bind pager j next-line
+bind pager k previous-line
 
 # Contacts
 set query_command="abook --mutt-query '%s'"
