@@ -2,11 +2,6 @@
 
 set -e
 
-[ ! -d ~/go/.git ] && git clone https://go.googlesource.com/go ~/go
-
-cd ~/go && git fetch && git checkout go1.4.2
-cd ~/go/src && ./all.bash
-
 [ ! -d ~/Go ] && mkdir ~/Go
 
 GOPATH=~/Go ~/go/bin/go get -v -u code.google.com/p/rog-go/exp/cmd/godef
