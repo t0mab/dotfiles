@@ -23,6 +23,10 @@ set rtp+=~/.vim/neocomplete
 let g:neocomplete#enable_at_startup = 1
 let g:neocomplete#enable_smart_case = 1
 
+" LanguageTool
+set rtp+=~/.vim/languagetool
+let g:languagetool_jar="/usr/share/java/languagetool/languagetool.jar"
+
 " Fugitive
 set rtp+=~/.vim/fugitive
 

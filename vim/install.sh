@@ -42,3 +42,6 @@ git_clone https://github.com/scrooloose/syntastic.git ~/.vim/syntastic
 
 # HTML
 git_clone https://github.com/vim-scripts/indenthtml.vim.git ~/.vim/indenthtml
+
+# LanguageTool
+git_clone https://github.com/vim-scripts/LanguageTool.git ~/.vim/languagetool
