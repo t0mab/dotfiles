@@ -18,10 +18,10 @@ TEXT
     "full_text" : " ${wireless_essid} ${wireless_bitrate wlp3s0} (${wireless_link_qual_perc wlp3s0}%)",
     "color" : ${if_up wlp3s0}"\#a1b56c"${else}"\#ab4642"${endif}
   },${endif}
-  {
-    "full_text" : " ${battery} - ${battery_time}",
+  ${if_existing /sys/class/power_supply/BAT0}{
+    "full_text" : " ${battery} - ${battery_time}",
     "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
-  },
+  },${endif}
   {
     "full_text" : " ${addr tun0}",
     "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
