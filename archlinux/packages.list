@@ -6,8 +6,11 @@ alsa-utils
 aria2
 ario
 aspell
+aspell-en
+aspell-fr
 avrdude
 bind-tools
+bitlbee
 brasero
 btrfs-progs
 chromium
@@ -72,7 +75,7 @@ mongodb-tools
 moreutils
 mpc
 mpd
-mplayer
+mpv
 msmtp
 msmtp-mta
 mtr
