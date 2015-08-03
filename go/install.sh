@@ -2,6 +2,10 @@
 
 set -e
 
+. ../helpers.sh
+
+git_clone https://go.googlesource.com/go ~/go && cd ~/go/src && git checkout go1.4.1 && ./all.bash
+
 [ ! -d ~/Go ] && mkdir ~/Go
 
 GOPATH=~/Go ~/go/bin/go get -v -u code.google.com/p/rog-go/exp/cmd/godef
