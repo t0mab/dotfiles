@@ -4,7 +4,7 @@ function git_clone() {
 
 	echo $url
 
-	[ ! -d "$target" ] && git clone --depth 1 $url "$target"
+	[ ! -d "$target" ] && git clone $url "$target"
 
 	cd "$target" && git pull && git submodule update --init --recursive
 	cd -

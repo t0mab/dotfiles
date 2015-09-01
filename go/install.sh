@@ -4,7 +4,7 @@ set -e
 
 . ../helpers.sh
 
-git_clone https://go.googlesource.com/go ~/go && cd ~/go/src && git checkout go1.4.1 && ./all.bash
+git clone https://go.googlesource.com/go ~/go && cd ~/go/src && git checkout go1.5 && GOROOT_BOOTSTRAP=/usr/lib/go ./all.bash
 
 [ ! -d ~/Go ] && mkdir ~/Go
 
