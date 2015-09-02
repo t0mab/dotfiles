@@ -119,15 +119,11 @@ set showmatch
 " How many tenths of a second to blink when matching brackets
 set mat=2
 
-" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-map <space> /
-map <c-space> ?
-
 " Highlight the 80th column
 set colorcolumn=80
 
 " Change default leader mapping
-let mapleader = ","
+let mapleader = "\<Space>"
 
 " Navigate buffers
 noremap <F1> :bprev<CR>
