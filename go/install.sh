@@ -15,6 +15,7 @@ GOPATH=~/Go ~/go/bin/go get -v -u github.com/jstemmer/gotags
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/kisielk/errcheck
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/lib/pq
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/mrjones/oauth
+GOPATH=~/Go ~/go/bin/go get -v -u github.com/nsf/gocode
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/schachmat/wego
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/spf13/hugo
 GOPATH=~/Go ~/go/bin/go get -v -u github.com/streadway/amqp
