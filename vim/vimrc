@@ -141,10 +141,9 @@ set t_Co=256
 " Ignore some files
 set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
 
-" Save all temporary files in a central directory. Very useful.
-set backup
-set backupdir=~/.vim-tmp
-set directory=~/.vim-tmp
+" Don't save all temporary files
+set nobackup
+set noswapfile
 
 " Show line numbers, rulers, etc
 set ruler

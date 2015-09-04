@@ -6,7 +6,6 @@ pip_install flake8
 
 cp -v vimrc ~/.vimrc
 
-[ ! -d ~/.vim-tmp ] && mkdir ~/.vim-tmp
 mkdir -p ~/.vim/templates
 
 mkdir -p ~/.vim/colors
