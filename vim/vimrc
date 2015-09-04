@@ -120,7 +120,7 @@ set showmatch
 set mat=2
 
 " Highlight the 80th column
-set colorcolumn=80
+" set colorcolumn=80
 
 " Change default leader mapping
 let mapleader = "\<Space>"
@@ -271,3 +271,4 @@ set splitbelow
 " Fix background color (Gitgutter/Solarized)
 hi clear SignColumn
 set background=dark
+hi Normal ctermbg=none
