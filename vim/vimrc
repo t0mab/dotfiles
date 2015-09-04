@@ -1,3 +1,6 @@
+" be iMproved, required
+set nocompatible
+
 " Fix backspace under Mac OS
 set backspace=indent,eol,start
 
@@ -15,13 +18,13 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline_powerline_fonts=1
-"let g:airline_theme='solarized'
 let g:airline_theme='base16'
 
 " NeoComplete
 set rtp+=~/.vim/neocomplete
 let g:neocomplete#enable_at_startup = 1
 let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#enable_auto_close_preview = 0
 
 " LanguageTool
 set rtp+=~/.vim/languagetool
@@ -255,7 +258,7 @@ nmap <silent> <c-l> :wincmd l<CR>
 
 " Unix like tab completion.
 set wildmenu
-set wildmode=longest,list
+set wildmode=list:longest
 
 " Avoid many press enter to continue prompts and more. See :help shortmess for
 " the breakdown of what this changes. You can also pare things down further if
