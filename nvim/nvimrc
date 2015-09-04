@@ -1,0 +1,51 @@
+" Remove automatically all trailing whitespace
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Learn the hard way
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>
+
+" Avoid many press enter to continue prompts and more
+set shortmess=atI
+
+" More natural split
+set splitright
+set splitbelow
+
+" Colors
+colorscheme base16-default
+let base16colorspace=256
+set background=dark
+hi Normal ctermbg=none
+
+" Airline
+set rtp+=~/.nvim/airline
+set completeopt-=preview
+set noshowmode
+set ttimeoutlen=50
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline_powerline_fonts=1
+let g:airline_theme='base16'
+
+" Fugitive
+set rtp+=~/.nvim/fugitive
+
+" GitGutter
+set rtp+=~/.nvim/gitgutter
+let g:gitgutter_map_keys = 0 " Just use it to visualize change, nothing else
+
+" NEED LUA SUPPORT !
+
+" NeoComplete
+" set rtp+=~/.nvim/neocomplete
+" let g:neocomplete#enable_at_startup = 1
+" let g:neocomplete#enable_smart_case = 1
+" let g:neocomplete#enable_auto_close_preview = 0
+
+" Supertab
+" set rtp+=~/.vim/supertab
+" let g:SuperTabDefaultCompletionType = "context"
