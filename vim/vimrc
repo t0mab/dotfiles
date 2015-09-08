@@ -1,8 +1,31 @@
-" be iMproved, required
-set nocompatible
+au BufRead ~/.mutt/tmp/mutt-* set tw=72 " Mutt
+autocmd BufWritePre * :%s/\s\+$//e " Remove automatically all trailing whitespace
+let mapleader = "\<Space>" " Change default leader mapping
+set autoindent
+set backspace=indent,eol,start " Fix backspace under Mac OS
+set cursorline
+set expandtab
+set mat=2 " How many tenths of a second to blink when matching brackets
+set nobackup
+set nocompatible " be iMproved, required
+set noswapfile
+set nowrap
+set number
+set ruler
+set shortmess=atI " Shorter messages and avoid useless Enter strikes
+set showmatch " Highlight matching brackets
+set so=10 " Set 10 lines to the cursor when moving vertically
+set splitbelow " Split below by default
+set splitright " Split on the right side by default
+set t_Co=256 " Enable 256 color in vim.
+set ttyfast " Indicates a fast terminal connection
+set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak " Ignore some files
+set wildmenu
+set wildmode=list:longest
 
-" Fix backspace under Mac OS
-set backspace=indent,eol,start
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 
 " base16 colorscheme
 let base16colorspace=256
@@ -20,29 +43,35 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline_powerline_fonts=1
 let g:airline_theme='base16'
 
+" CtrlP
+set rtp+=~/.vim/ctrlp
+
+" Auto-pairs
+set rtp+=~/.vim/auto-pairs
+
 " NeoComplete
 set rtp+=~/.vim/neocomplete
 let g:neocomplete#enable_at_startup = 1
 let g:neocomplete#enable_smart_case = 1
 let g:neocomplete#enable_auto_close_preview = 0
 
-" LanguageTool
-set rtp+=~/.vim/languagetool
-let g:languagetool_jar="/usr/share/java/languagetool/languagetool.jar"
+" Supertab
+set rtp+=~/.vim/supertab
+let g:SuperTabDefaultCompletionType = "context"
 
 " Fugitive
 set rtp+=~/.vim/fugitive
 
-" Gitv
-set rtp+=~/.vim/gitv
+" GitGutter
+set rtp+=~/.vim/gitgutter
+let g:gitgutter_map_keys = 0 " Just use it to visualize change, nothing else
+
+" NERDCommenter
+set rtp+=~/.vim/nerdcommenter
 
 " YAML
 " Syntax file in 7.4 is fucking slow
 set rtp+=~/.vim/yaml/after
-
-" GitGutter
-set rtp+=~/.vim/gitgutter
-let g:gitgutter_map_keys = 0 " Just use it to visualize change, nothing else
 
 " Go
 au BufRead,BufNewFile *.go set filetype=go
@@ -64,10 +93,6 @@ au FileType go nmap <Leader>e <Plug>(go-rename)
 
 " IndentHTML
 set rtp+=~/.vim/indenthtml
-
-" Supertab
-set rtp+=~/.vim/supertab
-let g:SuperTabDefaultCompletionType = "context"
 
 " Syntastic
 set rtp+=~/.vim/syntastic
@@ -114,20 +139,6 @@ filetype plugin indent on
 filetype plugin on
 set omnifunc=syntaxcomplete#Complete
 
-" Set 10 lines to the cursor when moving vertically
-set so=10
-
-" Highlight matching brackets
-set showmatch
-" How many tenths of a second to blink when matching brackets
-set mat=2
-
-" Highlight the 80th column
-" set colorcolumn=80
-
-" Change default leader mapping
-let mapleader = "\<Space>"
-
 " Navigate buffers
 noremap <F1> :bprev<CR>
 noremap <F2> :bnext<CR>
@@ -135,96 +146,27 @@ noremap <F2> :bnext<CR>
 " Toggle line numbers and fold column for easy copying
 nnoremap <F4> :set nonumber!<CR>:set foldcolumn=0<CR>
 
-" Copy to system clipboard
-" set clipboard=unnamedplus
-
-" Enable 256 color in vim.
-set t_Co=256
-
-" Ignore some files
-set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak
-
-" Don't save all temporary files
-set nobackup
-set noswapfile
-
-" Show line numbers, rulers, etc
-set ruler
-
-" Show cursor line
-set cursorline
-
-" Indicates a fast terminal connection
-set ttyfast
-
-" Show line numbers by default
-set number
-
-" Unwrap lines by default
-set nowrap
-
-" Keep the previous indentation
-set autoindent
-
-" Use tabs by default
-set noexpandtab
-
 " Proper indentation for Shell scripts
 autocmd FileType sh set tabstop=4
 autocmd FileType sh set softtabstop=4
 autocmd FileType sh set shiftwidth=4
-autocmd FileType sh set expandtab
 
 " Proper indentation for Python
 autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
-autocmd FileType python set expandtab
 
 " Define a template for new Python files
 autocmd BufNewFile *.py 0read ~/.vim/templates/python.py
-
-" Proper indentation for Ruby
-autocmd FileType ruby set tabstop=2
-autocmd FileType ruby set softtabstop=2
-autocmd FileType ruby set shiftwidth=2
-autocmd FileType ruby set expandtab
 
 " Fix filetype for Django template files
 autocmd BufNewFile,BufRead *.html set filetype=htmldjango.html
 
 " Fix filetype for CoffeeScript files
 autocmd BufNewFile,BufRead *.coffee set filetype=coffee
-
-" Proper indentation for HTML
-autocmd BufNewFile,BufRead *.coffee set tabstop=2
-autocmd BufNewFile,BufRead *.coffee set softtabstop=2
-autocmd BufNewFile,BufRead *.coffee set shiftwidth=2
-autocmd BufNewFile,BufRead *.coffee set expandtab
-
-" Automatically run CoffeeCompile watch vertical on CoffeeScript files
-"autocmd BufNewFile,BufRead *.coffee :CoffeeCompile watch vertical
-
-" Proper indentation for HTML
-autocmd BufNewFile,BufRead *.html set tabstop=2
-autocmd BufNewFile,BufRead *.html set softtabstop=2
-autocmd BufNewFile,BufRead *.html set shiftwidth=2
-autocmd BufNewFile,BufRead *.html set expandtab
-
-" Proper indentation for Eruby
-autocmd BufNewFile,BufRead *.erb set tabstop=2
-autocmd BufNewFile,BufRead *.erb set softtabstop=2
-autocmd BufNewFile,BufRead *.erb set shiftwidth=2
-
+"
 " Proper indentation for Arduino
 autocmd BufNewFile,BufRead *.pde set ft=arduino
-autocmd BufNewFile,BufRead *.pde set tabstop=2
-autocmd BufNewFile,BufRead *.pde set softtabstop=2
-autocmd BufNewFile,BufRead *.pde set shiftwidth=2
-autocmd BufNewFile,BufRead *.pde set expandtab
-
-" Mutt
-au BufRead ~/.mutt/tmp/mutt-* set tw=72
 
 " Autocompletion
 autocmd FileType python set omnifunc=pythoncomplete#Complete
@@ -232,12 +174,6 @@ autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd FileType go set omnifunc=go#complete#Complete
-
-" A better keybinding for the Autocompletion
-" inoremap <Nul> <C-x><C-o>
-
-" Remove automatically all trailing whitespace
-autocmd BufWritePre * :%s/\s\+$//e
 
 " Learn the hard way
 map <up> <nop>
@@ -255,21 +191,6 @@ nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
-
-" Unix like tab completion.
-set wildmenu
-set wildmode=list:longest
-
-" Avoid many press enter to continue prompts and more. See :help shortmess for
-" the breakdown of what this changes. You can also pare things down further if
-" you like.
-set shortmess=atI
-
-" Split on the right side by default
-set splitright
-
-" Split below by default
-set splitbelow
 
 " Fix background color (Gitgutter/Solarized)
 hi clear SignColumn

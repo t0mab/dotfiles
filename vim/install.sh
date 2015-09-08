@@ -17,9 +17,6 @@ cp -v python.py ~/.vim/templates
 git_clone https://github.com/Shougo/neocomplete.vim.git ~/.vim/neocomplete
 git_clone https://github.com/ervandew/supertab.git ~/.vim/supertab
 
-# Colors
-# git_clone https://github.com/altercation/vim-colors-solarized.git ~/.vim/solarized
-
 # YAML
 git_clone https://github.com/stephpy/vim-yaml.git ~/.vim/yaml
 
@@ -30,7 +27,6 @@ git_clone https://github.com/vim-scripts/matchit.zip.git ~/.vim/matchit
 
 # Git
 git_clone https://github.com/airblade/vim-gitgutter.git ~/.vim/gitgutter
-git_clone https://github.com/gregsexton/gitv.git ~/.vim/gitv
 git_clone https://github.com/tpope/vim-fugitive.git ~/.vim/fugitive
 
 # Go
@@ -42,5 +38,11 @@ git_clone https://github.com/scrooloose/syntastic.git ~/.vim/syntastic
 # HTML
 git_clone https://github.com/vim-scripts/indenthtml.vim.git ~/.vim/indenthtml
 
-# LanguageTool
-git_clone https://github.com/vim-scripts/LanguageTool.git ~/.vim/languagetool
+# NERDCommenter
+git_clone https://github.com/scrooloose/nerdcommenter.git ~/.vim/nerdcommenter
+
+# Auto-pairs
+git_clone https://github.com/jiangmiao/auto-pairs ~/.vim/auto-pairs
+
+# CtrlP
+git_clone https://github.com/kien/ctrlp.vim ~/.vim/ctrlp
