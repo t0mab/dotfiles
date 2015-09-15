@@ -4,7 +4,13 @@ set -e
 
 . ../helpers.sh
 
-git clone https://go.googlesource.com/go ~/go && cd ~/go/src && git checkout go1.5 && GOROOT_BOOTSTRAP=/usr/lib/go ./all.bash
+export GOROOT_BOOTSTRAP=/usr/lib/go
+
+# MacOS (homebrew)
+[ -d /usr/local/opt/go ] && export GOROOT_BOOTSTRAP=/usr/local/Cellar/go/1.5/libexec
+
+#git clone https://go.googlesource.com/go ~/go &&
+cd ~/go/src && git checkout go1.5 && ./all.bash
 
 [ ! -d ~/Go ] && mkdir ~/Go
 
