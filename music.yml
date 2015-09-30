@@ -1,0 +1,34 @@
+- name: Install Music
+  hosts: all
+  vars:
+    packages:
+      - mpd
+      - ncmpcpp
+  tasks:
+    - name: Install packages on ArchLinux
+      pacman: name={{ item }} state=latest
+      with_items: packages
+      when: ansible_distribution == "ArchLinux"
+
+    - name: Install packages on MacOSX
+      homebrew: name={{ item }} state=latest
+      with_items: packages
+      when: ansible_distribution == "MacOSX"
+
+    - name: Install beets
+      pip: name=beets executable=pip2 extra_args="--upgrade --user"
+
+    - name: Create directories
+      file: path={{ item }} state=directory mode=0550
+      with_items:
+        - ~/.config/beets
+        - ~/.config/mpd/logs
+        - ~/.config/mpd/playlists
+        - ~/.ncmpcpp
+
+    - name: Copy files
+      copy: src={{ item.src }} dest={{ item.dest }} mode=0640
+      with_items:
+        - { src: files/music/beets.yaml, dest: ~/.config/beets/config.yaml }
+        - { src: files/music/mpd.conf, dest: ~/.mpdconf }
+        - { src: files/music/ncmpcpp.conf, dest: ~/.ncmpcpp/config }
