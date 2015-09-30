@@ -53,7 +53,6 @@ i3status
 ifplugd
 imagemagick
 iotop
-isync
 jhead
 jq
 languagetool
@@ -76,16 +75,12 @@ moreutils
 mpc
 mpd
 mpv
-msmtp
-msmtp-mta
 mtr
-mutt
 ncdu
 ncmpcpp
 netctl
 nethogs
 nmap
-notmuch
 notmuch-mutt
 ntfs-3g
 openssh
@@ -93,7 +88,6 @@ openvpn
 p7zip
 par2cmdline
 parallel
-pass
 pkgfile
 poppler
 postgis
