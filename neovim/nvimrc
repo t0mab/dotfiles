@@ -1,0 +1,99 @@
+" Filetypes
+filetype on
+filetype plugin indent on
+filetype plugin on
+filetype plugin on
+"
+" Interface
+colorscheme base16-default
+hi Normal ctermbg=none
+hi clear SignColumn
+let base16colorspace=256
+set background=dark
+set cursorline
+set nowrap
+set relativenumber
+set ruler
+set shortmess=atI " Shorter messages and avoid useless Enter strikes
+set showmatch " Highlight matching brackets
+set so=10 " Set 10 lines to the cursor when moving vertically
+set splitbelow " Split below by default
+set splitright " Split on the right side by default
+set t_Co=256 " Enable 256 color in vim.
+syntax on
+
+" Indentation
+set autoindent
+set smartindent
+
+" Completion
+set wildignore+=.git,*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak " Ignore some files
+
+" Mail redaction
+au BufRead ~/.mutt/tmp/mutt-* set tw=72 " Mutt
+
+" Map the leader key to SPACE
+let mapleader="\<SPACE>"
+
+" Delete useless spaces
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Filetypes
+autocmd BufNewFile,BufRead *.pde set ft=arduino
+
+" Learn the hard way
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
+
+" Airline
+set rtp+=~/.nvim/airline
+set completeopt-=preview
+set noshowmode
+set ttimeoutlen=50
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline_powerline_fonts=1
+let g:airline_theme='base16'
+
+" Ansible
+set rtp+=~/.nvim/ansible
+
+" Git
+set rtp+=~/.nvim/fugitive
+set rtp+=~/.nvim/gitgutter
+" Just use it to visualize change, nothing else
+let g:gitgutter_map_keys = 0
+
+" Go
+set rtp+=~/.nvim/go
+let g:go_fmt_command = "goimports"
+au FileType go nmap <Leader>s <Plug>(go-implements)
+au FileType go nmap <Leader>i <Plug>(go-info)
+au FileType go nmap <Leader>gd <Plug>(go-doc)
+au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+au FileType go nmap <Leader>r <Plug>(go-run)
+au FileType go nmap <Leader>b <Plug>(go-build)
+au FileType go nmap <Leader>t <Plug>(go-test)
+au FileType go nmap <Leader>c <Plug>(go-coverage)
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+au FileType go nmap <Leader>e <Plug>(go-rename)
+
+" HTML
+set rtp+=~/.nvim/emmet
+
+" Python
+" Define a template for new Python files
+autocmd BufNewFile *.py 0read ~/.nvim/templates/python.py
+
+" YouCompleteMe
+set rtp+=~/.nvim/youcompleteme
