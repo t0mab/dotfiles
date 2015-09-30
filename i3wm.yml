@@ -1,0 +1,50 @@
+- name: Install I3WM
+  hosts: all
+  vars:
+    packages:
+      - i3-wm
+      - i3lock
+      - i3status
+      - redshift
+      - rxvt-unicode
+      - rxvt-unicode-terminfo
+      - screenfetch
+      - scrot
+      - slim
+      - ttf-bitstream-vera
+      - ttf-dejavu
+      - ttf-ubuntu-font-family
+      - xbindkeys
+      - xf86-input-evdev
+      - xf86-input-synaptics
+      - xorg-server-devel
+      - xorg-xbacklight
+      - xorg-xdpyinfo
+      - xorg-xev
+      - xorg-xfontsel
+      - xorg-xinit
+      - xorg-xkill
+      - xorg-xmodmap
+      - xorg-xprop
+      - xorg-xrandr
+      - xorg-xrdb
+      - xorg-xwininfo
+  tasks:
+    - name: Install packages on ArchLinux
+      pacman: name={{ item }} state=latest
+      with_items: packages
+      when: ansible_distribution == "ArchLinux"
+
+    - name: Create I3 directory
+      file: path=~/.i3 state=directory mode=0550
+
+    - name: Copy files
+      copy: src={{ item.src }} dest={{ item.dest }} mode=0640
+      with_items:
+        - { src: files/i3/Xresources, dest: ~/.Xresources }
+        - { src: files/i3/Xresources-dark, dest: ~/.Xresources-dark }
+        - { src: files/i3/Xresources-light, dest: ~/.Xresources-light }
+        - { src: files/i3/gtkrc-2.0, dest: ~/.gtkrc-2.0 }
+        - { src: files/i3/i3_config, dest: ~/.i3/config }
+        - { src: files/i3/xbindkeysrc, dest: ~/.xbindkeysrc }
+        - { src: files/i3/xinitrc, dest: ~/.xinitrc }
