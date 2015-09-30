@@ -1,10 +1,8 @@
 au BufRead ~/.mutt/tmp/mutt-* set tw=72 " Mutt
 autocmd BufWritePre * :%s/\s\+$//e " Remove automatically all trailing whitespace
 let mapleader = "\<Space>" " Change default leader mapping
-set autoindent
 set backspace=indent,eol,start " Fix backspace under Mac OS
 set cursorline
-set expandtab
 set mat=2 " How many tenths of a second to blink when matching brackets
 set nobackup
 set nocompatible " be iMproved, required
@@ -19,10 +17,13 @@ set splitbelow " Split below by default
 set splitright " Split on the right side by default
 set t_Co=256 " Enable 256 color in vim.
 set ttyfast " Indicates a fast terminal connection
-set wildignore+=*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak " Ignore some files
+set wildignore+=.git,*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak " Ignore some files
 set wildmenu
 set wildmode=list:longest
 
+set autoindent
+set smartindent
+set expandtab
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
@@ -47,7 +48,9 @@ let g:airline_theme='base16'
 set rtp+=~/.vim/ctrlp
 
 " Auto-pairs
-set rtp+=~/.vim/auto-pairs
+"set rtp+=~/.vim/auto-pairs
+"set rtp+=~/.vim/auto-close
+"set rtp+=~/.vim/delimitmate
 
 " NeoComplete
 set rtp+=~/.vim/neocomplete
@@ -75,6 +78,10 @@ set rtp+=~/.vim/yaml/after
 
 " Go
 au BufRead,BufNewFile *.go set filetype=go
+autocmd FileType go set noexpandtab
+autocmd FileType go set tabstop=4
+autocmd FileType go set softtabstop=4
+autocmd FileType go set shiftwidth=4
 set rtp+=~/.vim/go
 let g:go_fmt_command = "goimports"
 au FileType go nmap <Leader>s <Plug>(go-implements)

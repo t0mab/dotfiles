@@ -42,7 +42,9 @@ git_clone https://github.com/vim-scripts/indenthtml.vim.git ~/.vim/indenthtml
 git_clone https://github.com/scrooloose/nerdcommenter.git ~/.vim/nerdcommenter
 
 # Auto-pairs
-git_clone https://github.com/jiangmiao/auto-pairs ~/.vim/auto-pairs
+#git_clone https://github.com/spf13/vim-autoclose ~/.vim/auto-close
+#git_clone https://github.com/jiangmiao/auto-pairs ~/.vim/auto-pairs
+#git_clone https://github.com/Raimondi/delimitMate.git ~/.vim/delimitmate
 
 # CtrlP
 git_clone https://github.com/kien/ctrlp.vim ~/.vim/ctrlp
