@@ -1,0 +1,36 @@
+- name: Install Mail
+  hosts: all
+  vars:
+    packages:
+      - isync
+      - pass
+      - mutt
+      - msmtp
+      - notmuch
+  tasks:
+    - name: Install packages on ArchLinux
+      pacman: name={{ item }} state=latest
+      with_items: packages
+      when: ansible_distribution == "ArchLinux"
+
+    - name: Install packages on MacOSX
+      pacman: name={{ item }} state=latest
+      with_items: packages
+      when: ansible_distribution == "MacOSX"
+
+    - name: Create directories
+      file: path={{ item }} state=directory mode=0550
+      with_items:
+        - ~/.mutt/tmp
+        - ~/.mail/fastmail
+
+    - name: Copy files
+      copy: src={{ item.src }} dest={{ item.dest }} mode=0640
+      with_items:
+        - { src: files/mail/mbsyncrc, dest: ~/.mbsyncrc }
+        - { src: files/mail/msmtprc, dest: ~/.msmtprc }
+        - { src: files/mail/muttrc, dest: ~/.muttrc }
+        - { src: files/mail/mutt-colors-solarized-dark-16.muttrc, dest: ~/.mutt/mutt-colors-solarized-dark-16.muttrc }
+        - { src: files/mail/signature, dest: ~/.mutt/signature }
+        - { src: files/mail/mailcap, dest: ~/.mutt/mailcap }
+        - { src: files/mail/notmuch-config, dest: ~/.notmuch-config }
