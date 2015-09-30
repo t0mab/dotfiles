@@ -1,5 +1,3 @@
-. ../helpers.sh
-
 set -e
 
 mkdir -p ~/.mutt/tmp

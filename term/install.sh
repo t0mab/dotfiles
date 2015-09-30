@@ -12,7 +12,6 @@ cp -v tmux.conf ~/.tmux.conf
 cp -v zshrc ~/.zshrc
 cp -v zshenv ~/.zshenv
 git_clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-#git_clone https://github.com/seebi/dircolors-solarized.git ~/.dircolors-solarized
 
 mkdir -p ~/.base16
 cp -v base16-default.* ~/.base16
@@ -37,14 +36,6 @@ cp -v ssh_config ~/.ssh/config
 
 # psql
 cp -v psqlrc ~/.psqlrc
-
-# Subtitles
-pip2_install subliminal
-pip2_install guessit
-
-# FlexGet
-pip2_install flexget
-pip2_install transmissionrpc
 
 # Shut up parallel
 mkdir -p ~/.parallel
