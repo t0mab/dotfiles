@@ -3,7 +3,7 @@ filetype on
 filetype plugin indent on
 filetype plugin on
 filetype plugin on
-"
+
 " Interface
 colorscheme base16-default
 hi Normal ctermbg=none
@@ -51,8 +51,16 @@ imap <down> <nop>
 imap <left> <nop>
 imap <right> <nop>
 
+" Load plugins
+set rtp+=~/.nvim/plugins/airline
+set rtp+=~/.nvim/plugins/ansible
+set rtp+=~/.nvim/plugins/emmet
+set rtp+=~/.nvim/plugins/fugitive
+set rtp+=~/.nvim/plugins/gitgutter
+set rtp+=~/.nvim/plugins/go
+set rtp+=~/.nvim/plugins/youcompleteme
+
 " Airline
-set rtp+=~/.nvim/airline
 set completeopt-=preview
 set noshowmode
 set ttimeoutlen=50
@@ -62,17 +70,11 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline_powerline_fonts=1
 let g:airline_theme='base16'
 
-" Ansible
-set rtp+=~/.nvim/ansible
-
 " Git
-set rtp+=~/.nvim/fugitive
-set rtp+=~/.nvim/gitgutter
 " Just use it to visualize change, nothing else
 let g:gitgutter_map_keys = 0
 
 " Go
-set rtp+=~/.nvim/go
 let g:go_fmt_command = "goimports"
 au FileType go nmap <Leader>s <Plug>(go-implements)
 au FileType go nmap <Leader>i <Plug>(go-info)
@@ -88,12 +90,5 @@ au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 au FileType go nmap <Leader>e <Plug>(go-rename)
 
-" HTML
-set rtp+=~/.nvim/emmet
-
 " Python
-" Define a template for new Python files
 autocmd BufNewFile *.py 0read ~/.nvim/templates/python.py
-
-" YouCompleteMe
-set rtp+=~/.nvim/youcompleteme
