@@ -29,3 +29,6 @@
         - { src: files/neovim/base16-default.vim, dest: ~/.nvim/colors/base16-default.vim }
         - { src: files/neovim/nvimrc, dest: ~/.nvimrc }
         - { src: files/neovim/python.py, dest: ~/.nvim/templates/python.py }
+
+    - name: Compile YouCompleteMe
+      command: python2 /home/fabien/.nvim/plugins/youcompleteme/install.py --gocode-completer
