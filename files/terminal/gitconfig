@@ -14,6 +14,7 @@
 
 [mergetool "mymeld"]
 	cmd = meld $LOCAL $BASE $REMOTE $MERGED
+
 [push]
 	default = simple
 
