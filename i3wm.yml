@@ -35,8 +35,11 @@
       with_items: packages
       when: ansible_distribution == "ArchLinux"
 
-    - name: Create I3 directory
-      file: path=~/.i3 state=directory mode=0550
+    - name: Create directories
+      file: path={{ item }} state=directory mode=0550
+      with_items:
+        - ~/.i3
+        - ~/.local/share
 
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
@@ -50,3 +53,9 @@
         - { src: files/i3/i3_config, dest: ~/.i3/config }
         - { src: files/i3/xbindkeysrc, dest: ~/.xbindkeysrc }
         - { src: files/i3/xinitrc, dest: ~/.xinitrc }
+
+    - name: Copy fonts
+      copy: src=files/i3/fonts dest=~/.local/share
+
+    - name: Update fonts cache
+      command: fc-cache -vf ~/.local/share/fonts
