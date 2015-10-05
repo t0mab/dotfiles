@@ -180,4 +180,5 @@ bar {
 	status_command ~/.i3/conky_wrapper
 }
 
+new_window pixel
 for_window [class="feh"] floating enable
