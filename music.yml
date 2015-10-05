@@ -20,7 +20,7 @@
       pip: name=beets executable=pip2 extra_args="--upgrade --user"
 
     - name: Create directories
-      file: path={{ item }} state=directory mode=0550
+      file: path={{ item }} state=directory mode=0750
       with_items:
         - ~/.config/beets
         - ~/.config/mpd/logs

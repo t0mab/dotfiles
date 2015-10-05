@@ -45,7 +45,7 @@
       with_items:
         - ~/.base16
         - ~/.gnupg
-        - ~/.ipython
+        - ~/.ipython/profile_default
         - ~/.parallel
         - ~/.ssh
 

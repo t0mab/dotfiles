@@ -31,7 +31,7 @@
         - { src: files/mail/mbsyncrc, dest: ~/.mbsyncrc }
         - { src: files/mail/msmtprc, dest: ~/.msmtprc }
         - { src: files/mail/muttrc, dest: ~/.muttrc }
-        - { src: files/mail/mutt-colors-solarized-dark-16.muttrc, dest: ~/.mutt/mutt-colors-solarized-dark-16.muttrc }
+        - { src: files/mail/base16-default.dark.256.muttrc, dest: ~/.mutt/base16-default.dark.256.muttrc }
         - { src: files/mail/signature, dest: ~/.mutt/signature }
         - { src: files/mail/mailcap, dest: ~/.mutt/mailcap }
         - { src: files/mail/notmuch-config, dest: ~/.notmuch-config }
