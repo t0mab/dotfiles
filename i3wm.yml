@@ -38,9 +38,10 @@
     - name: Create directories
       file: path={{ item }} state=directory mode=0750
       with_items:
+        - ~/.config/termite
+        - ~/.config/xfce4/terminal
         - ~/.i3
         - ~/.local/share
-        - ~/.config/xfce4/terminal
 
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
@@ -53,6 +54,7 @@
         - { src: files/i3/terminalrc, dest: ~/.config/xfce4/terminal/terminalrc }
         - { src: files/i3/xbindkeysrc, dest: ~/.xbindkeysrc }
         - { src: files/i3/xinitrc, dest: ~/.xinitrc }
+        - { src: files/i3/termite_config, dest: ~/.config/termite/config }
 
     - name: Fix permission on conky_wrapper
       file: path=~/.i3/conky_wrapper mode=0540
