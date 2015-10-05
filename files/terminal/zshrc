@@ -19,7 +19,10 @@ DISABLE_AUTO_UPDATE="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(archlinux brew docker encode64 git gpg-agent pass pip python sublime sudo systemd virtualenvwrapper)
+plugins=(brew docker git gpg-agent pass pip python sudo virtualenvwrapper)
+
+# Load base16
+source $HOME/.config/base16-shell/base16-default.dark.sh
 
 source $ZSH/oh-my-zsh.sh
 
@@ -45,19 +48,8 @@ alias ta="tmux attach"
 # Only load .Xmodmap if X server is running.
 # [ -n "${XAUTHORITY+x}" ] && xmodmap ~/.Xmodmap
 
-# Fix Solarized theme in tmux session
-alias tmux="TERM=screen-256color-bce tmux"
-
 # Ignore HTTPS certificate by default with wget
 alias wget="wget --no-check-certificate"
-
-# Activate virtualenvwrapper
-#export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-#if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
-#	source /usr/local/bin/virtualenvwrapper.sh
-#else
-#	source /etc/bash_completion.d/virtualenvwrapper
-#fi
 
 # Task aliases
 alias tl="task list"

@@ -9,24 +9,24 @@
       file: path={{ item }} state=directory mode=0750
       with_items:
         - ~/.nvim/templates
-        - ~/.nvim/colors
         - ~/.nvim/plugins
 
     - name: Clone plugins
       git: repo={{ item.src }} dest=~/.nvim/plugins/{{ item.dest }} depth=1
       with_items:
         - { dest: airline, src: "https://github.com/bling/vim-airline.git" }
+        - { dest: base16, src: "https://github.com/chriskempson/base16-vim.git" }
         - { dest: ansible, src: "https://github.com/pearofducks/ansible-vim.git" }
         - { dest: emmet, src: "https://github.com/mattn/emmet-vim.git" }
         - { dest: fugitive, src: "https://github.com/tpope/vim-fugitive.git" }
         - { dest: gitgutter, src: "https://github.com/airblade/vim-gitgutter.git" }
         - { dest: go, src: "https://github.com/fatih/vim-go.git" }
+        - { dest: yaml, src: "https://github.com/stephpy/vim-yaml.git" }
         - { dest: youcompleteme, src: "https://github.com/Valloric/YouCompleteMe.git" }
 
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
-        - { src: files/neovim/base16-default.vim, dest: ~/.nvim/colors/base16-default.vim }
         - { src: files/neovim/nvimrc, dest: ~/.nvimrc }
         - { src: files/neovim/python.py, dest: ~/.nvim/templates/python.py }
 

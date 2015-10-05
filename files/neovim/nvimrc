@@ -5,11 +5,6 @@ filetype plugin on
 filetype plugin on
 
 " Interface
-colorscheme base16-default
-hi Normal ctermbg=none
-hi clear SignColumn
-let base16colorspace=256
-set background=dark
 set cursorline
 set nowrap
 set relativenumber
@@ -53,12 +48,21 @@ imap <right> <nop>
 
 " Load plugins
 set rtp+=~/.nvim/plugins/airline
+set rtp+=~/.nvim/plugins/base16
 set rtp+=~/.nvim/plugins/ansible
 set rtp+=~/.nvim/plugins/emmet
 set rtp+=~/.nvim/plugins/fugitive
 set rtp+=~/.nvim/plugins/gitgutter
 set rtp+=~/.nvim/plugins/go
+set rtp+=~/.nvim/plugins/yaml
 set rtp+=~/.nvim/plugins/youcompleteme
+
+" Colors
+colorscheme base16-default
+hi Normal ctermbg=none
+hi clear SignColumn
+let base16colorspace=256
+set background=dark
 
 " Airline
 set completeopt-=preview
