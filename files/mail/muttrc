@@ -1,5 +1,5 @@
 # Colors
-source ~/.mutt/mutt-colors-solarized-dark-16.muttrc
+source ~/.mutt/base16-default.dark.256.muttrc
 
 # Paths
 set folder=$HOME/.mail/fastmail
