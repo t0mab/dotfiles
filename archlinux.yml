@@ -73,3 +73,6 @@
         - { src: files/archlinux/dhcpcd.conf, dest: /etc/dhcpcd.conf }
         - { src: files/archlinux/locale.conf, dest: /etc/locale.conf }
         - { src: files/archlinux/locale.gen, dest: /etc/locale.gen }
+
+    - name: Set locale to en_US.UTF-8
+      command: localectl set-locale LANG=en_US.UTF-8
