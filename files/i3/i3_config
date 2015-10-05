@@ -28,7 +28,7 @@ floating_modifier $mod
 
 # start a terminal
 #bindsym $mod+Return exec urxvt -tr -sh 10
-bindsym $mod+Return exec xfce4-terminal
+bindsym $mod+Return exec termite
 
 # start Firefox
 bindsym $mod+B exec firefox
