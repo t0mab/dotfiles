@@ -1,6 +1,5 @@
 - name: Install Syncthing
   hosts: all
-  become: True
   tasks:
     - name: Install packages on ArchLinux
       pacman: name=syncthing state=latest
@@ -14,6 +13,7 @@
       file: path=~/Sync state=directory mode=0750
 
     - name: Enable syncthing in systemd
+      become: True
       service: name=syncthing@fabien enabled=true state=started
       when: ansible_distribution == "ArchLinux"
 
