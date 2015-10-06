@@ -1,0 +1,28 @@
+- name: Install MacOSX
+  hosts: all
+  tasks:
+    - name: Tap
+      homebrew_tap: tap={{ item }} state=present
+      with_items:
+        - homebrew/games
+        - neovim/neovim
+    - name: Install brew packages
+      homebrew: name={{ item }} state=latest
+      with_items:
+        - ssh-copy-id
+        - stockfish
+        - watch
+
+    - name: Install cask
+      command: brew install caskroom/cask/brew-cask
+
+    - name: Install cask packages
+      homebrew_cask: name={{ item }} state=present
+      with_items:
+        - atom
+        - dockertoolbox
+        - firefox
+        - google-chrome
+        - iterm2
+        - tunnelblick
+        - vlc
