@@ -1,0 +1,30 @@
+- name: Install Syncthing
+  hosts: all
+  become: True
+  tasks:
+    - name: Install packages on ArchLinux
+      pacman: name=syncthing state=latest
+      when: ansible_distribution == "ArchLinux"
+
+    - name: Install packages on MacOSX
+      homebrew: name=syncthing state=latest
+      when: ansible_distribution == "MacOSX"
+
+    - name: Create default directory
+      file: path=~/Sync state=directory mode=0750
+
+    - name: Enable syncthing in systemd
+      service: name=syncthing@fabien enabled=true state=started
+      when: ansible_distribution == "ArchLinux"
+
+    - name: Create ~Library/LaunchAgents directory
+      file: path=~/Library/LaunchAgents state=directory mode=0750
+      when: ansible_distribution == "MacOSX"
+
+    - name: Automatically launch on MacOSX
+      file: path=~/Library/LaunchAgents/homebrew.mxcl.syncthing.plist src=/usr/local/opt/syncthing/homebrew.mxcl.syncthing.plist state=link
+      when: ansible_distribution == "MacOSX"
+
+    - name: Launch it on MacOSX
+      command: launchctl load ~/Library/LaunchAgents/homebrew.mxcl.syncthing.plist
+      when: ansible_distribution == "MacOSX"
