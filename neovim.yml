@@ -31,4 +31,4 @@
         - { src: files/neovim/python.py, dest: ~/.nvim/templates/python.py }
 
     - name: Compile YouCompleteMe
-      command: python2 /home/fabien/.nvim/plugins/youcompleteme/install.py --gocode-completer
+      command: python2 ~/.nvim/plugins/youcompleteme/install.py --gocode-completer
