@@ -21,6 +21,7 @@
       with_items:
         - arduino
         - atom
+        - darktable
         - dockertoolbox
         - firefox
         - google-chrome

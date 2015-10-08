@@ -15,6 +15,7 @@
       - btrfs-progs
       - chromium
       - cups
+      - darktable
       - dialog
       - docker
       - dosfstools
