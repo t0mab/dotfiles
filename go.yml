@@ -18,7 +18,7 @@
 
     - name: Set bootstrap on MacOSX
       set_fact:
-        bootstrap: /usr/local/Cellar/go/1.5/libexec
+        bootstrap: /usr/local/Cellar/go/1.5.1/libexec
       when: ansible_distribution == "MacOSX"
 
     - name: Clone Go official repository
