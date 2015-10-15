@@ -30,5 +30,12 @@
         - { src: files/neovim/nvimrc, dest: ~/.nvimrc }
         - { src: files/neovim/python.py, dest: ~/.nvim/templates/python.py }
 
+    - name: Be able to switch back to VIM
+      file: path={{ item.dest }} src={{ item.src }} state=link
+      with_items:
+        - { dest: ~/.vim, src: ~/.nvim }
+        - { dest: ~/.vimrc, src: ~/.nvimrc }
+
+
     - name: Compile YouCompleteMe
       command: python2 ~/.nvim/plugins/youcompleteme/install.py --gocode-completer
