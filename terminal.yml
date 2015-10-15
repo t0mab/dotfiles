@@ -3,6 +3,7 @@
   vars:
     packages:
       - aria2
+      - autojump
       - cmatrix
       - curl
       - dos2unix
