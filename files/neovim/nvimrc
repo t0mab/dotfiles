@@ -7,7 +7,7 @@ filetype plugin on
 " Interface
 set cursorline
 set nowrap
-set relativenumber
+set number
 set ruler
 set shortmess=atI " Shorter messages and avoid useless Enter strikes
 set showmatch " Highlight matching brackets
