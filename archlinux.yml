@@ -19,6 +19,7 @@
       - dialog
       - docker
       - dosfstools
+      - dmenu
       - dstat
       - evince
       - exfat-utils
