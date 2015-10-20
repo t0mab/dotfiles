@@ -13,13 +13,19 @@ ZSH_THEME="lukerandall"
 # Comment this out to disable weekly auto-update checks
 DISABLE_AUTO_UPDATE="true"
 
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
+# Launch ssh-agent
+if ! pgrep -u $USER ssh-agent > /dev/null; then
+	ssh-agent > ~/.ssh/agent
+fi
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+	eval $(<~/.ssh/agent)
+fi
+ssh-add -l > /dev/null || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(autojump brew docker git gpg-agent pass sudo vi-mode virtualenvwrapper)
+plugins=(autojump brew docker git pass sudo vi-mode virtualenvwrapper)
 
 # Load base16
 source $HOME/.config/base16-shell/base16-default.dark.sh
