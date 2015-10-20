@@ -6,6 +6,7 @@ filetype plugin on
 
 " Interface
 set cursorline
+set mouse=
 set nowrap
 set number
 set ruler
@@ -54,6 +55,7 @@ set rtp+=~/.nvim/plugins/emmet
 set rtp+=~/.nvim/plugins/fugitive
 set rtp+=~/.nvim/plugins/gitgutter
 set rtp+=~/.nvim/plugins/go
+set rtp+=~/.nvim/plugins/html5
 set rtp+=~/.nvim/plugins/yaml
 set rtp+=~/.nvim/plugins/youcompleteme
 
