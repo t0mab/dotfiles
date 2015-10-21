@@ -35,7 +35,9 @@ let mapleader="\<SPACE>"
 autocmd BufWritePre * :%s/\s\+$//e
 
 " Filetypes
+autocmd BufNewFile,BufRead *.j2 set ft=jinja2
 autocmd BufNewFile,BufRead *.pde set ft=arduino
+autocmd BufNewFile,BufRead *.yml set ft=ansible
 
 " Learn the hard way
 map <up> <nop>
@@ -56,7 +58,7 @@ set rtp+=~/.nvim/plugins/fugitive
 set rtp+=~/.nvim/plugins/gitgutter
 set rtp+=~/.nvim/plugins/go
 set rtp+=~/.nvim/plugins/html5
-set rtp+=~/.nvim/plugins/yaml
+set rtp+=~/.nvim/plugins/jinja2
 set rtp+=~/.nvim/plugins/youcompleteme
 
 " Colors
