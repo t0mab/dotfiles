@@ -34,6 +34,9 @@ let mapleader="\<SPACE>"
 " Delete useless spaces
 autocmd BufWritePre * :%s/\s\+$//e
 
+" Run neomake on write
+autocmd BufWritePost * Neomake
+
 " Filetypes
 autocmd BufNewFile,BufRead *.j2 set ft=jinja2
 autocmd BufNewFile,BufRead *.pde set ft=arduino
@@ -59,6 +62,7 @@ set rtp+=~/.nvim/plugins/gitgutter
 set rtp+=~/.nvim/plugins/go
 set rtp+=~/.nvim/plugins/html5
 set rtp+=~/.nvim/plugins/jinja2
+set rtp+=~/.nvim/plugins/neomake
 set rtp+=~/.nvim/plugins/youcompleteme
 
 " Colors
