@@ -18,6 +18,9 @@ set splitright " Split on the right side by default
 set t_Co=256 " Enable 256 color in vim.
 syntax on
 
+" Neovim python module
+let g:python_host_prog='/usr/bin/python2'
+
 " Indentation
 set autoindent
 set smartindent
@@ -53,17 +56,17 @@ imap <left> <nop>
 imap <right> <nop>
 
 " Load plugins
-set rtp+=~/.nvim/plugins/airline
-set rtp+=~/.nvim/plugins/base16
-set rtp+=~/.nvim/plugins/ansible
-set rtp+=~/.nvim/plugins/emmet
-set rtp+=~/.nvim/plugins/fugitive
-set rtp+=~/.nvim/plugins/gitgutter
-set rtp+=~/.nvim/plugins/go
-set rtp+=~/.nvim/plugins/html5
-set rtp+=~/.nvim/plugins/jinja2
-set rtp+=~/.nvim/plugins/neomake
-set rtp+=~/.nvim/plugins/youcompleteme
+set rtp+=~/.config/nvim/plugins/airline
+set rtp+=~/.config/nvim/plugins/base16
+set rtp+=~/.config/nvim/plugins/ansible
+set rtp+=~/.config/nvim/plugins/emmet
+set rtp+=~/.config/nvim/plugins/fugitive
+set rtp+=~/.config/nvim/plugins/gitgutter
+set rtp+=~/.config/nvim/plugins/go
+set rtp+=~/.config/nvim/plugins/html5
+set rtp+=~/.config/nvim/plugins/jinja2
+set rtp+=~/.config/nvim/plugins/neomake
+set rtp+=~/.config/nvim/plugins/youcompleteme
 
 " Colors
 colorscheme base16-default

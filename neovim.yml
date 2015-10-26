@@ -8,11 +8,11 @@
     - name: Create directories
       file: path={{ item }} state=directory mode=0750
       with_items:
-        - ~/.nvim/templates
-        - ~/.nvim/plugins
+        - ~/.config/nvim/templates
+        - ~/.config/nvim/plugins
 
     - name: Clone plugins
-      git: repo={{ item.src }} dest=~/.nvim/plugins/{{ item.dest }} depth=1
+      git: repo={{ item.src }} dest=~/.config/nvim/plugins/{{ item.dest }} depth=1
       with_items:
         - { dest: airline, src: "https://github.com/bling/vim-airline.git" }
         - { dest: base16, src: "https://github.com/chriskempson/base16-vim.git" }
@@ -29,15 +29,15 @@
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
-        - { src: files/neovim/nvimrc, dest: ~/.nvimrc }
-        - { src: files/neovim/python.py, dest: ~/.nvim/templates/python.py }
+        - { src: files/neovim/init.vim, dest: ~/.config/nvim/init.vim }
+        - { src: files/neovim/python.py, dest: ~/.config/nvim/templates/python.py }
 
     - name: Be able to switch back to VIM
       file: path={{ item.dest }} src={{ item.src }} state=link
       with_items:
-        - { dest: ~/.vim, src: ~/.nvim }
-        - { dest: ~/.vimrc, src: ~/.nvimrc }
+        - { dest: ~/.vim, src: ~/.config/nvim }
+        - { dest: ~/.vimrc, src: ~/.config/nvim/init.vim }
 
 
     - name: Compile YouCompleteMe
-      command: python2 ~/.nvim/plugins/youcompleteme/install.py --gocode-completer
+      command: python2 ~/.config/nvim/plugins/youcompleteme/install.py --gocode-completer
