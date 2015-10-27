@@ -59,6 +59,7 @@ imap <right> <nop>
 set rtp+=~/.config/nvim/plugins/airline
 set rtp+=~/.config/nvim/plugins/base16
 set rtp+=~/.config/nvim/plugins/ansible
+set rtp+=~/.config/nvim/plugins/ctrlp
 set rtp+=~/.config/nvim/plugins/emmet
 set rtp+=~/.config/nvim/plugins/fugitive
 set rtp+=~/.config/nvim/plugins/gitgutter
