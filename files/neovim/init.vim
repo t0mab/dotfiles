@@ -67,6 +67,7 @@ set rtp+=~/.config/nvim/plugins/go
 set rtp+=~/.config/nvim/plugins/html5
 set rtp+=~/.config/nvim/plugins/jinja2
 set rtp+=~/.config/nvim/plugins/neomake
+set rtp+=~/.config/nvim/plugins/surround
 set rtp+=~/.config/nvim/plugins/youcompleteme
 
 " Colors

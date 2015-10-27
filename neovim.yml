@@ -25,6 +25,7 @@
         - { dest: html5, src: "https://github.com/othree/html5.vim.git" }
         - { dest: jinja2, src: "https://github.com/mitsuhiko/jinja2.git" }
         - { dest: neomake, src: "https://github.com/benekastah/neomake" }
+        - { dest: surround, src: "https://github.com/tpope/vim-surround.git" }
         - { dest: youcompleteme, src: "https://github.com/Valloric/YouCompleteMe.git" }
 
     - name: Copy files
