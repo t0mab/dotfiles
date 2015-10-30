@@ -52,6 +52,9 @@
     - name: Install Gocode
       command: ~/go/bin/go get -u github.com/nsf/gocode
 
+    - name: Install GetTool
+      command: ~/go get -u github.com/garyburd/go-explorer/src/getool
+
     - name: Install Wego
       command: ~/go/bin/go get -u github.com/schachmat/wego
 
