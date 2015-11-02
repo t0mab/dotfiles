@@ -115,6 +115,9 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline_powerline_fonts=1
 let g:airline_theme='base16'
 
+"DelimitMate
+let g:delimitMate_expand_cr=1
+
 " Git
 " Just use it to visualize change, nothing else
 let g:gitgutter_map_keys = 0
