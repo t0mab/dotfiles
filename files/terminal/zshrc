@@ -45,6 +45,9 @@ PATH=$PATH:~/.dotfiles/scripts:$GOPATH/bin
 PATH=/usr/lib/ccache:$PATH
 PATH=$PATH:~/Library/Python/2.7/bin
 
+# Set TERM variable
+export TERM=xterm
+
 source ~/.base16/base16-default.dark.sh
 
 alias maj="sudo apt-get update && sudo apt-get dist-upgrade"
