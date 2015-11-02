@@ -36,16 +36,16 @@ set autoindent
 set smartindent
 
 au BufNewFile,BufRead *.py
-	\ set tabstop=4
-	\ set softtabstop=4
-	\ set shiftwidth=4
-	\ set textwidth=79
-	\ set expandtab
+	\ set tabstop=4 |
+	\ set softtabstop=4 |
+	\ set shiftwidth=4 |
+	\ set textwidth=79 |
+	\ set expandtab |
 	\ set fileformat=unix
 
 au BufNewFile,BufRead *.css, *.html, *.j2, *.js
-	\ set tabstop=2
-	\ set softtabstop=2
+	\ set tabstop=2 |
+	\ set softtabstop=2 |
 	\ set shiftwidth=2
 
 " Completion
@@ -136,4 +136,4 @@ au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 au FileType go nmap <Leader>e <Plug>(go-rename)
 
 " Python
-autocmd BufNewFile *.py 0read ~/.nvim/templates/python.py
+autocmd BufNewFile *.py 0read ~/.config/nvim/templates/python.py
