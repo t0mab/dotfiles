@@ -18,7 +18,6 @@ set showmatch " Highlight matching brackets
 set so=10 " Set 10 lines to the cursor when moving vertically
 set splitbelow " Split below by default
 set splitright " Split on the right side by default
-set t_Co=256 " Enable 256 color in vim.
 syntax on
 
 " Neovim python module
@@ -83,7 +82,6 @@ imap <right> <nop>
 
 " Load plugins
 set rtp+=~/.config/nvim/plugins/airline
-set rtp+=~/.config/nvim/plugins/base16
 set rtp+=~/.config/nvim/plugins/ansible
 set rtp+=~/.config/nvim/plugins/colorschemes
 set rtp+=~/.config/nvim/plugins/ctrlp
@@ -93,6 +91,7 @@ set rtp+=~/.config/nvim/plugins/fugitive
 set rtp+=~/.config/nvim/plugins/gitgutter
 set rtp+=~/.config/nvim/plugins/go
 set rtp+=~/.config/nvim/plugins/go-explorer
+set rtp+=~/.config/nvim/plugins/gruvbox
 set rtp+=~/.config/nvim/plugins/html5
 set rtp+=~/.config/nvim/plugins/indentpython
 set rtp+=~/.config/nvim/plugins/jinja2
@@ -102,11 +101,10 @@ set rtp+=~/.config/nvim/plugins/tcomment_vim
 set rtp+=~/.config/nvim/plugins/youcompleteme
 
 " Colors
-colorscheme base16-default
-hi Normal ctermbg=none
-hi clear SignColumn
-let base16colorspace=256
+colorscheme gruvbox
 set background=dark
+let g:gruvbox_contrast_dark='hard'
+let g:gruvbox_sign_column='bg0'
 
 " Airline
 set completeopt-=preview
