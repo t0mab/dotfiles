@@ -103,18 +103,16 @@ set rtp+=~/.config/nvim/plugins/youcompleteme
 " Colors
 colorscheme gruvbox
 set background=dark
+highlight clear SignColumn
 let g:gruvbox_contrast_dark='hard'
-let g:gruvbox_sign_column='bg0'
+let g:gruvbox_sign_column='bg0_h'
 
 " Airline
 set completeopt-=preview
 set noshowmode
 set ttimeoutlen=50
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline_powerline_fonts=1
-let g:airline_theme='base16'
 
 "DelimitMate
 let g:delimitMate_expand_cr=1
