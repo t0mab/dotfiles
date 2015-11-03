@@ -1,3 +1,6 @@
+" Termite supports true colors so let's use them
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
 " Filetypes
 filetype on
 filetype plugin indent on
