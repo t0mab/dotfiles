@@ -29,11 +29,10 @@
         - { dest: jedi, src: "https://github.com/davidhalter/jedi-vim.git" }
         - { dest: jinja2, src: "https://github.com/mitsuhiko/jinja2.git" }
         - { dest: neomake, src: "https://github.com/benekastah/neomake" }
-        - { dest: supertab, src: "https://github.com/ervandew/supertab.git" }
         - { dest: surround, src: "https://github.com/tpope/vim-surround.git" }
         - { dest: tcomment_vim, src: "https://github.com/tomtom/tcomment_vim.git" }
         - { dest: virtualenv, src: "https://github.com/jmcantrell/vim-virtualenv.git" }
-        # - { dest: youcompleteme, src: "https://github.com/Valloric/YouCompleteMe.git" }
+        - { dest: youcompleteme, src: "https://github.com/Valloric/YouCompleteMe.git" }
 
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
@@ -49,5 +48,5 @@
         - { dest: ~/.vimrc, src: ~/.config/nvim/init.vim }
 
 
-    # - name: Compile YouCompleteMe
-    #   command: python2 ~/.config/nvim/plugins/youcompleteme/install.py --gocode-completer
+    - name: Compile YouCompleteMe
+      command: python2 ~/.config/nvim/bundle/youcompleteme/install.py --gocode-completer
