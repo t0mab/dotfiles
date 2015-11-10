@@ -10,20 +10,18 @@
       with_items:
         - ~/.config/nvim/templates
         - ~/.config/nvim/plugins
+        - ~/.config/nvim/autoload
 
     - name: Clone plugins
-      git: repo={{ item.src }} dest=~/.config/nvim/plugins/{{ item.dest }} depth=1
+      git: repo={{ item.src }} dest=~/.config/nvim/bundle/{{ item.dest }} depth=1
       with_items:
         - { dest: airline, src: "https://github.com/bling/vim-airline.git" }
-        - { dest: base16, src: "https://github.com/chriskempson/base16-vim.git" }
         - { dest: ansible, src: "https://github.com/pearofducks/ansible-vim.git" }
         - { dest: ctrlp, src: "https://github.com/ctrlpvim/ctrlp.vim.git" }
         - { dest: delimitmate, src: "https://github.com/Raimondi/delimitMate.git" }
-        # - { dest: emmet, src: "https://github.com/mattn/emmet-vim.git" }
         - { dest: fugitive, src: "https://github.com/tpope/vim-fugitive.git" }
         - { dest: gitgutter, src: "https://github.com/airblade/vim-gitgutter.git" }
         - { dest: go, src: "https://github.com/fatih/vim-go.git" }
-        - { dest: go-code, src: "https://github.com/nsf/gocode.git" }
         - { dest: go-explorer, src: "https://github.com/garyburd/go-explorer.git" }
         - { dest: gruvbox, src: "https://github.com/morhetz/gruvbox.git" }
         - { dest: html5, src: "https://github.com/othree/html5.vim.git" }
@@ -42,6 +40,7 @@
       with_items:
         - { src: files/neovim/init.vim, dest: ~/.config/nvim/init.vim }
         - { src: files/neovim/python.py, dest: ~/.config/nvim/templates/python.py }
+        - { src: files/neovim/pathogen.vim, dest: ~/.config/nvim/autoload/pathogen.vim }
 
     - name: Be able to switch back to VIM
       file: path={{ item.dest }} src={{ item.src }} state=link

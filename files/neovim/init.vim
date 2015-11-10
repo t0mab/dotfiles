@@ -1,10 +1,12 @@
 " Termite supports true colors so let's use them
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
+" Load pathogen
+execute pathogen#infect()
+
 " Filetypes
 filetype on
 filetype plugin indent on
-filetype plugin on
 filetype plugin on
 
 " Interface
@@ -79,30 +81,6 @@ imap <up> <nop>
 imap <down> <nop>
 imap <left> <nop>
 imap <right> <nop>
-
-" Load plugins
-set rtp+=~/.config/nvim/plugins/airline
-set rtp+=~/.config/nvim/plugins/ansible
-set rtp+=~/.config/nvim/plugins/colorschemes
-set rtp+=~/.config/nvim/plugins/ctrlp
-set rtp+=~/.config/nvim/plugins/delimitmate
-" set rtp+=~/.config/nvim/plugins/emmet
-set rtp+=~/.config/nvim/plugins/fugitive
-set rtp+=~/.config/nvim/plugins/gitgutter
-set rtp+=~/.config/nvim/plugins/go
-set rtp+=~/.config/nvim/plugins/go-code
-set rtp+=~/.config/nvim/plugins/go-explorer
-set rtp+=~/.config/nvim/plugins/gruvbox
-set rtp+=~/.config/nvim/plugins/html5
-set rtp+=~/.config/nvim/plugins/indentpython
-set rtp+=~/.config/nvim/plugins/jedi
-set rtp+=~/.config/nvim/plugins/jinja2
-set rtp+=~/.config/nvim/plugins/neomake
-set rtp+=~/.config/nvim/plugins/supertab
-set rtp+=~/.config/nvim/plugins/surround
-set rtp+=~/.config/nvim/plugins/tcomment_vim
-set rtp+=~/.config/nvim/plugins/virtualenv
-" set rtp+=~/.config/nvim/plugins/youcompleteme
 
 " Colors
 colorscheme gruvbox
