@@ -2,21 +2,39 @@
   hosts: all
   vars:
     packages:
+      - adobe-source-code-pro-fonts
+      - adobe-source-sans-pro-fonts
+      - adobe-source-serif-pro-fonts
+      - artwiz-fonts
+      - font-bh-ttf
+      - font-bitstream-speedo
+      - gsfonts
       - i3-wm
       - i3lock
       - i3status
       - redshift
       - screenfetch
       - scrot
+      - sdl_ttf
       - slim
+      - terminus-font
       - termite
+      - ttf-arphic-uming
+      - ttf-baekmuk
       - ttf-bitstream-vera
+      - ttf-cheapskate
       - ttf-dejavu
+      - ttf-freefont
+      - ttf-inconsolata
+      - ttf-liberation
       - ttf-ubuntu-font-family
       - xbindkeys
       - xf86-input-evdev
       - xf86-input-synaptics
       - xfce4-terminal
+      - xorg-fonts-100dpi
+      - xorg-fonts-75dpi
+      - xorg-fonts-type1
       - xorg-server-devel
       - xorg-xbacklight
       - xorg-xdpyinfo
@@ -38,6 +56,7 @@
     - name: Create directories
       file: path={{ item }} state=directory mode=0750
       with_items:
+        - ~/.config/fontconfig
         - ~/.config/termite
         - ~/.config/xfce4/terminal
         - ~/.i3
@@ -46,6 +65,7 @@
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
+        - { src: files/i3/fonts.conf, dest: ~/.config/fontconfig/fonts.conf }
         - { src: files/i3/Xresources, dest: ~/.Xresources }
         - { src: files/i3/conky_wrapper, dest: ~/.i3/conky_wrapper }
         - { src: files/i3/conkyrc, dest: ~/.i3/conkyrc }

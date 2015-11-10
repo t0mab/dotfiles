@@ -86,19 +86,23 @@ set rtp+=~/.config/nvim/plugins/ansible
 set rtp+=~/.config/nvim/plugins/colorschemes
 set rtp+=~/.config/nvim/plugins/ctrlp
 set rtp+=~/.config/nvim/plugins/delimitmate
-set rtp+=~/.config/nvim/plugins/emmet
+" set rtp+=~/.config/nvim/plugins/emmet
 set rtp+=~/.config/nvim/plugins/fugitive
 set rtp+=~/.config/nvim/plugins/gitgutter
 set rtp+=~/.config/nvim/plugins/go
+set rtp+=~/.config/nvim/plugins/go-code
 set rtp+=~/.config/nvim/plugins/go-explorer
 set rtp+=~/.config/nvim/plugins/gruvbox
 set rtp+=~/.config/nvim/plugins/html5
 set rtp+=~/.config/nvim/plugins/indentpython
+set rtp+=~/.config/nvim/plugins/jedi
 set rtp+=~/.config/nvim/plugins/jinja2
 set rtp+=~/.config/nvim/plugins/neomake
+set rtp+=~/.config/nvim/plugins/supertab
 set rtp+=~/.config/nvim/plugins/surround
 set rtp+=~/.config/nvim/plugins/tcomment_vim
-set rtp+=~/.config/nvim/plugins/youcompleteme
+set rtp+=~/.config/nvim/plugins/virtualenv
+" set rtp+=~/.config/nvim/plugins/youcompleteme
 
 " Colors
 colorscheme gruvbox
@@ -112,6 +116,7 @@ set completeopt-=preview
 set noshowmode
 set ttimeoutlen=50
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#virtualenv#enabled = 1
 let g:airline_powerline_fonts=1
 
 "DelimitMate

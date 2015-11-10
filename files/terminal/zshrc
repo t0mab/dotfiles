@@ -36,7 +36,7 @@ source $ZSH/oh-my-zsh.sh
 export GOPATH=~/Go
 
 # Set default editor
-export EDITOR=vim
+export EDITOR=nvim
 
 # Customize to your needs...
 PATH=/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
@@ -78,8 +78,9 @@ alias flush_memcached="echo flush_all | nc 127.0.0.1 11211"
 alias go_light="xrdb -merge ~/.Xresources-light"
 alias go_dark="xrdb -merge ~/.Xresources"
 
-# We want VIM all the time
-alias vi="vim"
+# We want Neovim all the time
+alias vi="nvim"
+alias vim="nvim"
 
 # Display exif information and fullscreen by default
 alias feh="feh -F --draw-exif"
