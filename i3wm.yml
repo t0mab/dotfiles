@@ -49,9 +49,9 @@
       - xorg-xwininfo
   tasks:
     - name: Install packages on ArchLinux
+      become: True
       pacman: name={{ item }} state=latest
       with_items: packages
-      when: ansible_distribution == "ArchLinux"
 
     - name: Create directories
       file: path={{ item }} state=directory mode=0750
