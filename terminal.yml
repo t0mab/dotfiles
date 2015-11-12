@@ -6,6 +6,7 @@
       - autojump
       - cmatrix
       - curl
+      - dfc
       - dos2unix
       - fdupes
       - git
