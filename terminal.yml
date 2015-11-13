@@ -11,6 +11,7 @@
       - fdupes
       - git
       - imagemagick
+      - ipcalc
       - jhead
       - jq
       - lftp
