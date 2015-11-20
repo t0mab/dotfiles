@@ -1,7 +1,5 @@
 " Termite supports true colors so let's use them
-if has("mac") == 0
-	let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-endif
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 " Load pathogen
 execute pathogen#infect()
@@ -25,7 +23,7 @@ set splitright " Split on the right side by default
 syntax on
 
 " Neovim python module
-let g:python_host_prog='/usr/bin/python2'
+let g:python_host_prog='python2'
 
 " Move around splits
 nnoremap <C-J> <C-W><C-J>
