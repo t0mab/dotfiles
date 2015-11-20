@@ -10,9 +10,10 @@
       - notmuch
   tasks:
     - name: Install packages on ArchLinux
+      become: True
       pacman: name={{ item }} state=latest
       with_items: packages
-      when: ansible_distribution == "ArchLinux"
+      when: ansible_distribution == "Archlinux"
 
     - name: Install packages on MacOSX
       homebrew: name={{ item }} state=latest
@@ -31,7 +32,6 @@
         - { src: files/mail/mbsyncrc, dest: ~/.mbsyncrc }
         - { src: files/mail/msmtprc, dest: ~/.msmtprc }
         - { src: files/mail/muttrc, dest: ~/.muttrc }
-        - { src: files/mail/base16-default.dark.256.muttrc, dest: ~/.mutt/base16-default.dark.256.muttrc }
         - { src: files/mail/signature, dest: ~/.mutt/signature }
         - { src: files/mail/mailcap, dest: ~/.mutt/mailcap }
         - { src: files/mail/notmuch-config, dest: ~/.notmuch-config }
