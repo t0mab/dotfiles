@@ -2,7 +2,6 @@
   hosts: all
   vars:
     packages:
-      - beets
       - mpc
       - mpd
       - ncmpcpp
