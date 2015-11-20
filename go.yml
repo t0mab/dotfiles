@@ -25,7 +25,7 @@
       git: repo=https://go.googlesource.com/go dest=~/go version=go1.5.1
 
     - name: Compile Go
-      command: ./all.bash
+      command: ./all.bash creates=~/go/bin/go
       environment:
         GOROOT_BOOTSTRAP: "{{ bootstrap }}"
       args:
@@ -51,9 +51,6 @@
 
     - name: Install Gocode
       command: ~/go/bin/go get -u github.com/nsf/gocode
-
-    - name: Install GetTool
-      command: ~/go get -u github.com/garyburd/go-explorer/src/getool
 
     - name: Install Wego
       command: ~/go/bin/go get -u github.com/schachmat/wego
