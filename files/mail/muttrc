@@ -1,6 +1,3 @@
-# Colors
-source ~/.mutt/base16-default.dark.256.muttrc
-
 # Paths
 set folder=$HOME/.mail/fastmail
 set alias_file=~/.mutt/alias

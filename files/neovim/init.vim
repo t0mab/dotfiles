@@ -1,5 +1,7 @@
 " Termite supports true colors so let's use them
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+if has("mac") == 0
+	let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
 
 " Load pathogen
 execute pathogen#infect()
@@ -36,7 +38,6 @@ nnoremap <C-N> :bnext<CR>
 nnoremap <C-P> :bprev<CR>
 
 " Indentation
-set autoindent
 set smartindent
 
 au BufNewFile,BufRead *.py
@@ -85,13 +86,9 @@ imap <right> <nop>
 " Colors
 colorscheme gruvbox
 set background=dark
-highlight clear SignColumn
-let g:gruvbox_contrast_dark='hard'
-let g:gruvbox_sign_column='bg0_h'
 
 " Airline
 set completeopt-=preview
-set noshowmode
 set ttimeoutlen=50
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#virtualenv#enabled = 1
@@ -103,6 +100,11 @@ let g:delimitMate_expand_cr=1
 " Git
 " Just use it to visualize change, nothing else
 let g:gitgutter_map_keys = 0
+" let g:gitgutter_sign_added = 'xx'
+" let g:gitgutter_sign_modified = 'yy'
+" let g:gitgutter_sign_removed = 'zz'
+" let g:gitgutter_sign_removed_first_line = '^^'
+" let g:gitgutter_sign_modified_removed = 'ww'
 
 " Go
 let g:go_fmt_command = "goimports"
