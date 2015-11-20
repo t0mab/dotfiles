@@ -4,7 +4,7 @@ Port 993
 User fabienengels@fastmail.com
 PassCmd "pass Divers/fabienengels@fastmail.com"
 SSLType IMAPS
-CertificateFile /etc/ssl/certs/ca-certificates.crt
+CertificateFile ~/.mutt/ca-bundle.crt
 
 Create Both
 Expunge Both

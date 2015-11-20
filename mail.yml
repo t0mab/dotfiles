@@ -29,9 +29,10 @@
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
+        - { src: files/mail/ca-bundle.crt, dest: ~/.mutt/ca-bundle.crt }
+        - { src: files/mail/mailcap, dest: ~/.mutt/mailcap }
         - { src: files/mail/mbsyncrc, dest: ~/.mbsyncrc }
         - { src: files/mail/msmtprc, dest: ~/.msmtprc }
         - { src: files/mail/muttrc, dest: ~/.muttrc }
-        - { src: files/mail/signature, dest: ~/.mutt/signature }
-        - { src: files/mail/mailcap, dest: ~/.mutt/mailcap }
         - { src: files/mail/notmuch-config, dest: ~/.notmuch-config }
+        - { src: files/mail/signature, dest: ~/.mutt/signature }
