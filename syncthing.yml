@@ -1,7 +1,7 @@
 - name: Install Syncthing
   hosts: all
   tasks:
-    - name: Install packages on ArchLinux
+    - name: Install packages on Archlinux
       pacman: name=syncthing state=latest
       when: ansible_distribution == "ArchLinux"
 
