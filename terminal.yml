@@ -3,7 +3,6 @@
   vars:
     packages:
       - aria2
-      - autojump
       - cmatrix
       - curl
       - dfc
@@ -66,8 +65,6 @@
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
-        - { src: files/terminal/base16-default.dark.sh, dest: ~/.base16/base16-default.dark.sh }
-        - { src: files/terminal/base16-default.light.sh, dest: ~/.base16/base16-default.light.sh }
         - { src: files/terminal/gitconfig, dest: ~/.gitconfig }
         - { src: files/terminal/gpg-agent.conf, dest: ~/.gnupg/gpg-agent.conf }
         - { src: files/terminal/inputrc, dest: ~/.inputrc }
@@ -75,5 +72,4 @@
         - { src: files/terminal/psqlrc, dest: ~/.psqlrc }
         - { src: files/terminal/ssh_config, dest: ~/.ssh/ssh_config }
         - { src: files/terminal/tmux.conf, dest: ~/.tmux.conf }
-        - { src: files/terminal/zshenv, dest: ~/.zshenv }
         - { src: files/terminal/zshrc, dest: ~/.zshrc }
