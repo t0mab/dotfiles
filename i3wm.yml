@@ -66,12 +66,10 @@
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
         - { src: files/i3/fonts.conf, dest: ~/.config/fontconfig/fonts.conf }
-        - { src: files/i3/Xresources, dest: ~/.Xresources }
         - { src: files/i3/conky_wrapper, dest: ~/.i3/conky_wrapper }
         - { src: files/i3/conkyrc, dest: ~/.i3/conkyrc }
         - { src: files/i3/gtkrc-2.0, dest: ~/.gtkrc-2.0 }
         - { src: files/i3/i3_config, dest: ~/.i3/config }
-        - { src: files/i3/terminalrc, dest: ~/.config/xfce4/terminal/terminalrc }
         - { src: files/i3/xbindkeysrc, dest: ~/.xbindkeysrc }
         - { src: files/i3/xinitrc, dest: ~/.xinitrc }
         - { src: files/i3/termite_config, dest: ~/.config/termite/config }
