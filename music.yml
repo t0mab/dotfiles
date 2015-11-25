@@ -2,14 +2,24 @@
   hosts: all
   vars:
     packages:
+      - mopidy
       - mpc
       - mpd
       - ncmpcpp
   tasks:
+    - name: Install XQuartz
+      become: True
+      homebrew_cask: name=xquartz state=present
+      when: ansible_distribution == "MacOSX"
+
+    - name: Tap mopidy
+      homebrew_tap: tap=mopidy/mopidy state=present
+      when: ansible_distribution == "MacOSX"
+
     - name: Install packages on ArchLinux
       pacman: name={{ item }} state=latest
       with_items: packages
-      when: ansible_distribution == "ArchLinux"
+      when: ansible_distribution == "Archlinux"
 
     - name: Install packages on MacOSX
       homebrew: name={{ item }} state=latest
@@ -23,13 +33,12 @@
       file: path={{ item }} state=directory mode=0750
       with_items:
         - ~/.config/beets
-        - ~/.config/mpd/logs
-        - ~/.config/mpd/playlists
+        - ~/.config/mopidy
         - ~/.ncmpcpp
 
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
         - { src: files/music/beets.yaml, dest: ~/.config/beets/config.yaml }
-        - { src: files/music/mpd.conf, dest: ~/.mpdconf }
+        - { src: files/music/mopidy.conf, dest: ~/.config/mopidy/mopidy.conf }
         - { src: files/music/ncmpcpp.conf, dest: ~/.ncmpcpp/config }

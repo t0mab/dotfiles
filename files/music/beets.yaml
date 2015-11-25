@@ -4,14 +4,42 @@ threaded: yes
 ui:
   color: yes
 import:
+  default_action: skip
   languages: en
   move: yes
-plugins: embedart fetchart ftintitle lyrics lastgenre lyrics mpdupdate scrub
-mpd:
-  host: localhost
-  port: 6600
+plugins: convert embedart fetchart ftintitle lastgenre missing scrub duplicates
 paths:
-  default: $format/Albums/$albumartist/$album%aunique{}/$track $title
-  singleton: $format/Singletons/$artist/$title
-  comp: $format/Compilations/$album%aunique{}/$track $title
-  albumtype:soundtrack: $format/Soundtracks/$album/$track $title
+  default: Albums/$albumartist/$album%aunique{}/$track $title
+  singleton: Singletons/$artist/$title
+  comp: Compilations/$album%aunique{}/$track $title
+  albumtype:soundtrack: Soundtracks/$album/$track $title
+embedart:
+  remove_art_file: yes
+convert:
+  format: aac-192
+  dest: /data/convert/aac-192
+  formats:
+          aac-128:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -ab 128k -vn $dest
+                  extension: m4a
+          aac-160:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -ab 160k -vn $dest
+                  extension: m4a
+          aac-192:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -ab 192k -vn $dest
+                  extension: m4a
+          aac-vbr-1:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -vn -vbr 1 $dest
+                  extension: m4a
+          aac-vbr-2:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -vn -vbr 2 $dest
+                  extension: m4a
+          aac-vbr-3:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -vn -vbr 3 $dest
+                  extension: m4a
+          aac-vbr-4:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -vn -vbr 4 $dest
+                  extension: m4a
+          aac-vbr-5:
+                  command: ffmpeg -i $source -y -vn -acodec libfdk_aac -vn -vbr 5 $dest
+                  extension: m4a

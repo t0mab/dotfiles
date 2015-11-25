@@ -3,7 +3,7 @@
   tasks:
     - name: Install packages on Archlinux
       pacman: name=syncthing state=latest
-      when: ansible_distribution == "ArchLinux"
+      when: ansible_distribution == "Archlinux"
 
     - name: Install packages on MacOSX
       homebrew: name=syncthing state=latest

@@ -10,7 +10,6 @@
       homebrew: name={{ item }} state=latest
       with_items:
         - ssh-copy-id
-        - stockfish
         - watch
 
     - name: Install cask
@@ -26,7 +25,6 @@
         - dockertoolbox
         - firefox
         - google-chrome
-        - iterm2
-        - rawtherapee
+        - iterm2-beta
         - tunnelblick
         - vlc
