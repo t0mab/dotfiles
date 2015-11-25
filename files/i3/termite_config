@@ -4,7 +4,7 @@ browser = firefox
 font = Monospace 10
 allow_bold = false
 scrollback_lines = 1000
-dynamic_title = false
+dynamic_title = true
 mouse_autohide = true
 
 [colors]

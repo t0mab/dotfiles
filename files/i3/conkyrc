@@ -15,28 +15,19 @@ use_spacer left
 TEXT
 [
   ${if_up wlp3s0}{
-    "full_text" : " ${wireless_essid} ${wireless_bitrate wlp3s0} (${wireless_link_qual_perc wlp3s0}%)",
-    "color" : ${if_up wlp3s0}"\#a1b56c"${else}"\#ab4642"${endif}
+    "full_text" : " ${wireless_essid} ${wireless_bitrate wlp3s0} (${wireless_link_qual_perc wlp3s0}%)"
   },${endif}
   ${if_existing /sys/class/power_supply/BAT0}{
-    "full_text" : " ${battery} - ${battery_time}",
-    "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
+    "full_text" : " ${battery} - ${battery_time}"
   },${endif}
   {
-    "full_text" : " ${addr tun0}",
-    "color" : ${if_up tun0}"\#a1b56c"${else}"\#ab4642"${endif}
+    "full_text" : " ${addr tun0}"
   },
   {
-    "full_text" : " ${cpu}%@${freq_g}",
-    "color" : ${if_match ${cpu}<90}"\#888888"${else}"\#ab4642"${endif}
+    "full_text" : " ${fs_free}"
   },
   {
-    "full_text" : " ${fs_free}",
-    "color" : ${if_match ${fs_free_perc}<90}"\#888888"${else}"\#ab4642"${endif}
-  },
-  {
-    "full_text" : " ${memperc}%",
-    "color" : ${if_match ${memperc}<90}"\#888888"${else}"\#ab4642"${endif}
+    "full_text" : " ${memperc}%"
   },
   {
     "full_text" : " ${time}"
