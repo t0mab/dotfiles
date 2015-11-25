@@ -33,6 +33,7 @@
       - zsh
   tasks:
     - name: install packages on archlinux
+      become: True
       pacman: name={{ item }} state=latest
       with_items: packages
       when: ansible_distribution == "Archlinux"
