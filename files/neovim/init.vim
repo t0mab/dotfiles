@@ -84,6 +84,12 @@ imap <right> <nop>
 " Colors
 colorscheme gruvbox
 set background=dark
+highlight Normal guibg=none
+highlight SignColumn guibg=none
+highlight GitGutterAdd guibg=none
+highlight GitGutterChange guibg=none
+highlight GitGutterDelete guibg=none
+highlight GitGutterChangeDelete guibg=none
 
 " Airline
 set completeopt-=preview
@@ -98,11 +104,7 @@ let g:delimitMate_expand_cr=1
 " Git
 " Just use it to visualize change, nothing else
 let g:gitgutter_map_keys = 0
-" let g:gitgutter_sign_added = 'xx'
-" let g:gitgutter_sign_modified = 'yy'
-" let g:gitgutter_sign_removed = 'zz'
-" let g:gitgutter_sign_removed_first_line = '^^'
-" let g:gitgutter_sign_modified_removed = 'ww'
+let g:gitgutter_sign_column_always = 1
 
 " Go
 let g:go_fmt_command = "goimports"
