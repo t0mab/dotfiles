@@ -86,10 +86,10 @@ colorscheme gruvbox
 set background=dark
 highlight Normal guibg=none
 highlight SignColumn guibg=none
-highlight GitGutterAdd guibg=none
-highlight GitGutterChange guibg=none
-highlight GitGutterDelete guibg=none
-highlight GitGutterChangeDelete guibg=none
+highlight GitGutterAdd guibg=none guifg=green
+highlight GitGutterChange guibg=none guifg=orange
+highlight GitGutterDelete guibg=none guifg=red
+highlight GitGutterChangeDelete guibg=none guifg=purple
 
 " Airline
 set completeopt-=preview
@@ -104,6 +104,7 @@ let g:delimitMate_expand_cr=1
 " Git
 " Just use it to visualize change, nothing else
 let g:gitgutter_map_keys = 0
+" let g:gitgutter_override_sign_column_highlight = 0
 let g:gitgutter_sign_column_always = 1
 
 " Go
