@@ -65,14 +65,15 @@
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
       with_items:
-        - { src: files/i3/fonts.conf, dest: ~/.config/fontconfig/fonts.conf }
         - { src: files/i3/conky_wrapper, dest: ~/.i3/conky_wrapper }
         - { src: files/i3/conkyrc, dest: ~/.i3/conkyrc }
+        - { src: files/i3/fonts.conf, dest: ~/.config/fontconfig/fonts.conf }
         - { src: files/i3/gtkrc-2.0, dest: ~/.gtkrc-2.0 }
         - { src: files/i3/i3_config, dest: ~/.i3/config }
+        - { src: files/i3/i3lock.png, dest: ~/.i3/i3lock.png }
+        - { src: files/i3/termite_config, dest: ~/.config/termite/config }
         - { src: files/i3/xbindkeysrc, dest: ~/.xbindkeysrc }
         - { src: files/i3/xinitrc, dest: ~/.xinitrc }
-        - { src: files/i3/termite_config, dest: ~/.config/termite/config }
 
     - name: Fix permission on conky_wrapper
       file: path=~/.i3/conky_wrapper mode=0540
