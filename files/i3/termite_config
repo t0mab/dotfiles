@@ -7,9 +7,11 @@ scrollback_lines = 1000
 dynamic_title = false
 mouse_autohide = true
 
-
 [colors]
-background = rgba(18, 18, 18, 0.90)
+# background = #1d2021
+#background = rgba(29, 32, 33, 0.95)
+
+background = rgba(18, 18, 18, 0.85)
 
 foreground = #ebdbb2
 foreground_bold = #ebdbb2
