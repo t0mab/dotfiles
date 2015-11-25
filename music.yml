@@ -17,6 +17,7 @@
       when: ansible_distribution == "MacOSX"
 
     - name: Install packages on ArchLinux
+      become: True
       pacman: name={{ item }} state=latest
       with_items: packages
       when: ansible_distribution == "Archlinux"
