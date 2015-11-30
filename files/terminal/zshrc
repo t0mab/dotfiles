@@ -70,3 +70,6 @@ alias pretty_json_colorized="pretty_json | pygmentize -l javascript"
 
 # Watch disk flushing
 alias watch_flush="watch grep -e Dirty: -e Writeback: /proc/meminfo"
+
+# Beet import current directory
+alias bi.="beet import ."
