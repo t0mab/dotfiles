@@ -31,6 +31,9 @@
       args:
         chdir: ~/go/src
 
+    - name: Install HDF5 binding
+      command: ~/go/bin/go get -u github.com/sbinet/go-hdf5
+
     - name: Install Godef
       command: ~/go/bin/go get -u code.google.com/p/rog-go/exp/cmd/godef
 
