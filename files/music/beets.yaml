@@ -7,11 +7,11 @@ import:
   default_action: skip
   languages: en
   move: yes
-plugins: convert embedart fetchart ftintitle lastgenre missing scrub duplicates
+plugins: the convert embedart fetchart ftintitle lastgenre missing scrub duplicates
 asciify_paths: yes
 paths:
-  default: Albums/$albumartist/$album%aunique{}/$track $title
-  singleton: Singletons/$artist/$title
+  default: Albums/%the{$albumartist}/$album%aunique{}/$track $title
+  singleton: Singletons/%the{$artist}/$title
   comp: Compilations/$album%aunique{}/$track $title
   albumtype:soundtrack: Soundtracks/$album/$track $title
 embedart:
