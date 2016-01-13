@@ -22,7 +22,7 @@
       when: ansible_distribution == "MacOSX"
 
     - name: Clone Go official repository
-      git: repo=https://go.googlesource.com/go dest=~/go version=go1.5.1
+      git: repo=https://go.googlesource.com/go dest=~/go version=go1.5.2
 
     - name: Compile Go
       command: ./all.bash creates=~/go/bin/go
@@ -30,6 +30,12 @@
         GOROOT_BOOTSTRAP: "{{ bootstrap }}"
       args:
         chdir: ~/go/src
+
+    - name: Install cfssl
+      command: ~/go/bin/go get -u github.com/cloudflare/cfssl/cmd/cfssl
+
+    - name: Install cfssljson
+      command: ~/go/bin/go get -u github.com/cloudflare/cfssl/cmd/cfssljson
 
     - name: Install Godef
       command: ~/go/bin/go get -u code.google.com/p/rog-go/exp/cmd/godef
@@ -54,9 +60,6 @@
 
     - name: Install Wego
       command: ~/go/bin/go get -u github.com/schachmat/wego
-
-    - name: Install Hugo
-      command: ~/go/bin/go get -u github.com/spf13/hugo
 
     - name: Install Benchcmp
       command: ~/go/bin/go get -u golang.org/x/tools/cmd/benchcmp
