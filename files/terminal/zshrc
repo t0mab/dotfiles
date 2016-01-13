@@ -3,7 +3,7 @@
 ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="lukerandall"
 DISABLE_AUTO_UPDATE="true"
-plugins=(git pass vi-mode virtualenvwrapper)
+plugins=(git pass vi-mode)
 source $ZSH/oh-my-zsh.sh
 
 # Launch ssh-agent
