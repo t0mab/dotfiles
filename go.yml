@@ -22,7 +22,7 @@
       when: ansible_distribution == "MacOSX"
 
     - name: Clone Go official repository
-      git: repo=https://go.googlesource.com/go dest=~/go version=go1.5.2
+      git: repo=https://go.googlesource.com/go dest=~/go version=go1.5.3
 
     - name: Compile Go
       command: ./all.bash creates=~/go/bin/go
