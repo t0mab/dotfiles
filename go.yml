@@ -31,14 +31,8 @@
       args:
         chdir: ~/go/src
 
-    - name: Install cfssl
-      command: ~/go/bin/go get -u github.com/cloudflare/cfssl/cmd/cfssl
-
-    - name: Install cfssljson
-      command: ~/go/bin/go get -u github.com/cloudflare/cfssl/cmd/cfssljson
-
     - name: Install Godef
-      command: ~/go/bin/go get -u code.google.com/p/rog-go/exp/cmd/godef
+      command: ~/go/bin/go get -u github.com/rogpeppe/godef
 
     - name: Install Golint
       command: ~/go/bin/go get -u github.com/golang/lint/golint
@@ -52,14 +46,8 @@
     - name: Install PostGreSQL drivers
       command: ~/go/bin/go get -u github.com/lib/pq
 
-    - name: Install Oauth
-      command: ~/go/bin/go get -u github.com/mrjones/oauth
-
     - name: Install Gocode
       command: ~/go/bin/go get -u github.com/nsf/gocode
-
-    - name: Install Wego
-      command: ~/go/bin/go get -u github.com/schachmat/wego
 
     - name: Install Benchcmp
       command: ~/go/bin/go get -u golang.org/x/tools/cmd/benchcmp
@@ -78,9 +66,6 @@
 
     - name: Install oracle
       command: ~/go/bin/go get -u golang.org/x/tools/oracle
-
-    - name: Install MongoDB drivers (mgo.v2)
-      command: ~/go/bin/go get -u gopkg.in/mgo.v2
 
     - name: Install Vegeta
       command: "{{ item }}"
