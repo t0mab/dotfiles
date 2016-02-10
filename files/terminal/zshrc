@@ -35,7 +35,7 @@ export KEYTIMEOUT=1
 autoload -U colors
 colors
 
-function git_prompt_status() {
+function git-prompt-status() {
 	local BRANCH INDEX STATUS
 	local UNTRACKED="%%"
 	local ADDED="+"
@@ -94,7 +94,7 @@ function git_prompt_status() {
 
 function zle-line-init zle-keymap-select {
 	VIMODE="${${KEYMAP/vicmd/$fg_bold[red]%B»%b$reset_color}/(main|viins)/%B»%b}"
-	GIT_STATUS="$(git_prompt_status)"
+	GIT_STATUS="$(git-prompt-status)"
 	[[ -n $GIT_STATUS ]] && GIT_STATUS=" %{$fg[yellow]%}($GIT_STATUS)%{$reset_color%}"
 	PROMPT="%{$fg_bold[green]%}%n@%m%{$reset_color%} %{$fg_bold[blue]%}%2~%{$reset_color%}$GIT_STATUS ${VIMODE} "
 	zle reset-prompt
