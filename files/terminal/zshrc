@@ -89,7 +89,7 @@ function git_prompt_status() {
 	if $(echo "$INDEX" | grep '^## .*diverged' &> /dev/null); then
 		STATUS="$DIVERGED$STATUS"
 	fi
-	echo "$BRANCH $STATUS"
+	[[ -z $STATUS ]] && echo "$BRANCH" || echo "$BRANCH $STATUS"
 }
 
 function zle-line-init zle-keymap-select {
