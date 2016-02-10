@@ -36,3 +36,4 @@
       with_items:
         - { src: files/music/beets.yaml, dest: ~/.config/beets/config.yaml }
         - { src: files/music/ncmpcpp.conf, dest: ~/.ncmpcpp/config }
+        - { src: files/music/mpd.conf, dest: ~/.mpdconf }
