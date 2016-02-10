@@ -11,6 +11,9 @@ bindsym $mod+Return exec termite
 # start Firefox
 bindsym $mod+B exec firefox
 
+# start Thunar
+bindsym $mod+E exec thunar
+
 # Lock screen
 bindsym $mod+Control+L exec i3lock -c 000000 -i ~/.i3/i3lock.png
 
@@ -64,7 +67,7 @@ bindsym $mod+f fullscreen toggle
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+#bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
