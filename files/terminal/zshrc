@@ -1,4 +1,5 @@
 export GOPATH=~/Go
+export PATH="$HOME/go/bin:$GOPATH/bin:$PATH"
 
 # SSH
 gpg-agent --daemon --quiet 2> /dev/null
