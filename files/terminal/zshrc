@@ -12,6 +12,9 @@ setopt hist_verify
 setopt inc_append_history
 #setopt share_history # share command history data
 
+# Term
+export TERM=xterm
+
 # Go
 export GOPATH=~/Go
 export PATH="$HOME/go/bin:$GOPATH/bin:$PATH"
