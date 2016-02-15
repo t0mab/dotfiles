@@ -20,9 +20,21 @@ export GOPATH=~/Go
 export PATH="$HOME/go/bin:$GOPATH/bin:$PATH"
 
 # SSH
-gpg-agent --daemon --quiet 2> /dev/null
-export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
-export GPG_TTY=$(tty)
+SSH_ENV="$HOME/.ssh/env"
+
+function start-ssh-agent {
+	/usr/bin/ssh-agent | sed 's/^echo/#echo/' > $SSH_ENV
+	chmod 600 $SSH_ENV
+	. $SSH_ENV > /dev/null
+	/usr/bin/ssh-add
+}
+
+if [ -f $SSH_ENV ]; then
+	. $SSH_ENV > /dev/null
+	ps $SSH_AGENT_PID | grep -q ssh-agent || start-ssh-agent
+else
+	start-ssh-agent
+fi
 
 # Tab completion
 autoload -U compinit
@@ -48,7 +60,7 @@ export KEYTIMEOUT=1
 autoload -U colors
 colors
 
-function git-prompt-status() {
+function git-prompt-status {
 	local BRANCH INDEX STATUS
 	local UNTRACKED="%%"
 	local ADDED="+"
