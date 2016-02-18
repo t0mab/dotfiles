@@ -3,7 +3,6 @@
   vars:
     packages:
       - aria2
-      - cmatrix
       - curl
       - dfc
       - dos2unix
