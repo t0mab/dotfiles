@@ -1,10 +1,6 @@
 - name: Install Neovim
   hosts: all
   tasks:
-    - name: Install packages on MacOSX
-      homebrew: name=neovim state=latest
-      when: ansible_distribution == "MacOSX"
-
     - name: Create directories
       file: path={{ item }} state=directory mode=0750
       with_items:
@@ -29,7 +25,6 @@
         - { dest: indentpython, src: "https://github.com/vim-scripts/indentpython.vim.git" }
         - { dest: jinja2, src: "https://github.com/mitsuhiko/jinja2.git" }
         - { dest: neomake, src: "https://github.com/benekastah/neomake" }
-        # - { dest: supertab, src: "https://github.com/ervandew/supertab.git" }
         - { dest: surround, src: "https://github.com/tpope/vim-surround.git" }
         - { dest: tcomment_vim, src: "https://github.com/tomtom/tcomment_vim.git" }
         # - { dest: virtualenv, src: "https://github.com/jmcantrell/vim-virtualenv.git" }
@@ -40,13 +35,3 @@
         - { src: files/neovim/init.vim, dest: ~/.config/nvim/init.vim }
         - { src: files/neovim/python.py, dest: ~/.config/nvim/templates/python.py }
         - { src: files/neovim/pathogen.vim, dest: ~/.config/nvim/autoload/pathogen.vim }
-
-    - name: Be able to switch back to VIM
-      file: path={{ item.dest }} src={{ item.src }} state=link
-      with_items:
-        - { dest: ~/.vim, src: ~/.config/nvim }
-        - { dest: ~/.vimrc, src: ~/.config/nvim/init.vim }
-
-
-    # - name: Compile YouCompleteMe
-    #   command: python2 ~/.config/nvim/bundle/youcompleteme/install.py --gocode-completer

@@ -25,7 +25,7 @@
       git: repo=https://go.googlesource.com/go dest=~/go version=go1.6
 
     - name: Compile Go
-      command: ./all.bash creates=~/go/bin/go
+      command: ./make.bash creates=~/go/bin/go
       environment:
         GOROOT_BOOTSTRAP: "{{ bootstrap }}"
       args:

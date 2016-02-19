@@ -12,8 +12,8 @@ call remote#host#RegisterPlugin('python3', '/home/fabien/.config/nvim/bundle/deo
       \ {'sync': 1, 'name': 'DeopleteInitializePython', 'opts': {}, 'type': 'command'},
      \ ])
 
-inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
-inoremap <Leader><Tab> <Space><Space>
+inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Load pathogen
 execute pathogen#infect()
@@ -35,9 +35,6 @@ set so=10 " Set 10 lines to the cursor when moving vertically
 set splitbelow " Split below by default
 set splitright " Split on the right side by default
 syntax on
-
-" Neovim python module
-let g:python_host_prog='python2'
 
 " Move around splits
 nnoremap <C-J> <C-W><C-J>
@@ -81,16 +78,6 @@ autocmd BufWritePost * Neomake
 autocmd BufNewFile,BufRead *.j2 set ft=jinja2
 autocmd BufNewFile,BufRead *.pde set ft=arduino
 autocmd BufNewFile,BufRead *.yml set ft=ansible
-
-" Learn the hard way
-map <up> <nop>
-map <down> <nop>
-map <left> <nop>
-map <right> <nop>
-imap <up> <nop>
-imap <down> <nop>
-imap <left> <nop>
-imap <right> <nop>
 
 " Colors
 colorscheme gruvbox
