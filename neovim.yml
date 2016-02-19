@@ -18,19 +18,21 @@
         - { dest: ansible, src: "https://github.com/pearofducks/ansible-vim.git" }
         - { dest: ctrlp, src: "https://github.com/ctrlpvim/ctrlp.vim.git" }
         - { dest: delimitmate, src: "https://github.com/Raimondi/delimitMate.git" }
+        - { dest: deoplete, src: "https://github.com/Shougo/deoplete.nvim.git" }
+        - { dest: deoplete-go, src: "https://github.com/zchee/deoplete-go.git" }
+        - { dest: deoplete-jedi, src: "https://github.com/zchee/deoplete-jedi.git" }
         - { dest: fugitive, src: "https://github.com/tpope/vim-fugitive.git" }
         - { dest: gitgutter, src: "https://github.com/airblade/vim-gitgutter.git" }
         - { dest: go, src: "https://github.com/fatih/vim-go.git" }
         - { dest: gruvbox, src: "https://github.com/morhetz/gruvbox.git" }
         - { dest: html5, src: "https://github.com/othree/html5.vim.git" }
         - { dest: indentpython, src: "https://github.com/vim-scripts/indentpython.vim.git" }
-        - { dest: jedi, src: "https://github.com/davidhalter/jedi-vim.git" }
         - { dest: jinja2, src: "https://github.com/mitsuhiko/jinja2.git" }
         - { dest: neomake, src: "https://github.com/benekastah/neomake" }
+        # - { dest: supertab, src: "https://github.com/ervandew/supertab.git" }
         - { dest: surround, src: "https://github.com/tpope/vim-surround.git" }
         - { dest: tcomment_vim, src: "https://github.com/tomtom/tcomment_vim.git" }
-        - { dest: virtualenv, src: "https://github.com/jmcantrell/vim-virtualenv.git" }
-        - { dest: youcompleteme, src: "https://github.com/Valloric/YouCompleteMe.git" }
+        # - { dest: virtualenv, src: "https://github.com/jmcantrell/vim-virtualenv.git" }
 
     - name: Copy files
       copy: src={{ item.src }} dest={{ item.dest }} mode=0640
@@ -46,5 +48,5 @@
         - { dest: ~/.vimrc, src: ~/.config/nvim/init.vim }
 
 
-    - name: Compile YouCompleteMe
-      command: python2 ~/.config/nvim/bundle/youcompleteme/install.py --gocode-completer
+    # - name: Compile YouCompleteMe
+    #   command: python2 ~/.config/nvim/bundle/youcompleteme/install.py --gocode-completer

@@ -1,6 +1,20 @@
 " Termite supports true colors so let's use them
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
+" Map the leader key to SPACE
+let mapleader="\<SPACE>"
+
+let g:deoplete#enable_at_startup=1
+let g:deoplete#enable_smart_case = 1
+let g:deoplete#sources#go#align_class = 1
+let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+call remote#host#RegisterPlugin('python3', '/home/fabien/.config/nvim/bundle/deoplete/rplugin/python3/deoplete.py', [
+      \ {'sync': 1, 'name': 'DeopleteInitializePython', 'opts': {}, 'type': 'command'},
+     \ ])
+
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : deoplete#mappings#manual_complete()
+inoremap <Leader><Tab> <Space><Space>
+
 " Load pathogen
 execute pathogen#infect()
 
@@ -56,9 +70,6 @@ set wildignore+=.git,*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak " Ignore some files
 
 " Mail redaction
 au BufRead ~/.mutt/tmp/mutt-* set tw=72 " Mutt
-
-" Map the leader key to SPACE
-let mapleader="\<SPACE>"
 
 " Delete useless spaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -125,3 +136,11 @@ au FileType go nmap <Leader>e <Plug>(go-rename)
 
 " Python
 autocmd BufNewFile *.py 0read ~/.config/nvim/templates/python.py
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+    project_base_dir = os.ENVIRON['VIRTUAL_ENV']
+    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+    execfile(activate_this, dict(__file__=activate_this))
+EOF
