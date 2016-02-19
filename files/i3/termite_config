@@ -8,11 +8,10 @@ dynamic_title = true
 mouse_autohide = true
 
 [colors]
-# background = #1d2021
-#background = rgba(29, 32, 33, 0.95)
-
+# hard contrast: background = #1d2021
+# normal background = #282828
+# soft contrast: background = #32302f
 background = rgba(18, 18, 18, 0.85)
-
 foreground = #ebdbb2
 foreground_bold = #ebdbb2
 
