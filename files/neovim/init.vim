@@ -8,9 +8,6 @@ let g:deoplete#enable_at_startup=1
 let g:deoplete#enable_smart_case = 1
 let g:deoplete#sources#go#align_class = 1
 let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-call remote#host#RegisterPlugin('python3', '/home/fabien/.config/nvim/bundle/deoplete/rplugin/python3/deoplete.py', [
-      \ {'sync': 1, 'name': 'DeopleteInitializePython', 'opts': {}, 'type': 'command'},
-     \ ])
 
 inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
