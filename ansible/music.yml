@@ -1,0 +1,16 @@
+- name: Install Music
+  hosts: all
+  vars:
+    packages:
+      - mpc
+      - mpd
+      - ncmpcpp
+  tasks:
+    - name: Install packages on ArchLinux
+      become: True
+      pacman: name={{ item }} state=latest
+      with_items: packages
+      when: ansible_distribution == "Archlinux"
+
+    - name: Install beets
+      pip: name=beets executable=pip2 extra_args="--upgrade --user"

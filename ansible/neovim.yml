@@ -1,12 +1,6 @@
 - name: Install Neovim
   hosts: all
   tasks:
-    - name: Create directories
-      file: path={{ item }} state=directory mode=0750
-      with_items:
-        - ~/.config/nvim/templates
-        - ~/.config/nvim/autoload
-
     - name: Clone plugins
       git: repo={{ item.src }} dest=~/.config/nvim/bundle/{{ item.dest }} depth=1
       with_items:
@@ -28,10 +22,3 @@
         - { dest: surround, src: "https://github.com/tpope/vim-surround.git" }
         - { dest: tcomment_vim, src: "https://github.com/tomtom/tcomment_vim.git" }
         # - { dest: virtualenv, src: "https://github.com/jmcantrell/vim-virtualenv.git" }
-
-    - name: Copy files
-      copy: src={{ item.src }} dest={{ item.dest }} mode=0640
-      with_items:
-        - { src: files/neovim/init.vim, dest: ~/.config/nvim/init.vim }
-        - { src: files/neovim/python.py, dest: ~/.config/nvim/templates/python.py }
-        - { src: files/neovim/pathogen.vim, dest: ~/.config/nvim/autoload/pathogen.vim }

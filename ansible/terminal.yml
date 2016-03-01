@@ -1,0 +1,38 @@
+- name: Install Music
+  hosts: all
+  vars:
+    packages:
+      - aria2
+      - curl
+      - dfc
+      - dos2unix
+      - fdupes
+      - git
+      - imagemagick
+      - ipcalc
+      - jhead
+      - jq
+      - lftp
+      - mercurial
+      - mtr
+      - ncdu
+      - ncmpcpp
+      - nmap
+      - p7zip
+      - parallel
+      - postgresql
+      - pv
+      - ranger
+      - siege
+      - testdisk
+      - tmux
+      - unrar
+      - wget
+      - youtube-dl
+      - zsh
+  tasks:
+    - name: install packages on archlinux
+      become: True
+      pacman: name={{ item }} state=latest
+      with_items: packages
+      when: ansible_distribution == "Archlinux"
