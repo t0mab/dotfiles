@@ -139,11 +139,6 @@ zle -N zle-keymap-select
 # Enable ls colors and disable escaping
 alias ls="ls --color=tty --quoting-style=literal"
 
-# Git
-alias gl="git pull"
-alias gp="git push"
-alias gst="git status"
-
 # Launch a small webserver
 alias ws="python -m SimpleHTTPServer"
 
