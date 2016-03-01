@@ -172,4 +172,4 @@ alias watch_flush="watch grep -e Dirty: -e Writeback: /proc/meminfo"
 alias bi.="beet import ."
 
 # To manage dotfiles via git worktree
-alias dotfiles="git --dit-dir=$HOME/.dotfiles --work-tree=$HOME"
+alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
