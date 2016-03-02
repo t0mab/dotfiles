@@ -7,6 +7,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	abook \
 	aria2 \
 	beets \
+	compton \
 	curl \
 	dfc \
 	dos2unix \
