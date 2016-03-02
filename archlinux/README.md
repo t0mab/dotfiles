@@ -100,20 +100,25 @@ reboot
 
 #### SSH
 
+```
 pacman -S openssh ufw
 systemctl enable sshd.service
 ufw allow 22
 ufw enable
 systemctl enable ufw
 ufw logging off
+```
+
 
 ### Settings
 
+```
 hostname set-hostname namazu
 localectl set-locale LANG=en_US.utf8
 localectl set-keymap fr
 localectl set-x11-keymap fr
 timedatectl set-ntp true
+```
 
 ### Docker
 
@@ -136,12 +141,16 @@ pacman -S mesa-libgl xf86-video-intel libvdpau-va-gl libva-intel-driver
 
 ### User
 
+```
 pacman -S sudo zsh
 useradd -m -s /usr/bin/zsh -G wheel,uucp,rfkill,games,lock,network,storage,users,docker fabien
 passwd fabien
+```
 
+```
 visudo
 uncomment : %wheel ALL=(ALL) ALL
+```
 
 ### Install them all !!!
 
@@ -158,11 +167,6 @@ tar zxvf yaourt.tar.gz
 cd yaourt
 makepkg -si
 cd ..
-
-pacman -S git
-git clone https://github.com/fabienengels/dotfiles
-
-cat dotfiles/archlinux/packages.list | pacman -S -
 
 /etc/slim.conf:
 default_user fabien
