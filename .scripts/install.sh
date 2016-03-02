@@ -13,6 +13,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	dfc \
 	dos2unix \
 	fdupes \
+	firefox \
 	gimp \
 	git \
 	go \
