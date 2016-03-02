@@ -9,15 +9,18 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	beets \
 	compton \
 	curl \
+	darktable \
 	dfc \
 	dos2unix \
 	fdupes \
+	gimp \
 	git \
 	go \
 	i3-wm \
 	i3lock \
 	i3status \
 	imagemagick \
+	inkscape \
 	ipcalc \
 	isync \
 	jhead \
