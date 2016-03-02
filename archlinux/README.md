@@ -18,18 +18,27 @@ w
 Y
 ```
 
+```
 mkfs.vfat -n BOOT -F 32 /dev/sda1
 cryptsetup -v --cipher aes-xts-plain64 --key-size 256 -y luksFormat /dev/sda2
 cryptsetup luksOpen /dev/sda2 archlinux
+```
+
+```
 mkfs.btrfs -L ROOT /dev/mapper/archlinux
 pacman -S btrfs-progs
-OR
-mkfs.ext4 -L ROOT /dev/mapper/archlinux
+```
 
+OR
+
+```
+mkfs.ext4 -L ROOT /dev/mapper/archlinux
+```
+
+```
 mount /dev/mapper/archlinux /mnt
 mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
-
 pacstrap /mnt
 genfstab -p /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
@@ -39,6 +48,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 echo "en_US.UTF-8 UTF-8 > /etc/locale.gen"
 locale-gen
 passwd
+```
 
 /etc/mkinitcpio.conf :
 HOOKS="base udev autodetect modconf block keymap keyboard encrypt filesystems fsck"
@@ -68,10 +78,12 @@ options cryptdevice=/dev/sda2:archlinux:allow-discards root=/dev/mapper/archlinu
 ```
 
 ### Network
+
+```
 systemctl enable systemd-networkd
 systemctl enable systemd-resolved
-rm /etc/resolv.conf
-ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+ln -fs /run/systemd/resolve/resolv.conf /etc/resolv.conf
+```
 
 /etc/systemd/network/wired.network :
 ```
