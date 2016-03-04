@@ -14,6 +14,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	brasero \
 	chromium \
 	compton \
+	conky \
 	cups \
 	curl \
 	darktable \
