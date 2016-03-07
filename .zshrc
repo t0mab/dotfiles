@@ -171,3 +171,6 @@ alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 
 # Let's upgrade the system
 alias upgrade="yaourt -Syua"
+
+# git is too long to type ... ^_^
+alias g="git"
