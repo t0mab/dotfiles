@@ -177,3 +177,6 @@ alias upgrade="yaourt -Syua"
 
 # git is too long to type ... ^_^
 alias g="git"
+
+# Hope that'll help me to sleep ...
+alias redshift-strasbourg="redshift -v -l 48.57:7.75"
