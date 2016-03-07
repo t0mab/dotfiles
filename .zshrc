@@ -169,6 +169,9 @@ alias bi.="beet import ."
 # To manage dotfiles via git worktree
 alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 
+# Shorter version of dotfiles
+alias d="dotfiles"
+
 # Let's upgrade the system
 alias upgrade="yaourt -Syua"
 
