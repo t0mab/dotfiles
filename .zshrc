@@ -136,8 +136,8 @@ bindkey '^h' backward-delete-char
 zle -N zle-line-init
 zle -N zle-keymap-select
 
-# Enable ls colors and disable escaping
-alias ls="ls --color=tty --quoting-style=literal"
+# Enable ls colors, disable escaping, show directories first
+alias ls="ls --group-directories-first --color=tty --quoting-style=literal"
 
 # Launch a small webserver
 alias ws="python -m SimpleHTTPServer"
