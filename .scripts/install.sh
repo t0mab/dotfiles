@@ -91,6 +91,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	slim \
 	strace \
 	syncthing \
+	tcpdump \
 	termite \
 	testdisk \
 	tmux \
