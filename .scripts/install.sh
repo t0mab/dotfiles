@@ -22,6 +22,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	dos2unix \
 	dosfstools \
 	dstat \
+	easytag \
 	evince \
 	exfat-utils \
 	fdupes \
@@ -41,6 +42,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	i3-wm \
 	i3lock \
 	i3status \
+	ifuse \
 	imagemagick \
 	inkscape \
 	iotop \
