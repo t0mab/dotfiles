@@ -206,7 +206,8 @@ function! neomake#GetEnabledMakers(...) abort
 
     " If a filetype was passed, get the makers that are enabled for each of
     " the filetypes represented.
-    let union = {}
+    let makers = []
+    let makers_count = {}
     let fts = neomake#utils#GetSortedFiletypes(a:1)
     for ft in fts
         let ft = substitute(ft, '\W', '_', 'g')
@@ -223,12 +224,17 @@ function! neomake#GetEnabledMakers(...) abort
             let enabled_makers = neomake#utils#AvailableMakers(ft, default_makers)
         endif
         for maker_name in enabled_makers
-            let union[maker_name] = get(union, maker_name, 0) + 1
+            let c = get(makers_count, maker_name, 0)
+            let makers_count[maker_name] = c + 1
+            " Add each maker only once, but keep the order.
+            if c == 0
+                let makers += [maker_name]
+            endif
         endfor
     endfor
 
     let l = len(fts)
-    return filter(keys(union), 'union[v:val] ==# l')
+    return filter(makers, 'makers_count[v:val] ==# l')
 endfunction
 
 function! s:Make(options) abort
@@ -323,7 +329,7 @@ function! s:AddExprCallback(maker) abort
         if has_key(a:maker, 'postprocess')
             let Func = a:maker.postprocess
             call Func(entry)
-        end
+        endif
 
         if !entry.valid
             if a:maker.remove_invalid_entries
@@ -398,7 +404,20 @@ function! s:ProcessJobOutput(maker, lines) abort
         let &errorformat = a:maker.errorformat
 
         if get(a:maker, 'file_mode')
+            " Go to window if it's not current.
+            if winnr() != a:maker.winnr
+                let cur_window = winnr()
+                let prev_window = winnr('#')
+                exec a:maker.winnr.'wincmd w'
+            endif
+
             laddexpr a:lines
+
+            " Restore window.
+            if exists('l:prev_window')
+                exec prev_window.'wincmd w'
+                exec cur_window.'wincmd w'
+            endif
         else
             caddexpr a:lines
         endif
@@ -497,11 +516,38 @@ function! neomake#MakeHandler(job_id, data, event_type) abort
             let open_val = g:neomake_open_list
             let win_val = winnr()
             if get(maker, 'file_mode')
+                " Go to job's window if it is not current.
+                " This uses window-local variables, because window numbers
+                " might change when opening the location list window.
+                if win_val != maker.winnr
+                    call setwinvar(0, 'neomake_cur_window_'.jobinfo.id, 1)
+                    call setwinvar(winnr('#'), 'neomake_prev_window_'.jobinfo.id, 1)
+                    exec maker.winnr.'wincmd w'
+                endif
+
                 exe "lwindow ".height
+
+                " Restore window state, first for 'winnr("#")'.
+                if win_val != maker.winnr
+                    for w in range(1, winnr('$'))
+                        if getwinvar(w, 'neomake_prev_window_'.jobinfo.id)
+                            exec w.'wincmd w'
+                            exec 'unlet w:neomake_prev_window_'.jobinfo.id
+                            break
+                        endif
+                    endfor
+                    for w in range(1, winnr('$'))
+                        if getwinvar(w, 'neomake_cur_window_'.jobinfo.id)
+                            exec w.'wincmd w'
+                            exec 'unlet w:neomake_cur_window_'.jobinfo.id
+                            break
+                        endif
+                    endfor
+                endif
             else
                 exe "cwindow ".height
             endif
-            if open_val == 2 && win_val != winnr()
+            if open_val == 2 && win_val == maker.winnr && win_val != winnr()
                 wincmd p
             endif
         endif
