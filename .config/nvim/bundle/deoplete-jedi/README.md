@@ -29,3 +29,28 @@ NeoBundle 'zchee/deoplete-jedi'
 # or
 Plug 'zchee/deoplete-jedi'
 ```
+
+
+## Options
+
+- `g:deoplete#sources#jedi#statement_length`: Sets the maximum length of
+  completion description text.  If this is exceeded, a simple description is
+  used instead.  Default: `50`
+- `deoplete#sources#jedi#enable_cache`: Enables caching of completions for
+  faster results.  Default: `1`
+
+
+## Virtual Environments
+
+If you are using virtualenv, it is recommended that you create environments
+specifically for Neovim.  This way, you will not need to install the neovim
+package in each virtualenv.  Once you have created them, add the following to
+your vimrc file:
+
+```vim
+let g:python_host_prog = '/full/path/to/neovim2/bin/python'
+let g:python3_host_prog = '/full/path/to/neovim3/bin/python'
+```
+
+Deoplete only requires Python 3.  See `:h nvim-python-quickstart` for more
+information.
