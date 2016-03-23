@@ -94,7 +94,8 @@ function! deoplete#init#_variables() abort "{{{
   call deoplete#util#set_default(
         \ 'g:deoplete#enable_refresh_always', 0)
   call deoplete#util#set_default(
-        \ 'g:deoplete#auto_completion_start_length', 2)
+        \ 'g:deoplete#auto_complete_start_length', 2,
+        \ 'g:deoplete#auto_completion_start_length')
   call deoplete#util#set_default(
         \ 'g:deoplete#disable_auto_complete', 0)
   call deoplete#util#set_default(
@@ -105,6 +106,8 @@ function! deoplete#init#_variables() abort "{{{
         \ 'g:deoplete#enable_debug', 0)
   call deoplete#util#set_default(
         \ 'g:deoplete#enable_profile', 0)
+  call deoplete#util#set_default(
+        \ 'g:deoplete#auto_complete_delay', 0)
 
   call deoplete#util#set_default(
         \ 'g:deoplete#keyword_patterns', {})
@@ -148,13 +151,6 @@ function! deoplete#init#_variables() abort "{{{
         \ g:deoplete#_omni_patterns,
         \ 'html,xhtml,xml,markdown,mkd', ['<', '<[^>]*\s[[:alnum:]-]*'])
 
-  call deoplete#util#set_pattern(
-        \ g:deoplete#omni#_input_patterns,
-        \ 'c', ['[^. \t0-9]\.\w*', '[^. \t0-9]->\w*'])
-  call deoplete#util#set_pattern(
-        \ g:deoplete#omni#_input_patterns,
-        \ 'cpp', ['[^. \t0-9]\.\w*', '[^. \t0-9]->\w*',
-        \         '[a-zA-Z_]\w*::\w*'])
   call deoplete#util#set_pattern(
         \ g:deoplete#omni#_input_patterns,
         \ 'java', ['[^. \t0-9]\.\w*'])
@@ -238,6 +234,7 @@ function! deoplete#init#_context(event, sources) abort "{{{
         \ 'ignorecase': g:deoplete#enable_ignore_case,
         \ 'smartcase': g:deoplete#enable_smart_case,
         \ 'camelcase': g:deoplete#enable_camel_case,
+        \ 'delay': g:deoplete#auto_complete_delay,
         \ 'sources': sources,
         \ 'keyword_patterns': keyword_patterns,
         \ }

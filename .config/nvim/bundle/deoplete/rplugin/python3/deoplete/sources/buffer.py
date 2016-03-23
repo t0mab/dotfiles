@@ -45,7 +45,7 @@ class Source(Base):
         try:
             if (self.vim.current.buffer.number in self.__buffers) and len(
                     self.vim.current.buffer) > self.__max_lines:
-                line = self.vim.current.window.cursor[0]
+                line = context['position'][1]
                 self.__buffers[self.vim.current.buffer.number][
                     'candidates'] += functools.reduce(operator.add, [
                         p.findall(x) for x in self.vim.current.buffer[
@@ -61,7 +61,10 @@ class Source(Base):
         except UnicodeDecodeError:
             return []
 
+        buffers = [x['candidates'] for x in self.__buffers.values()
+                   if x['filetype'] in context['filetypes']]
+        if not buffers:
+            return []
+
         return [{'word': x} for x in
-                functools.reduce(operator.add, [
-                    x['candidates'] for x in self.__buffers.values()
-                    if x['filetype'] in context['filetypes']])]
+                functools.reduce(operator.add, buffers)]

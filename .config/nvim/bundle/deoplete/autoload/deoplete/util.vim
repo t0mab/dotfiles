@@ -61,11 +61,6 @@ endfunction"}}}
 function! deoplete#util#print_warning(string) abort "{{{
   echohl WarningMsg | echomsg '[deoplete] ' . a:string | echohl None
 endfunction"}}}
-function! deoplete#util#is_eskk_convertion() abort "{{{
-  return exists('*eskk#is_enabled') && eskk#is_enabled()
-        \   && eskk#get_preedit().get_henkan_phase() !=#
-        \             g:eskk#preedit#PHASE_NORMAL
-endfunction"}}}
 
 function! deoplete#util#convert2list(expr) abort "{{{
   return type(a:expr) ==# type([]) ? a:expr : [a:expr]
@@ -144,6 +139,16 @@ function! deoplete#util#uniq(list) abort "{{{
     endif
   endwhile
   return map(list, 'v:val[0]')
+endfunction"}}}
+
+function! deoplete#util#redir(cmd) abort "{{{
+  let [save_verbose, save_verbosefile] = [&verbose, &verbosefile]
+  set verbose=0 verbosefile=
+  redir => res
+  silent! execute a:cmd
+  redir END
+  let [&verbose, &verbosefile] = [save_verbose, save_verbosefile]
+  return res
 endfunction"}}}
 
 function! deoplete#util#get_syn_name() abort "{{{

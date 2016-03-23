@@ -51,9 +51,8 @@ function! s:completion_begin(event) abort "{{{
           \ 'b:deoplete_omni_patterns',
           \ 'g:deoplete#omni_patterns',
           \ 'g:deoplete#_omni_patterns'))
-      if deoplete#util#is_eskk_convertion()
-            \ || (pattern != '' && &l:omnifunc != ''
-            \ && context.input =~# '\%('.pattern.'\)$')
+      if pattern != '' && &l:omnifunc != ''
+            \ && context.input =~# '\%('.pattern.'\)$'
         call deoplete#mappings#_set_completeopt()
         call feedkeys("\<C-x>\<C-o>", 'n')
         return
@@ -61,7 +60,8 @@ function! s:completion_begin(event) abort "{{{
     endfor
   endfor
 
-  call rpcnotify(g:deoplete#_channel_id, 'completion_begin', context)
+  call rpcnotify(g:deoplete#_channel_id,
+        \ 'deoplete_auto_completion_begin', context)
 endfunction"}}}
 function! s:is_skip(event, context) abort "{{{
   let displaywidth = strdisplaywidth(deoplete#util#get_input(a:event)) + 1
@@ -95,6 +95,21 @@ function! s:is_skip(event, context) abort "{{{
     if word == '' || empty(delimiters)
       return 1
     endif
+  endif
+
+  " Detect foldmethod.
+  if a:event !=# 'Manual' && a:event !=# 'InsertEnter'
+        \ && !exists('b:deoplete_detected_foldmethod')
+        \ && (&l:foldmethod ==# 'expr' || &l:foldmethod ==# 'syntax')
+    let b:deoplete_detected_foldmethod = 1
+    call deoplete#util#print_error(
+          \ printf('foldmethod = "%s" is detected.', &foldmethod))
+    for msg in split(deoplete#util#redir(
+          \ 'verbose setlocal foldmethod?'), "\n")
+      call deoplete#util#print_error(msg)
+    endfor
+    call deoplete#util#print_error(
+          \ 'You should disable it or install FastFold plugin.')
   endif
 
   return 0
