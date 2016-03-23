@@ -12,7 +12,8 @@ fi
 xbindkeys
 
 # Use a compositor to avoir tearing screen
-/usr/bin/compton -CGb --backend glx --paint-on-overlay --glx-no-stencil --glx-no-rebind-pixmap --vsync opengl-swc
+#/usr/bin/compton -CGb --backend glx --paint-on-overlay --glx-no-stencil --glx-no-rebind-pixmap --vsync opengl-swc
+/usr/bin/compton
 
 [[ -d ~/Sync/Wallpapers ]] && feh --randomize --bg-fill ~/Sync/Wallpapers/*
 
