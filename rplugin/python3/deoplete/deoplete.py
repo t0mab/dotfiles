@@ -49,10 +49,17 @@ class Deoplete(object):
         self.__filters = {}
         self.__sources = {}
         self.__runtimepath = ''
+        self.__profile_flag = None
         self.__profile_start = 0
 
     def completion_begin(self, context):
         pos = self.__vim.current.window.cursor
+
+        if context['event'] != 'Manual' and context['delay'] > 0:
+            time.sleep(context['delay'] / 1000.0)
+            if self.position_has_changed(pos):
+                return
+
         try:
             complete_position, candidates = self.gather_candidates(context)
         except Exception:
@@ -62,21 +69,23 @@ class Deoplete(object):
                   'An error has occurred. Please execute :messages command.')
             candidates = []
 
-        if not candidates or self.__vim.funcs.mode() != 'i' \
-                or pos != self.__vim.current.window.cursor:
+        if not candidates or self.position_has_changed(pos):
             self.__vim.vars['deoplete#_context'] = {}
             return
 
-        var_context = {}
-        var_context['complete_position'] = complete_position
-        var_context['changedtick'] = context['changedtick']
-        var_context['candidates'] = candidates
-        var_context['event'] = context['event']
-        self.__vim.vars['deoplete#_context'] = var_context
+        self.__vim.vars['deoplete#_context'] = {
+            'complete_position': complete_position,
+            'changedtick': context['changedtick'],
+            'candidates': candidates,
+            'event': context['event'],
+        }
 
-        # Set (and store) current &completeopt setting.  This cannot be done
-        # (currently) from the deoplete_start_complete mapping's function.
-        self.__vim.call('deoplete#mappings#_set_completeopt')
+        if context['rpc'] != 'deoplete_manual_completion_begin':
+            # Set (and store) current &completeopt setting.  This cannot be
+            # done (currently) from the deoplete_start_complete mapping's
+            # function.
+            self.__vim.call('deoplete#mappings#_set_completeopt')
+
         # Note: cannot use vim.feedkeys()
         self.__vim.command(
             'call feedkeys("\<Plug>(deoplete_start_complete)")')
@@ -101,26 +110,21 @@ class Deoplete(object):
                              'rank', x[1].rank),
                          reverse=True)
         results = []
-        start_length = self.__vim.vars['deoplete#auto_completion_start_length']
+        start_length = self.__vim.vars['deoplete#auto_complete_start_length']
         ignore_sources = get_buffer_config(
             self.__vim, context['filetype'],
             'b:deoplete_ignore_sources',
             'g:deoplete#ignore_sources',
             '{}')
         for source_name, source in sources:
-            filetypes = get_custom(self.__vim, source.name).get(
-                'filetypes', source.filetypes)
-
             in_sources = not context['sources'] or (
                 source_name in context['sources'])
-            in_fts = not filetypes or (
-                context['filetype'] in filetypes)
+            in_fts = not source.filetypes or (
+                context['filetype'] in source.filetypes)
             in_ignore = source_name in ignore_sources
             if not in_sources or not in_fts or in_ignore:
                 continue
-            disabled_syntaxes = get_custom(self.__vim, source.name).get(
-                'disabled_syntaxes', source.disabled_syntaxes)
-            if disabled_syntaxes and 'syntax_name' not in context:
+            if source.disabled_syntaxes and 'syntax_name' not in context:
                 context['syntax_name'] = get_syn_name(self.__vim)
             cont = copy.deepcopy(context)
             charpos = source.get_complete_position(cont)
@@ -137,20 +141,15 @@ class Deoplete(object):
             # self.debug(cont['complete_position'])
             # self.debug(cont['complete_str'])
 
-            min_pattern_length = get_custom(self.__vim, source.name).get(
-                'min_pattern_length', source.min_pattern_length)
+            min_pattern_length = source.min_pattern_length
             if min_pattern_length < 0:
                 # Use default value
                 min_pattern_length = start_length
-            max_pattern_length = get_custom(self.__vim, source.name).get(
-                'max_pattern_length', source.max_pattern_length)
-            input_pattern = get_custom(self.__vim, source.name).get(
-                'input_pattern', source.input_pattern)
 
-            if charpos < 0 or self.is_skip(cont, disabled_syntaxes,
+            if charpos < 0 or self.is_skip(cont, source.disabled_syntaxes,
                                            min_pattern_length,
-                                           max_pattern_length,
-                                           input_pattern):
+                                           source.max_pattern_length,
+                                           source.input_pattern):
                 # Skip
                 continue
             results.append({
@@ -173,13 +172,6 @@ class Deoplete(object):
                 context['candidates'] = [{'word': x}
                                          for x in context['candidates']]
 
-            matchers = get_custom(self.__vim, source.name).get(
-                'matchers', source.matchers)
-            sorters = get_custom(self.__vim, source.name).get(
-                'sorters', source.sorters)
-            converters = get_custom(self.__vim, source.name).get(
-                'converters', source.converters)
-
             ignorecase = context['ignorecase']
             smartcase = context['smartcase']
             camelcase = context['camelcase']
@@ -190,7 +182,9 @@ class Deoplete(object):
                     context['ignorecase'] = 0
 
                 for filter in [self.__filters[x] for x
-                               in matchers + sorters + converters
+                               in source.matchers +
+                               source.sorters +
+                               source.converters
                                if x in self.__filters]:
                     self.profile_start(filter.name)
                     context['candidates'] = filter.filter(context)
@@ -251,13 +245,21 @@ class Deoplete(object):
         deoplete.util.debug(self.__vim, expr)
 
     def profile_start(self, name):
-        if self.__vim.vars['deoplete#enable_profile']:
-            self.__vim.command(
-                'echomsg \'profile start: {0}\''.format(name))
-            self.__profile_start = time.clock()
+        if self.__profile_flag is 0:
+            pass
+        else:
+            if self.__profile_flag is None:
+                self.__profile_flag = self.__vim.vars[
+                    'deoplete#enable_profile']
+                if self.__profile_flag:
+                    return self.profile_start(name)
+            elif self.__profile_flag:
+                self.__vim.command(
+                    'echomsg \'profile start: {0}\''.format(name))
+                self.__profile_start = time.clock()
 
     def profile_end(self, name):
-        if self.__vim.vars['deoplete#enable_profile']:
+        if self.__profile_start:
             self.__vim.command(
                 'echomsg \'profile end  : {0}, time={1}\''.format(
                     name, time.clock() - self.__profile_start))
@@ -270,10 +272,37 @@ class Deoplete(object):
                                     self.__vim,
                                     'rplugin/python3/deoplete/sources/*.py'):
             name = os.path.basename(path)[: -3]
-            source = importlib.machinery.SourceFileLoader(
+            module = importlib.machinery.SourceFileLoader(
                 'deoplete.sources.' + name, path).load_module()
-            if hasattr(source, 'Source') and name not in self.__sources:
-                self.__sources[name] = source.Source(self.__vim)
+            if not hasattr(module, 'Source') or name in self.__sources:
+                continue
+
+            source = module.Source(self.__vim)
+
+            # Set the source attributes.
+            source.filetypes = get_custom(
+                self.__vim, source.name).get(
+                    'filetypes', source.filetypes)
+            source.disabled_syntaxes = get_custom(
+                self.__vim, source.name).get(
+                    'disabled_syntaxes', source.disabled_syntaxes)
+            source.input_pattern = get_custom(
+                self.__vim, source.name).get(
+                    'input_pattern', source.input_pattern)
+            source.min_pattern_length = get_custom(
+                self.__vim, source.name).get(
+                    'min_pattern_length', source.min_pattern_length)
+            source.max_pattern_length = get_custom(
+                self.__vim, source.name).get(
+                    'max_pattern_length', source.max_pattern_length)
+            source.matchers = get_custom(
+                self.__vim, source.name).get('matchers', source.matchers)
+            source.sorters = get_custom(self.__vim, source.name).get(
+                'sorters', source.sorters)
+            source.converters = get_custom(self.__vim, source.name).get(
+                'converters', source.converters)
+
+            self.__sources[name] = source
         # self.debug(self.__sources)
 
     def load_filters(self):
@@ -299,5 +328,9 @@ class Deoplete(object):
                        not (min_pattern_length <=
                             len(context['complete_str']) <=
                             max_pattern_length))
-        return (disabled_syntaxes and
-                context['syntax_name'] in disabled_syntaxes) or skip_length
+        return skip_length or ('syntax_name' in context and
+                               context['syntax_name'] in disabled_syntaxes)
+
+    def position_has_changed(self, pos):
+        return (pos != self.__vim.current.window.cursor or
+                self.__vim.funcs.mode() != 'i')

@@ -63,7 +63,13 @@ def globruntime(vim, path):
 
 def debug(vim, expr):
     if vim.vars['deoplete#enable_debug']:
-        vim.command('echomsg string(\'' + escape(json.dumps(expr)) + '\')')
+        try:
+            json_data = json.dumps(str(expr).strip())
+        except Exception:
+            vim.command('echomsg string(\'' + str(expr).strip() + '\')')
+        else:
+            vim.command('echomsg string(\'' + escape(json_data) + '\')')
+
     else:
         error(vim, "not in debug mode, but debug called")
 
@@ -81,7 +87,8 @@ def charpos2bytepos(vim, input, pos):
 
 
 def bytepos2charpos(vim, input, pos):
-    return len(vim.funcs.substitute(input[: pos], '.', 'x', 'g'))
+    return len(vim.funcs.substitute(
+        vim.funcs.strpart(input, 0, pos), '.', 'x', 'g'))
 
 
 def get_custom(vim, source_name):
