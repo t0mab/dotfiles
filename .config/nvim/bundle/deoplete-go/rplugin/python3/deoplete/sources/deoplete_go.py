@@ -34,7 +34,7 @@ class Source(Base):
         self.sort_class = self.vim.vars['deoplete#sources#go#sort_class']
 
     def get_complete_position(self, context):
-        m = re.search(r'\w*$', context['input'])
+        m = re.search(r'\w*$|(?<=")[./\w]*$', context['input'])
         return m.start() if m else -1
 
     def gather_candidates(self, context):
@@ -59,7 +59,7 @@ class Source(Base):
         stdout_data, stderr_data = process.communicate()
         result = loads(stdout_data.decode())
 
-        if not self.sort_class == []:
+        if self.sort_class:
             # TODO(zchee): Why not work with this?
             #              class_dict = {}.fromkeys(self.sort_class, [])
             class_dict = {
@@ -72,36 +72,36 @@ class Source(Base):
         try:
             out = []
             sep = ' '
+            if result[1][0]['class'] == 'PANIC':
+                error(self.vim, 'gocode panicked')
+                return []
             for complete in result[1]:
                 _class = complete['class']
                 word = complete['name']
                 info = complete['type']
 
-                if not _class == 'package' and self.align_class:
-                    abbr = '{:<6}'.format(_class) + word
+                if _class not in ('package', 'import') and self.align_class:
+                    abbr = '{:<6}'.format(_class) + \
+                        (word + sep + info).replace(' func', '')
                 else:
                     abbr = _class + sep + word
 
                 if _class == 'package' and self.package_dot:
                     word += '.'
-                if _class == 'func':
-                    word = word + '('
-                    abbr += str(info).strip('func')
-                elif _class in ('type', 'var'):
-                    abbr += sep + info
 
                 candidates = dict(word=word,
                                   abbr=abbr,
                                   info=info,
+                                  menu=self.mark,
                                   dup=1
                                   )
-                if self.sort_class == []:
+                if not self.sort_class or _class == 'import':
                     out.append(candidates)
                 else:
                     class_dict[_class].append(candidates)
 
             # append with sort by complete['class']
-            if not self.sort_class == []:
+            if self.sort_class:
                 for c in self.sort_class:
                     for x in class_dict[c]:
                         out.append(x)
