@@ -55,6 +55,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	libreoffice \
 	lsof \
 	lxappearance \
+	lynis \
 	lynx \
 	mesa-demos \
 	moreutils \
