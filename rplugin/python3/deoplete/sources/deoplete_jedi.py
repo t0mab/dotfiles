@@ -71,6 +71,9 @@ class Source(Base):
         self.cache_enabled = \
             self.vim.vars['deoplete#sources#jedi#enable_cache']
 
+        self.show_docstring = \
+            self.vim.vars['deoplete#sources#jedi#show_docstring']
+
         self.complete_min_length = \
             self.vim.vars['deoplete#auto_complete_start_length']
 
@@ -187,14 +190,22 @@ class Source(Base):
                 return (name, builtin_type, '', '')
 
         if type_ == 'class' and desc.startswith('builtins.'):
-            return (name, type_) + self.call_signature(comp)
+            if self.show_docstring:
+                return (name,
+                        type_,
+                        comp.docstring(),
+                        self.call_signature(comp)[1])
+            else:
+                return (name, type_) + self.call_signature(comp)
 
         if type_ == 'function':
-            if comp.module_path not in cache and comp.line and comp.line > 1:
+            if comp.module_path not in cache and comp.line and comp.line > 1 \
+                    and os.path.exists(comp.module_path):
                 with open(comp.module_path, 'r') as fp:
                     cache[comp.module_path] = fp.readlines()
             lines = cache.get(comp.module_path)
-            if lines:
+            if isinstance(lines, list) and len(lines) > 1 \
+                    and comp.line < len(lines) and comp.line > 1:
                 # Check the function's decorators to check if it's decorated
                 # with @property
                 i = comp.line - 2
@@ -205,7 +216,13 @@ class Source(Base):
                     if line.startswith('@property'):
                         return (name, 'property', desc, '')
                     i -= 1
-            return (name, type_) + self.call_signature(comp)
+            if self.show_docstring:
+                return (name,
+                        type_,
+                        comp.docstring(),
+                        self.call_signature(comp)[1])
+            else:
+                return (name, type_) + self.call_signature(comp)
 
         # self.debug('Unhandled: %s, Type: %s, Desc: %s', comp.name, type_, desc)
         return (name, type_, '', '')
@@ -267,7 +284,8 @@ class Source(Base):
                     if m:
                         suffix = self.split_module(m.group(1), suffix)
                         cache_key = '{}.import.{}'.format(buf.name, suffix)
-                        extra_modules.append(buf.name)
+                        if os.path.exists(buf.name):
+                            extra_modules.append(buf.name)
 
             if not cache_key:
                 # Find a cacheable key first
@@ -278,14 +296,16 @@ class Source(Base):
                         # based on cursor position.
                         # Cache `self.`, but monitor buffer file's modification
                         # time.
-                        extra_modules.append(buf.name)
+                        if os.path.exists(buf.name):
+                            extra_modules.append(buf.name)
                         cache_key = '{}.{}'.format(buf.name, cache_key)
                         cache_line = line - 1
                         os.path
                 elif context.get('complete_str'):
                     # Note: Module completions will be an empty string.
                     cache_key = buf.name
-                    extra_modules.append(buf.name)
+                    if os.path.exists(buf.name):
+                        extra_modules.append(buf.name)
                     cache_line = line - 1
 
             if cache_key and cache_key in self.cache:
@@ -315,7 +335,8 @@ class Source(Base):
         tmp_filecache = {}
         modules = {f: int(os.path.getmtime(f)) for f in extra_modules}
         for c in completions:
-            if c.module_path and c.module_path not in modules:
+            if c.module_path and c.module_path not in modules \
+                    and os.path.exists(c.module_path):
                 modules[c.module_path] = int(os.path.getmtime(c.module_path))
 
             name, type_, desc, abbr = self.parse_completion(c, tmp_filecache)
