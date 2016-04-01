@@ -45,6 +45,9 @@ function! deoplete#init#enable() abort "{{{
   endif
 
   try
+    if !exists('g:loaded_remote_plugins')
+      runtime! plugin/rplugin.vim
+    endif
     call _deoplete()
   catch
     call deoplete#util#print_error(
@@ -83,8 +86,6 @@ function! deoplete#init#_variables() abort "{{{
         \ 'g:deoplete#delimiters', ['/', '.', '::', ':', '#'])
   call deoplete#util#set_default(
         \ 'g:deoplete#max_list', 100)
-  call deoplete#util#set_default(
-        \ 'g:deoplete#max_abbr_width', 80)
   call deoplete#util#set_default(
         \ 'g:deoplete#enable_debug', 0)
   call deoplete#util#set_default(
@@ -205,10 +206,14 @@ function! deoplete#init#_context(event, sources) abort "{{{
   let event = (deoplete#util#get_prev_event() ==# 'refresh') ?
         \ 'Manual' : a:event
 
+  let input = deoplete#util#get_input(a:event)
+
+  let width = winwidth(0) - col('.') + len(matchstr(input, '\w*$'))
+
   return {
         \ 'changedtick': b:changedtick,
         \ 'event': event,
-        \ 'input': deoplete#util#get_input(a:event),
+        \ 'input': input,
         \ 'next_input': deoplete#util#get_next_input(a:event),
         \ 'complete_str': '',
         \ 'position': getpos('.'),
@@ -220,8 +225,8 @@ function! deoplete#init#_context(event, sources) abort "{{{
         \ 'delay': g:deoplete#auto_complete_delay,
         \ 'sources': sources,
         \ 'keyword_patterns': keyword_patterns,
-        \ 'max_abbr_width':
-        \   min([g:deoplete#max_abbr_width, winwidth(0)]),
+        \ 'max_abbr_width': max([20, width * 2 / 3]),
+        \ 'max_menu_width': max([10, width / 3]),
         \ }
 endfunction"}}}
 
