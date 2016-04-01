@@ -4,12 +4,12 @@ This is a vim syntax plugin for Ansible 2.0, it supports YAML playbooks, Jinja2 
 
 - YAML playbooks are detected if:
   - they are in the `group_vars` or `host_vars` folder
-  - they are in the `tasks` or `roles` folder and have either a *.yml* or *.yaml* suffix
-  - they are named `playbook.y(a)ml` or `site.y(a)ml`
+  - they are in the `tasks`, `roles`, or `handlers` folder and have either a *.yml* or *.yaml* suffix
+  - they are named `playbook.y(a)ml`, `site.y(a)ml`, or `main.y(a)ml`
 - Jinja2 templates are detected if they have a *.j2* suffix
 - Files named `hosts` will be treated as Ansible hosts files
 
-You can also set the filetype to `ansible`, `ansible_template`, or `ansible_hosts` if auto-detection does not work (e.g. `:set ft=ansible`).
+You can also set the filetype to `ansible`, `ansible_template`, or `ansible_hosts` if auto-detection does not work (e.g. `:set ft=ansible`). **Note**: If you want to detect a custom pattern of your own, you can easily add this in your `.vimrc` using [this method](http://vim.wikia.com/wiki/Change_filetype_based_on_directory_path) - you do not need to fork just to do this! :)
 
 This plugin should be quite reliable, as it sources the original formats and simply modifies the highlights as appropriate. This also enables a focus on simplicity and configurability instead of patching bad syntax detection.
 
@@ -83,8 +83,6 @@ Indenting a full document - e.g with `gg=G` - will not be supported and is not a
 ##### suggestions/requests
 
 Suggestions for improvements are welcome, pull-requests with completed features even more so. :)
-
-If you make a pull-request please also add your (user)name to the list of contributors!
 
 ##### contributions
 
