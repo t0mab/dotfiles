@@ -23,7 +23,7 @@ class Source(Base):
         Base.__init__(self, vim)
 
         self.name = 'go'
-        self.mark = '[go]'
+        self.mark = '[Go]'
         self.filetypes = ['go']
         self.input_pattern = r'(?:\b[^\W\d]\w*|[\]\)])\.(?:[^\W\d]\w*)?'
         self.rank = 500
@@ -32,9 +32,10 @@ class Source(Base):
         self.gocode_binary = self.vim.vars['deoplete#sources#go#gocode_binary']
         self.package_dot = self.vim.vars['deoplete#sources#go#package_dot']
         self.sort_class = self.vim.vars['deoplete#sources#go#sort_class']
+        self.debug_enabled = self.vim.vars.get('deoplete#sources#go#debug', 0)
 
     def get_complete_position(self, context):
-        m = re.search(r'\w*$|(?<=")[./\w]*$', context['input'])
+        m = re.search(r'\w*$|(?<=")[./\-\w]*$', context['input'])
         return m.start() if m else -1
 
     def gather_candidates(self, context):
@@ -79,12 +80,12 @@ class Source(Base):
                 _class = complete['class']
                 word = complete['name']
                 info = complete['type']
+                _abbr = (word + sep + info).replace(' func', '')
 
                 if _class not in ('package', 'import') and self.align_class:
-                    abbr = '{:<6}'.format(_class) + \
-                        (word + sep + info).replace(' func', '')
+                    abbr = '{:<6}'.format(_class) + _abbr
                 else:
-                    abbr = _class + sep + word
+                    abbr = _class + sep + _abbr
 
                 if _class == 'package' and self.package_dot:
                     word += '.'
