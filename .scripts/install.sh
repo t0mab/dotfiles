@@ -54,7 +54,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	libcups \
 	libreoffice \
 	lsof \
-	lxappearance \
+	lxappearance-gtk3 \
 	lynis \
 	lynx \
 	mesa-demos \
@@ -73,6 +73,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	nmap \
 	notmuch \
 	ntfs-3g \
+	numix-themes \
 	openssh \
 	openvpn \
 	p7zip \
@@ -83,8 +84,10 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	pulseaudio \
 	pulseaudio-alsa \
 	pv \
+	python-neovim \
 	python-pip \
 	python-virtualenvwrapper \
+	python2-neovim \
 	ranger \
 	redshift \
 	rsync \
@@ -104,6 +107,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	unrar \
 	wget \
 	xbindkeys \
+	xmlstarlet \
 	xorg-server \
 	xorg-server-utils \
 	xorg-xinit \
