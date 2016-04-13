@@ -178,5 +178,8 @@ alias upgrade="sudo pacman -Syu"
 # git is too long to type ... ^_^
 alias g="git"
 
+# Move to Go projects directory
+alias goprojects="cd ~/Go/src/github.com/fabienengels"
+
 # Hope that'll help me to sleep ...
 alias redshift-strasbourg="redshift -v -l 48.57:7.75"
