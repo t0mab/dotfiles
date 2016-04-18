@@ -9,7 +9,6 @@ CONTENTS					*deoplete-contents*
 Introduction		|deoplete-introduction|
 Install			|deoplete-install|
 Interface		|deoplete-interface|
-  Commands		  |deoplete-commands|
   Variables		  |deoplete-variables|
   Key mappings		  |deoplete-key-mappings|
   Functions		  |deoplete-functions|
@@ -60,16 +59,11 @@ You can enable Python3 interface with pip: >
     sudo pip3 install neovim
 
 If you want to read for Neovim-python/python3 interface install documentation,
-you should read |nvim-python|.
+you should read |nvim-python| and the Wiki.
+https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim
 
 ==============================================================================
 INTERFACE					*deoplete-interface*
-
-------------------------------------------------------------------------------
-COMMANDS 					*deoplete-commands*
-
-:DeopleteEnable				*:DeopleteEnable*
-		Validate deoplete and initialize it.
 
 ------------------------------------------------------------------------------
 VARIABLES 					*deoplete-variables*
@@ -326,10 +320,21 @@ FUNCTIONS 					*deoplete-functions*
 
 deoplete#initialize()			*deoplete#initialize()*
 		Initialize deoplete and sources.
-		Note: It enables deoplete.
 		Note: You should call it in |VimEnter| autocmd.
 		User customization for deoplete must be set before
 		initialization of deoplete.
+
+deoplete#enable()			*deoplete#enable()*
+		Enable deoplete auto completion.
+		Note: It changes the global state.
+
+deoplete#disable()			*deoplete#disable()*
+		Disable deoplete auto completion.
+		Note: It changes the global state.
+
+deoplete#toggle()			*deoplete#toggle()*
+		Toggle deoplete auto completion.
+		Note: It changes the global state.
 
 						*deoplete#custom#set()*
 deoplete#custom#set({source-name}, {option-name}, {value})
@@ -355,6 +360,10 @@ deoplete#custom#set({source-name}, {option-name}, {value})
 		" Disable the candidates in Comment/String syntaxes.
 		call deoplete#custom#set('_',
 		\ 'disabled_syntaxes', ['Comment', 'String'])
+		call deoplete#custom#set('javacomplete2',
+		\ 'max_abbr_width', 20)
+		call deoplete#custom#set('javacomplete2',
+		\ 'max_menu_width', 80)
 <
 					*deoplete#enable_logging()*
 deoplete#enable_logging({level}, {logfile})
@@ -580,6 +589,24 @@ max_pattern_length
 
 		If you omit it, it is set "80" value.
 
+				*deoplete-source-attribute-max_abbr_width*
+max_abbr_width
+		Number				(Optional)
+		If the candidate abbr length exceeds the length it will be cut
+		down.
+		It it is less than or equal 0, it will be disabled.
+
+		If you omit it, it is set |g:deoplete#max_abbr_width| value.
+
+				*deoplete-source-attribute-max_menu_width*
+max_menu_width
+		Number				(Optional)
+		If the candidate menu length exceeds the length it will be cut
+		down.
+		It it is less than or equal 0, it will be disabled.
+
+		If you omit it, it is set |g:deoplete#max_menu_width| value.
+
 				*deoplete-source-attribute-input_pattern*
 input_pattern
 		String				(Optional)
@@ -778,6 +805,12 @@ https://github.com/carlitux/deoplete-ternjs
 
 deoplete-swift: swift source for Swift
 https://github.com/landaire/deoplete-swift
+
+neovim-intellij-complete-deoplete: intellij source for Intellij IDE
+https://github.com/vhakulinen/neovim-intellij-complete-deoplete
+
+tmux-complete: tmuxcomplete source for tmux panes.
+https://github.com/wellle/tmux-complete.vim
 
 ==============================================================================
 EXTERNAL PLUGINS				*deoplete-external-plugins*
