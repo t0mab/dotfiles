@@ -18,6 +18,8 @@ class Base(LoggingMixin):
         self.mark = ''
         self.min_pattern_length = -1
         self.max_pattern_length = 80
+        self.max_abbr_width = self.vim.vars['deoplete#max_abbr_width']
+        self.max_menu_width = self.vim.vars['deoplete#max_menu_width']
         self.input_pattern = ''
         self.matchers = [
             'matcher_length', 'matcher_fuzzy']
@@ -38,4 +40,7 @@ class Base(LoggingMixin):
 
     @abstractmethod
     def gather_candidate(self, context):
+        pass
+
+    def on_buffer(self, context):
         pass
