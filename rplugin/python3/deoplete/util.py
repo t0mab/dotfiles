@@ -145,3 +145,5 @@ def strwidth(string):
 def charwidth(c):
     wc = unicodedata.east_asian_width(c)
     return 2 if wc == 'F' or wc == 'W' else 1
+
+
