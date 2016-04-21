@@ -137,7 +137,6 @@ GO_REPOS="\
 	golang.org/x/tools/cmd/benchcmp \
 	golang.org/x/tools/cmd/goimports \
 	golang.org/x/tools/cmd/gorename \
-	golang.org/x/tools/cmd/vet \
 	golang.org/x/tools/oracle \
 "
 
