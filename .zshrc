@@ -183,3 +183,6 @@ alias goprojects="cd ~/Go/src/github.com/fabienengels"
 
 # Hope that'll help me to sleep ...
 alias redshift-strasbourg="redshift -v -l 48.57:7.75"
+
+# Save some keystrokes ...
+alias poweroff="sudo poweroff"
