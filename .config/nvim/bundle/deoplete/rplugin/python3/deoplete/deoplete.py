@@ -6,7 +6,7 @@
 
 from deoplete.util import \
     error, globruntime, charpos2bytepos, \
-    bytepos2charpos, get_custom, get_buffer_config, get_syn_name
+    bytepos2charpos, get_custom, get_syn_name, get_buffer_config
 
 import deoplete.sources
 import deoplete.filters
@@ -94,19 +94,7 @@ class Deoplete(logger.LoggingMixin):
                          reverse=True)
         results = []
         start_length = self.__vim.vars['deoplete#auto_complete_start_length']
-        ignore_sources = get_buffer_config(
-            self.__vim, context['filetype'],
-            'b:deoplete_ignore_sources',
-            'g:deoplete#ignore_sources',
-            '{}')
-        for source_name, source in sources:
-            in_sources = not context['sources'] or (
-                source_name in context['sources'])
-            in_fts = not source.filetypes or (
-                context['filetype'] in source.filetypes)
-            in_ignore = source_name in ignore_sources
-            if not in_sources or not in_fts or in_ignore:
-                continue
+        for source_name, source in self.itersource(context, sources):
             if source.disabled_syntaxes and 'syntax_name' not in context:
                 context['syntax_name'] = get_syn_name(self.__vim)
             cont = copy.deepcopy(context)
@@ -198,6 +186,27 @@ class Deoplete(logger.LoggingMixin):
 
             # self.debug(context['candidates'])
         return results
+
+    def itersource(self, context, sources):
+        filetypes = context['filetypes']
+        ignore_sources = set()
+        for ft in filetypes:
+            ignore_sources.update(
+                get_buffer_config(self.__vim, ft,
+                                  'b:deoplete_ignore_sources',
+                                  'g:deoplete#ignore_sources',
+                                  '{}'))
+
+        for source_name, source in sources:
+            if (source_name in ignore_sources):
+                continue
+            if context['sources'] and source_name not in context['souces']:
+                continue
+            if source.filetypes and not any(x in filetypes
+                                            for x in source.filetypes):
+                continue
+
+            yield source_name, source
 
     def merge_results(self, results):
         results = [x for x in results if x['context']['candidates']]
