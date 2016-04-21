@@ -173,7 +173,7 @@ alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 alias d="dotfiles"
 
 # Let's upgrade the system
-alias upgrade="sudo pacman -Syu"
+alias upgrade="sudo pacman -Sy && pacman -Qui | grep -e '^Name' -e 'Version' -e '^Install Reason' -e 'Required By' && sudo pacman -Su"
 
 # git is too long to type ... ^_^
 alias g="git"
