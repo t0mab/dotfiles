@@ -11,6 +11,8 @@ let s:hunk_re = '^@@ -\(\d\+\),\?\(\d*\) +\(\d\+\),\?\(\d*\) @@'
 
 let s:fish = &shell =~# 'fish'
 
+let s:c_flag = gitgutter#utility#git_supports_command_line_config_override()
+
 let s:temp_index = tempname()
 let s:temp_buffer = tempname()
 
@@ -63,7 +65,7 @@ function! gitgutter#diff#run_diff(realtime, preserve_full_diff)
   endif
 
   if a:realtime
-    let blob_name = ':'.gitgutter#utility#shellescape(gitgutter#utility#file_relative_to_repo_root())
+    let blob_name = g:gitgutter_diff_base.':'.gitgutter#utility#shellescape(gitgutter#utility#file_relative_to_repo_root())
     let blob_file = s:temp_index
     let buff_file = s:temp_buffer
     let extension = gitgutter#utility#extension()
@@ -88,11 +90,16 @@ function! gitgutter#diff#run_diff(realtime, preserve_full_diff)
     call setpos("']", op_mark_end)
   endif
 
-  let cmd .= 'git -c "diff.autorefreshindex=0" diff --no-ext-diff --no-color -U0 '.g:gitgutter_diff_args.' -- '
+  let cmd .= 'git'
+  if s:c_flag
+    let cmd .= ' -c "diff.autorefreshindex=0"'
+  endif
+  let cmd .= ' diff --no-ext-diff --no-color -U0 '.g:gitgutter_diff_args.' '
+
   if a:realtime
-    let cmd .= blob_file.' '.buff_file
+    let cmd .= ' -- '.blob_file.' '.buff_file
   else
-    let cmd .= gitgutter#utility#shellescape(gitgutter#utility#filename())
+    let cmd .= g:gitgutter_diff_base.' -- '.gitgutter#utility#shellescape(gitgutter#utility#filename())
   endif
 
   if !a:preserve_full_diff && s:grep_available
@@ -120,7 +127,7 @@ function! gitgutter#diff#run_diff(realtime, preserve_full_diff)
     call setbufvar(bufnr, 'gitgutter_tracked', 1)
   endif
 
-  if has('nvim') && !a:preserve_full_diff
+  if g:gitgutter_async && has('nvim') && !a:preserve_full_diff
     let cmd = gitgutter#utility#command_in_directory_of_file(cmd)
     " Note that when `cmd` doesn't produce any output, i.e. the diff is empty,
     " the `stdout` event is not fired on the job handler.  Therefore we keep
