@@ -98,13 +98,13 @@ Commands for jumping between marked hunks:
   :GitGutterPrevHunk                                       *:GitGutterPrevHunk*
       Jump to the previous marked hunk.  Takes a count.
 
-Commands for staging or reverting individual hunks:
+Commands for staging or undoing individual hunks:
 
   :GitGutterStageHunk                                     *:GitGutterStageHunk*
       Stage the hunk the cursor is in.
 
-  :GitGutterRevertHunk                                   *:GitGutterRevertHunk*
-      Revert the hunk the cursor is in.
+  :GitGutterUndoHunk                                       *:GitGutterUndoHunk*
+      Undo the hunk the cursor is in.
 
   :GitGutterPreviewHunk                                 *:GitGutterPreviewHunk*
       Preview the hunk the cursor is in.
@@ -215,11 +215,19 @@ To change the hunk-jumping maps (defaults shown):
   nmap ]c <Plug>GitGutterNextHunk
 <
 
-To change the hunk-staging/reverting/previewing maps (defaults shown):
+To change the hunk-staging/undoing/previewing maps (defaults shown):
 >
   nmap <Leader>hs <Plug>GitGutterStageHunk
-  nmap <Leader>hr <Plug>GitGutterRevertHunk
+  nmap <Leader>hu <Plug>GitGutterUndoHunk
   nmap <Leader>hp <Plug>GitGutterPreviewHunk
+<
+
+To change the hunk text object maps (defaults shown):
+>
+  omap ic <Plug>GitGutterTextObjectInnerPending
+  omap ac <Plug>GitGutterTextObjectOuterPending
+  xmap ic <Plug>GitGutterTextObjectInnerVisual
+  xmap ac <Plug>GitGutterTextObjectOuterVisual
 <
 
 TO USE A CUSTOM GREP COMMAND
