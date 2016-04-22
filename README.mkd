@@ -1,6 +1,6 @@
 ## vim-gitgutter
 
-A Vim plugin which shows a git diff in the 'gutter' (sign column).  It shows whether each line has been added, modified, and where lines have been removed.  You can also stage and revert individual hunks.
+A Vim plugin which shows a git diff in the 'gutter' (sign column).  It shows whether each line has been added, modified, and where lines have been removed.  You can also stage and undo individual hunks.
 
 Features:
 
@@ -8,7 +8,8 @@ Features:
 * Neovim: runs the diffs asynchronously.
 * Ensures signs are always as up to date as possible (but without running more than necessary).
 * Quick jumping between blocks of changed lines ("hunks").
-* Stage/revert/preview individual hunks.
+* Stage/undo/preview individual hunks.
+* Provides a hunk text object.
 * Diffs against index (default) or any commit.
 * Handles line endings correctly, even with repos that do CRLF conversion.
 * Optional line highlighting.
@@ -61,7 +62,7 @@ If you are on Windows you may find the command prompt pops up briefly every time
 
 When you make a change to a file tracked by git, the diff markers should appear automatically.  The delay is governed by vim's `updatetime` option; the default value is 4 seconds but I suggest reducing it to around 250ms (add `set updatetime=250` to your vimrc).
 
-You can jump between hunks with `[c` and `]c`.  You can preview, stage, and revert hunks with `<leader>hp`, `<leader>hs`, and `<leader>hr` respectively.
+You can jump between hunks with `[c` and `]c`.  You can preview, stage, and undo hunks with `<leader>hp`, `<leader>hs`, and `<leader>hu` respectively.
 
 You cannot currently unstage a staged hunk.
 
@@ -112,26 +113,40 @@ nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
 ```
 
-You can stage or revert an individual hunk when your cursor is in it:
+You can stage or undo an individual hunk when your cursor is in it:
 
 * stage the hunk with `<Leader>hs` or
-* revert it with `<Leader>hr`.
+* undo it with `<Leader>hu`.
 
 See the FAQ if you want to unstage staged changes.
 
 The `.` command will work with both these if you install [repeat.vim](https://github.com/tpope/vim-repeat).
 
-To set your own mappings for these, for example if you prefer the mnemonics hunk-add and hunk-undo:
+To set your own mappings for these, for example if you prefer the mnemonics hunk-add and hunk-revert:
 
 ```viml
 nmap <Leader>ha <Plug>GitGutterStageHunk
-nmap <Leader>hu <Plug>GitGutterRevertHunk
+nmap <Leader>hr <Plug>GitGutterUndoHunk
 ```
 
 And you can preview a hunk's changes with `<Leader>hp`.  You can of course change this mapping, e.g:
 
 ```viml
 nmap <Leader>hv <Plug>GitGutterPreviewHunk
+```
+
+A hunk text object is provided which works in visual and operator-pending modes.
+
+- `ic` operates on all lines in the current hunk.
+- `ac` operates on all lines in the current hunk and any trailing empty lines.
+
+To re-map these, for example to `ih` and `ah`:
+
+```viml
+omap ih <Plug>GitGutterTextObjectInnerPending
+omap ah <Plug>GitGutterTextObjectOuterPending
+xmap ih <Plug>GitGutterTextObjectInnerVisual
+xmap ah <Plug>GitGutterTextObjectOuterVisual
 ```
 
 If you don't want vim-gitgutter to set up any mappings at all, use this:
@@ -273,7 +288,7 @@ To disable all key mappings:
 let g:gitgutter_map_keys = 0
 ```
 
-See above for configuring maps for hunk-jumping and staging/reverting.
+See above for configuring maps for hunk-jumping and staging/undoing.
 
 
 #### Use a custom `grep` command
@@ -306,6 +321,64 @@ By default diffs are run asynchronously in NeoVim.  To run diffs synchronously i
 
 ```viml
 let g:gitgutter_async = 0
+```
+
+
+### Extensions
+
+#### Operate on every line in a hunk
+
+You can map an operator to do whatever you want to every line in a hunk.
+
+Let's say, for example, you want to remove trailing whitespace.
+
+```viml
+function! CleanUp(...)
+  if a:0  " opfunc
+    let [first, last] = [line("'["), line("']")]
+  else
+    let [first, last] = [line("'<"), line("'>")]
+  endif
+  for lnum in range(first, last)
+    let line = getline(lnum)
+
+    " clean up the text, e.g.:
+    let line = substitute(line, '\s\+$', '', '')
+
+    call setline(lnum, line)
+  endfor
+endfunction
+
+nmap <silent> <Leader>x :set opfunc=CleanUp<CR>g@
+```
+
+Then place your cursor in a hunk and type `\xic` (assuming a leader of `\`).
+
+Alternatively you could place your cursor in a hunk, type `vic` to select it, then `:call CleanUp()`.
+
+
+#### Operate on every changed line in a file
+
+You can write a command to do whatever you want to every changed line in a file.
+
+```viml
+function! GlobalChangedLines(ex_cmd)
+  for hunk in GitGutterGetHunks()
+    for lnum in range(hunk[2], hunk[2]+hunk[3]-1)
+      let cursor = getcurpos()
+      silent! execute lnum.a:ex_cmd
+      call setpos('.', cursor)
+    endfor
+  endfor
+endfunction
+
+command -nargs=1 Glines call GlobalChangedLines(<q-args>)
+```
+
+Let's say, for example, you want to remove trailing whitespace from all changed lines:
+
+```viml
+:Glines s/\s\+$//
 ```
 
 

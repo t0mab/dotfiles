@@ -132,7 +132,9 @@ function! gitgutter#diff#run_diff(realtime, preserve_full_diff)
     " Note that when `cmd` doesn't produce any output, i.e. the diff is empty,
     " the `stdout` event is not fired on the job handler.  Therefore we keep
     " track of the jobs ourselves so we can spot empty diffs.
-    let job_id = jobstart([&shell, '-c', cmd], {
+
+    let job_cmd = &shell . ' -c ' . cmd
+    let job_id = jobstart(job_cmd, {
           \ 'on_stdout': function('gitgutter#handle_diff_job'),
           \ 'on_stderr': function('gitgutter#handle_diff_job'),
           \ 'on_exit':   function('gitgutter#handle_diff_job')
@@ -289,11 +291,11 @@ endfunction
 " Generates a zero-context diff for the current hunk.
 "
 " diff - the full diff for the buffer
-" type - stage | revert | preview
+" type - stage | undo | preview
 function! gitgutter#diff#generate_diff_for_hunk(diff, type)
-  let diff_for_hunk = gitgutter#diff#discard_hunks(a:diff, a:type == 'stage' || a:type == 'revert')
+  let diff_for_hunk = gitgutter#diff#discard_hunks(a:diff, a:type == 'stage' || a:type == 'undo')
 
-  if a:type == 'stage' || a:type == 'revert'
+  if a:type == 'stage' || a:type == 'undo'
     let diff_for_hunk = gitgutter#diff#adjust_hunk_summary(diff_for_hunk, a:type == 'stage')
   endif
 
@@ -328,7 +330,7 @@ endfunction
 " Adjust hunk summary (from's / to's line number) to ignore changes above/before this one.
 "
 " diff_for_hunk - a diff containing only the hunk of interest
-" staging       - truthy if the hunk is to be staged, falsy if it is to be reverted
+" staging       - truthy if the hunk is to be staged, falsy if it is to be undone
 "
 " TODO: push this down to #discard_hunks?
 function! gitgutter#diff#adjust_hunk_summary(diff_for_hunk, staging)
