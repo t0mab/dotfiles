@@ -31,6 +31,7 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	fuse-exfat \
 	gcc \
 	gimp \
+	gimp-ufraw \
 	git \
 	go \
 	gparted \
