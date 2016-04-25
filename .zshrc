@@ -19,6 +19,9 @@ export TERM=xterm
 export GOPATH=~/Go
 export PATH="$HOME/go/bin:$GOPATH/bin:$PATH"
 
+# Local pip binaries
+export PATH="$HOME/.local/bin:$PATH"
+
 # SSH
 SSH_ENV="$HOME/.ssh/env"
 
