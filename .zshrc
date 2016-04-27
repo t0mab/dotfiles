@@ -189,3 +189,6 @@ alias redshift-strasbourg="redshift -v -l 48.57:7.75"
 
 # Save some keystrokes ...
 alias poweroff="sudo poweroff"
+
+# List listening services
+alias listening="lsof -i TCP -i UDP -n -P | grep LISTEN"
