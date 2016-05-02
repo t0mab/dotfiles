@@ -168,11 +168,11 @@ class Deoplete(logger.LoggingMixin):
             if hasattr(source, 'on_post_filter'):
                 context['candidates'] = source.on_post_filter(context)
 
-            if context['candidates'] and not (
-                    re.match(r'\[.*\]',
-                             context['candidates'][0].get('menu', ''))):
+            candidates = context['candidates']
+            if candidates and candidates[0].get(
+                    'menu', '').find(source.mark) != 0:
                 # Set default menu
-                for candidate in context['candidates']:
+                for candidate in candidates:
                     candidate['menu'] = source.mark + ' ' + candidate.get(
                         'menu', '')
 
@@ -298,6 +298,8 @@ class Deoplete(logger.LoggingMixin):
                 'sorters', source.sorters)
             source.converters = get_custom(self.__vim, source.name).get(
                 'converters', source.converters)
+            source.mark = get_custom(self.__vim, source.name).get(
+                'mark', source.mark)
 
             self.__sources[source.name] = source
             self.debug('Loaded Source: %s (%s)', name, module.__file__)
@@ -321,6 +323,9 @@ class Deoplete(logger.LoggingMixin):
 
     def is_skip(self, context, disabled_syntaxes,
                 min_pattern_length, max_pattern_length, input_pattern):
+        if ('syntax_name' in context and
+                context['syntax_name'] in disabled_syntaxes):
+            return 1
         if (input_pattern != '' and
                 re.search(input_pattern + '$', context['input'])):
             return 0
@@ -328,8 +333,7 @@ class Deoplete(logger.LoggingMixin):
                        not (min_pattern_length <=
                             len(context['complete_str']) <=
                             max_pattern_length))
-        return skip_length or ('syntax_name' in context and
-                               context['syntax_name'] in disabled_syntaxes)
+        return skip_length
 
     def position_has_changed(self, pos):
         return (pos != self.__vim.current.window.cursor or
