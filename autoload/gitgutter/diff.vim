@@ -123,30 +123,20 @@ function! gitgutter#diff#run_diff(realtime, preserve_full_diff)
     endif
   end
 
-  if g:gitgutter_async && has('nvim') && !a:preserve_full_diff
-    let cmd = gitgutter#utility#command_in_directory_of_file(cmd)
-    " Note that when `cmd` doesn't produce any output, i.e. the diff is empty,
-    " the `stdout` event is not fired on the job handler.  Therefore we keep
-    " track of the jobs ourselves so we can spot empty diffs.
+  let cmd = gitgutter#utility#command_in_directory_of_file(cmd)
 
-    let job_id = jobstart([&shell, '-c', cmd], {
-          \ 'on_stdout': function('gitgutter#handle_diff_job'),
-          \ 'on_stderr': function('gitgutter#handle_diff_job'),
-          \ 'on_exit':   function('gitgutter#handle_diff_job')
-          \ })
-    call gitgutter#debug#log('[job_id: '.job_id.'] '.cmd)
-    if job_id < 1
-      throw 'diff failed'
-    endif
-
-    call gitgutter#utility#pending_job(job_id)
+  if g:gitgutter_async && gitgutter#async#available() && !a:preserve_full_diff
+    call gitgutter#async#execute(cmd)
     return 'async'
+
   else
-    let diff = gitgutter#utility#system(gitgutter#utility#command_in_directory_of_file(cmd))
+    let diff = gitgutter#utility#system(cmd)
+
     if gitgutter#utility#shell_error()
       " A shell error indicates the file is not tracked by git (unless something bizarre is going on).
       throw 'diff failed'
     endif
+
     return diff
   endif
 endfunction
@@ -320,10 +310,10 @@ function! gitgutter#diff#discard_hunks(diff, keep_header)
   endfor
 
   if a:keep_header
-    return join(modified_diff, "\n") . "\n"
+    return gitgutter#utility#stringify(modified_diff)
   else
     " Discard hunk summary too.
-    return join(modified_diff[1:], "\n") . "\n"
+    return gitgutter#utility#stringify(modified_diff[1:])
   endif
 endfunction
 
@@ -348,6 +338,6 @@ function! gitgutter#diff#adjust_hunk_summary(diff_for_hunk, staging)
     endif
     call add(adj_diff, line)
   endfor
-  return join(adj_diff, "\n") . "\n"
+  return gitgutter#utility#stringify(adj_diff)
 endfunction
 
