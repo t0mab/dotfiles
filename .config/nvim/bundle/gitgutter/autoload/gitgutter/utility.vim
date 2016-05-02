@@ -2,7 +2,6 @@ let s:file = ''
 let s:using_xolox_shell = -1
 let s:exit_code = 0
 let s:fish = &shell =~# 'fish'
-let s:jobs = {}
 
 function! gitgutter#utility#warn(message)
   echohl WarningMsg
@@ -170,20 +169,6 @@ function! gitgutter#utility#strip_trailing_new_line(line)
   return substitute(a:line, '\n$', '', '')
 endfunction
 
-function! gitgutter#utility#pending_job(job_id)
-  let s:jobs[a:job_id] = 1
-endfunction
-
-function! gitgutter#utility#is_pending_job(job_id)
-  return has_key(s:jobs, a:job_id)
-endfunction
-
-function! gitgutter#utility#job_output_received(job_id, event)
-  if has_key(s:jobs, a:job_id)
-    unlet s:jobs[a:job_id]
-  endif
-endfunction
-
 function! gitgutter#utility#git_version()
   return matchstr(system('git --version'), '[0-9.]\+')
 endfunction
@@ -192,4 +177,8 @@ endfunction
 function! gitgutter#utility#git_supports_command_line_config_override()
   let [major, minor, patch; _] = split(gitgutter#utility#git_version(), '\.')
   return major > 1 || (major == 1 && minor > 7) || (minor == 7 && patch > 1)
+endfunction
+
+function! gitgutter#utility#stringify(list)
+  return join(a:list, "\n")."\n"
 endfunction
