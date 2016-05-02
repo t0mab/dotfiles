@@ -8,7 +8,6 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	alsa-firmware \
 	alsa-plugins \
 	alsa-utils \
-	aria2 \
 	beets \
 	bind-tools \
 	brasero \
