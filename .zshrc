@@ -192,3 +192,6 @@ alias poweroff="sudo poweroff"
 
 # List listening services
 alias listening="lsof -i TCP -i UDP -n -P | grep LISTEN"
+
+# Delete all Docker containers and images
+alias purge_docker="docker ps -qa | xargs docker rm -f ; docker images -qa | xargs docker rmi -f"
