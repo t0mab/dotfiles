@@ -187,11 +187,17 @@ alias goprojects="cd ~/Go/src/github.com/fabienengels"
 # Hope that'll help me to sleep ...
 alias redshift-strasbourg="redshift -v -l 48.57:7.75"
 
-# Save some keystrokes ...
-alias poweroff="sudo poweroff"
-
 # List listening services
 alias listening="lsof -i TCP -i UDP -n -P | grep LISTEN"
 
 # Delete all Docker containers and images
 alias purge_docker="docker ps -qa | xargs docker rm -f ; docker images -qa | xargs docker rmi -f"
+
+# Generate a secure password
+alias genpasswd="pwgen -Bcy 15 1"
+
+# Gparted as root
+alias gparted="sudo gparted"
+
+# Test servers
+alias run_mongodb26="docker run -it --rm -p 27017:27017 mongo:2.6"
