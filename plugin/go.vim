@@ -4,7 +4,6 @@ if exists("g:go_loaded_install")
 endif
 let g:go_loaded_install = 1
 
-
 " these packages are used by vim-go and can be automatically installed if
 " needed by the user with GoInstallBinaries
 let s:packages = [
@@ -19,6 +18,7 @@ let s:packages = [
             \ "github.com/klauspost/asmfmt/cmd/asmfmt",
             \ "github.com/fatih/motion",
             \ "github.com/zmb3/gogetdoc",
+            \ "github.com/josharian/impl",
             \ ]
 
 " These commands are available on any filetypes
@@ -53,7 +53,7 @@ function! s:GoInstallBinaries(updateBinaries)
     let old_path = $PATH
 
     " vim's executable path is looking in PATH so add our go_bin path to it
-    let $PATH = $PATH . go#util#PathListSep() .go_bin_path
+    let $PATH = go_bin_path . go#util#PathListSep() . $PATH
 
     " when shellslash is set on MS-* systems, shellescape puts single quotes
     " around the output string. cmd on Windows does not handle single quotes
