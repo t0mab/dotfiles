@@ -5,13 +5,12 @@
 # License: MIT license
 # ============================================================================
 
+from .base import Base
+
 import re
 from collections import namedtuple
 from os.path import exists, getmtime, getsize
-
 from deoplete.util import parse_file_pattern
-
-from .base import Base
 
 TagsCacheItem = namedtuple('TagsCacheItem', 'mtime candidates')
 
@@ -26,7 +25,7 @@ class Source(Base):
 
         self.__cache = {}
 
-    def on_buffer(self, context):
+    def on_event(self, context):
         self.__make_cache(context)
 
     def gather_candidates(self, context):
