@@ -327,7 +327,7 @@ class Deoplete(logger.LoggingMixin):
                 context['syntax_name'] in disabled_syntaxes):
             return 1
         if (input_pattern != '' and
-                re.search(input_pattern + '$', context['input'])):
+                re.search('(' + input_pattern + ')$', context['input'])):
             return 0
         skip_length = (context['event'] != 'Manual' and
                        not (min_pattern_length <=
@@ -346,9 +346,9 @@ class Deoplete(logger.LoggingMixin):
             self.load_filters()
             self.__runtimepath = self.__vim.options['runtimepath']
 
-    def on_buffer(self, context):
+    def on_event(self, context):
         self.check_recache()
 
         for source_name, source in self.itersource(context):
-            if hasattr(source, 'on_buffer'):
-                source.on_buffer(context)
+            if hasattr(source, 'on_event'):
+                source.on_event(context)

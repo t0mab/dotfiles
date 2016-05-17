@@ -4,10 +4,11 @@
 # License: MIT license
 # ============================================================================
 
-import re
+from .base import Base
+
 import functools
 import operator
-from .base import Base
+from deoplete.util import parse_buffer_pattern
 
 
 class Source(Base):
@@ -20,10 +21,11 @@ class Source(Base):
         self.__buffers = {}
         self.__max_lines = 5000
 
-    def on_buffer(self, context):
-        if (self.vim.current.buffer.number
-                not in self.__buffers and
-                self.vim.current.buffer.options['modifiable']):
+    def on_event(self, context):
+        if not self.vim.current.buffer.options['modifiable']:
+            return
+        if ((self.vim.current.buffer.number not in self.__buffers) or
+                context['event'] == 'BufWritePost'):
             self.__make_cache(context, self.vim.current.buffer)
 
     def gather_candidates(self, context):
@@ -39,22 +41,23 @@ class Source(Base):
                 if x != context['complete_str']]
 
     def __make_cache(self, context, buffer):
-        p = re.compile(context['keyword_patterns'])
         bufnr = buffer.number
         try:
-            if (bufnr in self.__buffers) and len(buffer) > self.__max_lines:
+            if (bufnr in self.__buffers and
+                    context['event'] != 'BufWritePost' and
+                    len(buffer) > self.__max_lines):
                 line = context['position'][1]
                 self.__buffers[bufnr][
-                    'candidates'] += functools.reduce(operator.add, [
-                        p.findall(x) for x in
-                        buffer[max([0, line-500]):line+500]
-                    ])
+                    'candidates'] += parse_buffer_pattern(
+                        buffer[max([0, line-500]):line+500],
+                        context['keyword_patterns'])
+                self.__buffers[bufnr]['candidates'] = list(
+                    set(self.__buffers[bufnr]['candidates']))
             else:
                 self.__buffers[bufnr] = {
                     'filetype': context['filetype'],
-                    'candidates': functools.reduce(operator.add, [
-                        p.findall(x) for x in buffer
-                    ]),
+                    'candidates': parse_buffer_pattern(
+                        buffer, context['keyword_patterns']),
                 }
         except UnicodeDecodeError:
             return []
