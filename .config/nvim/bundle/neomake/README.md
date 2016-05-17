@@ -109,6 +109,9 @@ Python:
 - pylint
 - python
 
+Perl:
+- perlcritic
+
 Ruby:
 - mri
 - jruby
@@ -162,13 +165,16 @@ Puppet:
 - puppet-lint
 
 Lua:
+- luac
 - luacheck
 
 Standard ML:
 - smlnj
 
 Markdown:
-- mdl
+- [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
+- [mdl](https://github.com/mivok/markdownlint)
+- [proselint](http://proselint.com)
 
 Pug:
 - [pug-lint](https://github.com/pugjs/pug-lint)
