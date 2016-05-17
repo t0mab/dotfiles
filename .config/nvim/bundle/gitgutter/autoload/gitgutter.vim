@@ -14,6 +14,8 @@ endfunction
 " bufnr: (integer) the buffer to process.
 " realtime: (boolean) when truthy, do a realtime diff; otherwise do a disk-based diff.
 function! gitgutter#process_buffer(bufnr, realtime) abort
+  call gitgutter#utility#use_known_shell()
+
   call gitgutter#utility#set_buffer(a:bufnr)
   if gitgutter#utility#is_active()
     if g:gitgutter_sign_column_always
@@ -34,6 +36,8 @@ function! gitgutter#process_buffer(bufnr, realtime) abort
   else
     call gitgutter#hunk#reset()
   endif
+
+  call gitgutter#utility#restore_shell()
 endfunction
 
 
@@ -177,7 +181,7 @@ function! gitgutter#stage_hunk() abort
       call gitgutter#utility#warn('cursor is not in a hunk')
     else
       let diff_for_hunk = gitgutter#diff#generate_diff_for_hunk(diff, 'stage')
-      call gitgutter#utility#system(gitgutter#utility#command_in_directory_of_file('git apply --cached --unidiff-zero - '), diff_for_hunk)
+      call gitgutter#utility#system(gitgutter#utility#command_in_directory_of_file(g:gitgutter_git_executable.' apply --cached --unidiff-zero - '), diff_for_hunk)
 
       " refresh gitgutter's view of buffer
       silent execute "GitGutter"
@@ -199,7 +203,7 @@ function! gitgutter#undo_hunk() abort
       call gitgutter#utility#warn('cursor is not in a hunk')
     else
       let diff_for_hunk = gitgutter#diff#generate_diff_for_hunk(diff, 'undo')
-      call gitgutter#utility#system(gitgutter#utility#command_in_directory_of_file('git apply --reverse --unidiff-zero - '), diff_for_hunk)
+      call gitgutter#utility#system(gitgutter#utility#command_in_directory_of_file(g:gitgutter_git_executable.' apply --reverse --unidiff-zero - '), diff_for_hunk)
 
       " reload file
       silent edit
