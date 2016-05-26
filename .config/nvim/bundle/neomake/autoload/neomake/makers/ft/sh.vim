@@ -10,17 +10,8 @@ function! neomake#makers#ft#sh#shellcheck()
         \ 'errorformat':
             \ '%f:%l:%c: %trror: %m,' .
             \ '%f:%l:%c: %tarning: %m,' .
-            \ '%f:%l:%c: %tote: %m',
-        \ 'postprocess':
-            \ function('neomake#makers#ft#sh#ShellcheckEntryProcess')
+            \ '%I%f:%l:%c: Note: %m',
         \ }
-endfunction
-
-function! neomake#makers#ft#sh#ShellcheckEntryProcess(entry)
-    if a:entry.type ==? 'N'
-        let a:entry.type = 'W'
-    endif
-    return a:entry
 endfunction
 
 function! neomake#makers#ft#sh#checkbashisms()
@@ -38,15 +29,19 @@ function! neomake#makers#ft#sh#checkbashisms()
 endfunction
 
 function! neomake#makers#ft#sh#sh()
-    let l:sh = '/bin/sh'
-    let l:line = getline(1)
-    if l:line =~# '^#!'
-        let l:sh = matchstr(l:line, '^#!\zs\S*\ze')
+    let shebang = matchstr(getline(1), '^#!\s*\zs.*$')
+    if len(shebang)
+        let l = split(shebang)
+        let exe = l[0]
+        let args = l[1:] + ['-n']
+    else
+        let exe = '/bin/sh'
+        let args = ['-n']
     endif
 
     return {
-        \ 'exe': l:sh,
-        \ 'args': ['-n'],
+        \ 'exe': exe,
+        \ 'args': args,
         \ 'errorformat': '%f: line %l: %m'
         \}
 endfunction
