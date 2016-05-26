@@ -306,6 +306,23 @@ class Server(object):
                 break
         return tuple(parents)
 
+    def resolve_import(self, completion, depth=0, max_depth=10, seen=None):
+        """Follow import until it no longer is an import type"""
+        if seen is None:
+            seen = []
+        seen.append(completion)
+        log.debug('Resolving: %r', completion)
+        defs = completion.goto_assignments()
+        if not defs:
+            return None
+        resolved = defs[0]
+        if resolved in seen:
+            return None
+        if resolved.type == 'import' and depth < max_depth:
+            return self.resolve_import(resolved, depth + 1, max_depth, seen)
+        log.debug('Resolved: %r', resolved)
+        return resolved
+
     @retry_completion
     def scoped_completions(self, source, filename, parent):
         """Scoped completion
@@ -324,6 +341,13 @@ class Server(object):
             if parent and (len(c_parents) > len(parent) or
                            c_parents != parent[:len(c_parents)]):
                 continue
+            if c.type == 'import':
+                resolved = self.resolve_import(c)
+                if resolved is None:
+                    log.debug('Could not resolve import: %r', c)
+                    continue
+                else:
+                    c = resolved
             name, type_, desc, abbr = self.parse_completion(c, tmp_filecache)
             seen_key = (type_, name)
             if seen_key in seen:
@@ -446,7 +470,7 @@ class Client(object):
     max_completion_count = 50
 
     def __init__(self, desc_len=0, short_types=False, show_docstring=False,
-                 debug=False):
+                 debug=False, python_path=None):
         self._server = None
         self._count = 0
         self.version = (0, 0, 0, 'final', 0)
@@ -456,7 +480,11 @@ class Client(object):
                                     os.path.dirname(os.path.dirname(__file__)))),
         })
 
-        prog = 'python'
+        if not python_path:
+            prog = 'python'
+        else:
+            prog = python_path
+
         if 'VIRTUAL_ENV' in os.environ:
             self.env['VIRTUAL_ENV'] = os.getenv('VIRTUAL_ENV')
             prog = os.path.join(self.env['VIRTUAL_ENV'], 'bin', 'python')
