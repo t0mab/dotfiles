@@ -1,5 +1,7 @@
 **[Maintainers needed!](https://github.com/neomake/neomake)** Contact an organization owner if interested.
 
+[![Build Status](https://travis-ci.org/neomake/neomake.svg?branch=master)](https://travis-ci.org/neomake/neomake)
+
 # Neomake
 
 A plugin for asynchronous `:make` using [Neovim's](http://neovim.org/)
@@ -154,6 +156,7 @@ Python:
 - pylama
 - pylint
 - python
+- [vulture](https://bitbucket.org/jendrikseipp/vulture) [not enabled by default]
 
 Ruby:
 - mri
@@ -174,6 +177,9 @@ sh:
 
 Standard ML:
 - smlnj
+
+Stylus:
+- [stylint](https://rosspatton.github.io/stylint/)
 
 SQL:
 - [sqlint](https://github.com/purcell/sqlint)
