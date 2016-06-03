@@ -25,6 +25,7 @@ set cursorline
 set mouse=
 set nowrap
 set number
+set relativenumber
 set ruler
 set shortmess=atI " Shorter messages and avoid useless Enter strikes
 set showmatch " Highlight matching brackets
