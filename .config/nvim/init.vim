@@ -44,15 +44,10 @@ nnoremap <C-N> :bnext<CR>
 nnoremap <C-P> :bprev<CR>
 
 " Indentation
+set tabstop=2
+set shiftwidth=2
+set noexpandtab
 set smartindent
-
-au BufNewFile,BufRead *.py
-	\ set tabstop=4 |
-	\ set softtabstop=4 |
-	\ set shiftwidth=4 |
-	\ set textwidth=79 |
-	\ set expandtab |
-	\ set fileformat=unix
 
 au BufNewFile,BufRead *.css, *.html, *.j2, *.js
 	\ set tabstop=2 |
