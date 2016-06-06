@@ -74,7 +74,7 @@ class Deoplete(logger.LoggingMixin):
             'call feedkeys("\<Plug>(deoplete_start_complete)")')
 
     def gather_candidates(self, context):
-        self.check_recache()
+        self.check_recache(context)
 
         # self.debug(context)
 
@@ -163,12 +163,12 @@ class Deoplete(logger.LoggingMixin):
                 context['candidates'] = source.on_post_filter(context)
 
             candidates = context['candidates']
-            if candidates and source.mark != '' and candidates[0].get(
-                    'menu', '').find(source.mark) != 0:
-                # Set default menu
-                for candidate in candidates:
-                    candidate['menu'] = source.mark + ' ' + candidate.get(
-                        'menu', '')
+            # Set default menu and icase
+            mark = source.mark + ' '
+            for candidate in candidates:
+                candidate['icase'] = 1
+                if candidate.get('menu', '').find(mark) != 0:
+                    candidate['menu'] = mark + candidate.get('menu', '')
 
             # self.debug(context['candidates'])
         return results
@@ -226,9 +226,6 @@ class Deoplete(logger.LoggingMixin):
         if self.__vim.vars['deoplete#max_list'] > 0:
             candidates = candidates[: self.__vim.vars['deoplete#max_list']]
 
-        # Set icase
-        for candidate in candidates:
-            candidate['icase'] = 1
         return (complete_position, candidates)
 
     def profile_start(self, name):
@@ -294,6 +291,8 @@ class Deoplete(logger.LoggingMixin):
                 'converters', source.converters)
             source.mark = get_custom(self.__vim, source.name).get(
                 'mark', source.mark)
+            if source.mark == '':
+                source.mark = '[' + source.name + ']'
 
             self.__sources[source.name] = source
             self.debug('Loaded Source: %s (%s)', name, module.__file__)
@@ -333,15 +332,15 @@ class Deoplete(logger.LoggingMixin):
         return (pos != self.__vim.current.window.cursor or
                 self.__vim.funcs.mode() != 'i')
 
-    def check_recache(self):
-        if self.__vim.options['runtimepath'] != self.__runtimepath:
+    def check_recache(self, context):
+        if context['runtimepath'] != self.__runtimepath:
             # Recache
             self.load_sources()
             self.load_filters()
-            self.__runtimepath = self.__vim.options['runtimepath']
+            self.__runtimepath = context['runtimepath']
 
     def on_event(self, context):
-        self.check_recache()
+        self.check_recache(context)
 
         for source_name, source in self.itersource(context):
             if hasattr(source, 'on_event'):
