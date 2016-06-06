@@ -22,14 +22,12 @@ class Source(Base):
         self.__max_lines = 5000
 
     def on_event(self, context):
-        if not self.vim.current.buffer.options['modifiable']:
-            return
-        if ((self.vim.current.buffer.number not in self.__buffers) or
+        if ((context['bufnr'] not in self.__buffers) or
                 context['event'] == 'BufWritePost'):
-            self.__make_cache(context, self.vim.current.buffer)
+            self.__make_cache(context)
 
     def gather_candidates(self, context):
-        self.__make_cache(context, self.vim.current.buffer)
+        self.__make_cache(context)
 
         buffers = [x['candidates'] for x in self.__buffers.values()
                    if x['filetype'] in context['filetypes']]
@@ -39,25 +37,24 @@ class Source(Base):
         return [{'word': x} for x in
                 functools.reduce(operator.add, buffers)]
 
-    def __make_cache(self, context, buffer):
-        bufnr = buffer.number
+    def __make_cache(self, context):
         try:
-            if (bufnr in self.__buffers and
+            if (context['bufnr'] in self.__buffers and
                     context['event'] != 'BufWritePost' and
-                    len(buffer) > self.__max_lines):
+                    len(self.vim.current.buffer) > self.__max_lines):
                 line = context['position'][1]
-                self.__buffers[bufnr][
+                self.__buffers[context['bufnr']][
                     'candidates'] += parse_buffer_pattern(
-                        buffer[max([0, line-500]):line+500],
+                        self.vim.current.buffer[max([0, line-500]):line+500],
                         context['keyword_patterns'],
                         context['complete_str'])
-                self.__buffers[bufnr]['candidates'] = list(
-                    set(self.__buffers[bufnr]['candidates']))
+                self.__buffers[context['bufnr']]['candidates'] = list(
+                    set(self.__buffers[context['bufnr']]['candidates']))
             else:
-                self.__buffers[bufnr] = {
+                self.__buffers[context['bufnr']] = {
                     'filetype': context['filetype'],
                     'candidates': parse_buffer_pattern(
-                        buffer,
+                        self.vim.current.buffer,
                         context['keyword_patterns'],
                         context['complete_str'])
                 }
