@@ -16,11 +16,12 @@ function! deoplete#handlers#_init() abort "{{{
   augroup END
 
   for event in [
-        \ 'BufEnter', 'BufRead', 'BufNewFile', 'BufNew', 'BufWinEnter',
-        \ 'BufWritePost'
+        \ 'BufNewFile', 'BufNew', 'BufRead', 'BufWritePost'
         \ ]
     execute 'autocmd deoplete' event '* call s:on_event('.string(event).')'
   endfor
+
+  call s:on_event('')
 endfunction"}}}
 
 function! s:completion_begin(event) abort "{{{
@@ -49,6 +50,7 @@ function! s:completion_begin(event) abort "{{{
     endfor
   endfor
 
+  call deoplete#mappings#_set_completeopt()
   call rpcnotify(g:deoplete#_channel_id,
         \ 'deoplete_auto_completion_begin', context)
 endfunction"}}}
@@ -86,8 +88,9 @@ function! s:is_skip(event, context) abort "{{{
     let b:deoplete_detected_foldmethod = 1
     call deoplete#util#print_error(
           \ printf('foldmethod = "%s" is detected.', &foldmethod))
-    for msg in split(deoplete#util#redir(
-          \ 'verbose setlocal foldmethod?'), "\n")
+    let msg = substitute(deoplete#util#redir(
+          \ 'verbose setlocal foldmethod?'), '\t', '', 'g')
+    for msg in split(msg, "\n")
       call deoplete#util#print_error(msg)
     endfor
     call deoplete#util#print_error(
@@ -135,10 +138,6 @@ function! s:complete_done() abort "{{{
   if get(g:deoplete#_context, 'refresh', 0)
     " Don't skip completion
     let g:deoplete#_context.refresh = 0
-    if deoplete#util#get_prev_event() ==# 'Manual'
-      let g:deoplete#_context.event = 'refresh'
-    endif
-    return
   endif
 
   let g:deoplete#_context.position = getpos('.')

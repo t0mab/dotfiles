@@ -33,14 +33,13 @@ class Deoplete(logger.LoggingMixin):
         self.__runtimepath = ''
         self.__profile_flag = None
         self.__profile_start = 0
+        self.__encoding = self.__vim.options['encoding']
         self.name = 'core'
 
     def completion_begin(self, context):
-        pos = self.__vim.current.window.cursor
-
         if context['event'] != 'Manual' and context['delay'] > 0:
             time.sleep(context['delay'] / 1000.0)
-            if self.position_has_changed(pos):
+            if self.position_has_changed(context['changedtick']):
                 return
 
         try:
@@ -52,8 +51,8 @@ class Deoplete(logger.LoggingMixin):
                   'An error has occurred. Please execute :messages command.')
             candidates = []
 
-        if not candidates or self.position_has_changed(pos):
-            self.__vim.vars['deoplete#_context'] = {}
+        if not candidates or self.position_has_changed(
+                context['changedtick']):
             return
 
         self.__vim.vars['deoplete#_context'] = {
@@ -62,12 +61,6 @@ class Deoplete(logger.LoggingMixin):
             'candidates': candidates,
             'event': context['event'],
         }
-
-        if context['rpc'] != 'deoplete_manual_completion_begin':
-            # Set (and store) current &completeopt setting.  This cannot be
-            # done (currently) from the deoplete_start_complete mapping's
-            # function.
-            self.__vim.call('deoplete#mappings#_set_completeopt')
 
         # Note: cannot use vim.feedkeys()
         self.__vim.command(
@@ -92,10 +85,10 @@ class Deoplete(logger.LoggingMixin):
             charpos = source.get_complete_position(cont)
             if charpos >= 0 and source.is_bytepos:
                 charpos = bytepos2charpos(
-                    self.__vim, cont['input'], charpos)
+                    self.__encoding, cont['input'], charpos)
             cont['complete_str'] = cont['input'][charpos:]
             cont['complete_position'] = charpos2bytepos(
-                self.__vim, cont['input'], charpos)
+                self.__encoding, cont['input'], charpos)
             cont['max_abbr_width'] = min(source.max_abbr_width,
                                          cont['max_abbr_width'])
             cont['max_menu_width'] = min(source.max_menu_width,
@@ -128,7 +121,7 @@ class Deoplete(logger.LoggingMixin):
             source = result['source']
 
             # self.debug(source.name)
-            self.profile_start(source.name)
+            self.profile_start(context, source.name)
             context['candidates'] = source.gather_candidates(context)
             self.profile_end(source.name)
             if context['candidates'] and isinstance(
@@ -151,7 +144,7 @@ class Deoplete(logger.LoggingMixin):
                                source.sorters +
                                source.converters
                                if x in self.__filters]:
-                    self.profile_start(filter.name)
+                    self.profile_start(context, filter.name)
                     context['candidates'] = filter.filter(context)
                     self.profile_end(filter.name)
             finally:
@@ -167,7 +160,8 @@ class Deoplete(logger.LoggingMixin):
             mark = source.mark + ' '
             for candidate in candidates:
                 candidate['icase'] = 1
-                if candidate.get('menu', '').find(mark) != 0:
+                if source.mark != '' and candidate.get(
+                        'menu', '').find(mark) != 0:
                     candidate['menu'] = mark + candidate.get('menu', '')
 
             # self.debug(context['candidates'])
@@ -175,17 +169,18 @@ class Deoplete(logger.LoggingMixin):
 
     def itersource(self, context):
         sources = sorted(self.__sources.items(),
-                         key=lambda x: get_custom(self.__vim, x[1].name).get(
-                             'rank', x[1].rank),
+                         key=lambda x: get_custom(
+                             context['custom'],
+                             x[1].name, 'rank', x[1].rank),
                          reverse=True)
         filetypes = context['filetypes']
         ignore_sources = set()
         for ft in filetypes:
             ignore_sources.update(
-                get_buffer_config(self.__vim, ft,
-                                  'b:deoplete_ignore_sources',
-                                  'g:deoplete#ignore_sources',
-                                  '{}'))
+                get_buffer_config(context, ft,
+                                  'deoplete_ignore_sources',
+                                  'deoplete#ignore_sources',
+                                  'deoplete#_ignore_sources'))
 
         for source_name, source in sources:
             if (source_name in ignore_sources):
@@ -223,20 +218,19 @@ class Deoplete(logger.LoggingMixin):
                 candidate['word'] = prefix + candidate['word']
             candidates += context['candidates']
         # self.debug(candidates)
-        if self.__vim.vars['deoplete#max_list'] > 0:
-            candidates = candidates[: self.__vim.vars['deoplete#max_list']]
+        if context['vars']['deoplete#max_list'] > 0:
+            candidates = candidates[: context['vars']['deoplete#max_list']]
 
         return (complete_position, candidates)
 
-    def profile_start(self, name):
+    def profile_start(self, context, name):
         if self.__profile_flag is 0 or not self.debug_enabled:
             return
 
         if self.__profile_flag is None:
-            self.__profile_flag = self.__vim.vars[
-                'deoplete#enable_profile']
+            self.__profile_flag = context['vars']['deoplete#enable_profile']
             if self.__profile_flag:
-                return self.profile_start(name)
+                return self.profile_start(context, name)
         elif self.__profile_flag:
             self.debug('Profile Start: {0}'.format(name))
             self.__profile_start = time.clock()
@@ -246,12 +240,12 @@ class Deoplete(logger.LoggingMixin):
             self.debug('Profile End  : {0:<25} time={1:2.10f}'.format(
                 name, time.clock() - self.__profile_start))
 
-    def load_sources(self):
+    def load_sources(self, context):
         # Load sources from runtimepath
-        for path in globruntime(self.__vim,
+        for path in globruntime(self.__vim, context['runtimepath'],
                                 'rplugin/python3/deoplete/sources/base.py'
                                 ) + globruntime(
-                                    self.__vim,
+                                    self.__vim, context['runtimepath'],
                                     'rplugin/python3/deoplete/sources/*.py'):
             name = os.path.basename(path)[: -3]
             module = importlib.machinery.SourceFileLoader(
@@ -263,47 +257,56 @@ class Deoplete(logger.LoggingMixin):
 
             # Set the source attributes.
             source.filetypes = get_custom(
-                self.__vim, source.name).get(
-                    'filetypes', source.filetypes)
+                context['custom'], source.name,
+                'filetypes', source.filetypes)
             source.disabled_syntaxes = get_custom(
-                self.__vim, source.name).get(
-                    'disabled_syntaxes', source.disabled_syntaxes)
+                context['custom'], source.name,
+                'disabled_syntaxes', source.disabled_syntaxes)
             source.input_pattern = get_custom(
-                self.__vim, source.name).get(
-                    'input_pattern', source.input_pattern)
+                context['custom'], source.name,
+                'input_pattern', source.input_pattern)
             source.min_pattern_length = get_custom(
-                self.__vim, source.name).get(
-                    'min_pattern_length', source.min_pattern_length)
+                context['custom'], source.name,
+                'min_pattern_length',
+                getattr(source, 'min_pattern_length',
+                        context['vars'][
+                            'deoplete#auto_complete_start_length']))
             source.max_pattern_length = get_custom(
-                self.__vim, source.name).get(
-                    'max_pattern_length', source.max_pattern_length)
+                context['custom'], source.name,
+                'max_pattern_length', source.max_pattern_length)
             source.max_abbr_width = get_custom(
-                self.__vim, source.name).get(
-                    'max_abbr_width', source.max_abbr_width)
+                context['custom'], source.name,
+                'max_abbr_width',
+                getattr(source, 'max_abbr_width',
+                        context['vars']['deoplete#max_abbr_width']))
             source.max_menu_width = get_custom(
-                self.__vim, source.name).get(
-                    'max_menu_width', source.max_menu_width)
+                context['custom'], source.name,
+                'max_menu_width',
+                getattr(source, 'max_menu_width',
+                        context['vars']['deoplete#max_menu_width']))
             source.matchers = get_custom(
-                self.__vim, source.name).get('matchers', source.matchers)
-            source.sorters = get_custom(self.__vim, source.name).get(
+                context['custom'], source.name,
+                'matchers', source.matchers)
+            source.sorters = get_custom(
+                context['custom'], source.name,
                 'sorters', source.sorters)
-            source.converters = get_custom(self.__vim, source.name).get(
+            source.converters = get_custom(
+                context['custom'], source.name,
                 'converters', source.converters)
-            source.mark = get_custom(self.__vim, source.name).get(
+            source.mark = get_custom(
+                context['custom'], source.name,
                 'mark', source.mark)
-            if source.mark == '':
-                source.mark = '[' + source.name + ']'
 
             self.__sources[source.name] = source
             self.debug('Loaded Source: %s (%s)', name, module.__file__)
         # self.debug(self.__sources)
 
-    def load_filters(self):
+    def load_filters(self, context):
         # Load filters from runtimepath
-        for path in globruntime(self.__vim,
+        for path in globruntime(self.__vim, context['runtimepath'],
                                 'rplugin/python3/deoplete/filters/base.py'
                                 ) + globruntime(
-                                    self.__vim,
+                                    self.__vim, context['runtimepath'],
                                     'rplugin/python3/deoplete/filters/*.py'):
             name = os.path.basename(path)[: -3]
             module = importlib.machinery.SourceFileLoader(
@@ -328,15 +331,14 @@ class Deoplete(logger.LoggingMixin):
                             max_pattern_length))
         return skip_length
 
-    def position_has_changed(self, pos):
-        return (pos != self.__vim.current.window.cursor or
-                self.__vim.funcs.mode() != 'i')
+    def position_has_changed(self, tick):
+        return tick != self.__vim.eval('b:changedtick')
 
     def check_recache(self, context):
         if context['runtimepath'] != self.__runtimepath:
             # Recache
-            self.load_sources()
-            self.load_filters()
+            self.load_sources(context)
+            self.load_filters(context)
             self.__runtimepath = context['runtimepath']
 
     def on_event(self, context):

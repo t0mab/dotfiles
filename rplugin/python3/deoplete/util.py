@@ -11,14 +11,20 @@ import sys
 import unicodedata
 
 
-def get_buffer_config(vim, filetype, buffer_var, user_var, default_var):
-    return vim.call('deoplete#util#get_buffer_config',
-                    filetype, buffer_var, user_var, default_var)
+def get_buffer_config(context, filetype, buffer_var, user_var, default_var):
+    if buffer_var in context['bufvars']:
+        return context['bufvars'][buffer_var]
+
+    ft = filetype if (filetype in context['vars'][user_var] or
+                      filetype in context['vars'][default_var]) else '_'
+    default = context['vars'][default_var].get(ft, '')
+    return context['vars'][user_var].get(filetype, default)
 
 
-def get_simple_buffer_config(vim, buffer_var, user_var):
-    return vim.call('deoplete#util#get_simple_buffer_config',
-                    buffer_var, user_var)
+def get_simple_buffer_config(context, buffer_var, user_var):
+    return (context['bufvars'][buffer_var]
+            if buffer_var in context['bufvars']
+            else context['vars'][user_var])
 
 
 def set_pattern(vim, variable, keys, pattern):
@@ -37,8 +43,8 @@ def convert2list(expr):
     return (expr if isinstance(expr, list) else [expr])
 
 
-def globruntime(vim, path):
-    return vim.funcs.globpath(vim.options['runtimepath'], path, 1, 1)
+def globruntime(vim, runtimepath, path):
+    return vim.funcs.globpath(runtimepath, path, 1, 1)
 
 
 def debug(vim, expr):
@@ -62,17 +68,23 @@ def escape(expr):
     return expr.replace("'", "''")
 
 
-def charpos2bytepos(vim, input, pos):
-    return len(bytes(input[: pos], vim.options['encoding']))
+def charpos2bytepos(encoding, input, pos):
+    return len(bytes(input[: pos], encoding))
 
 
-def bytepos2charpos(vim, input, pos):
-    return len(vim.funcs.substitute(
-        vim.funcs.strpart(input, 0, pos), '.', 'x', 'g'))
+def bytepos2charpos(encoding, input, pos):
+    return len(bytes(input, encoding)[: pos].decode(encoding))
 
 
-def get_custom(vim, source_name):
-    return vim.call('deoplete#custom#get', source_name)
+def get_custom(custom, source_name, key, default):
+    if source_name not in custom:
+        return get_custom(custom, '_', key, default)
+    elif key in custom[source_name]:
+        return custom[source_name][key]
+    elif key in custom['_']:
+        return custom['_'][key]
+    else:
+        return default
 
 
 def get_syn_name(vim):
