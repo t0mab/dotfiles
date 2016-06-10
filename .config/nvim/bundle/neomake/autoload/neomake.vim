@@ -13,6 +13,10 @@ let s:need_errors_cleaning = {
     \ 'file': {}
     \ }
 
+function! neomake#GetJobs() abort
+    return s:jobs
+endfunction
+
 function! neomake#ListJobs() abort
     call neomake#utils#DebugMessage('call neomake#ListJobs()')
     for jobinfo in values(s:jobs)
@@ -76,7 +80,21 @@ function! neomake#MakeJob(maker) abort
     endif
     let jobinfo.maker = a:maker
 
-    let args = a:maker.args
+    " Resolve exe/args, which might be a function or dictionary.
+    if type(a:maker.exe) == type(function('tr'))
+        let exe = call(a:maker.exe, [])
+    elseif type(a:maker.exe) == type({})
+        let exe = call(a:maker.exe.fn, [], a:maker.exe)
+    else
+        let exe = a:maker.exe
+    endif
+    if type(a:maker.args) == type(function('tr'))
+        let args = call(a:maker.args, [])
+    elseif type(a:maker.args) == type({})
+        let args = call(a:maker.args.fn, [], a:maker.args)
+    else
+        let args = a:maker.args
+    endif
     let append_file = a:maker.file_mode && index(args, '%:p') <= 0 && get(a:maker, 'append_file', 1)
     if append_file
         call add(args, '%:p')
@@ -95,7 +113,7 @@ function! neomake#MakeJob(maker) abort
         exe 'cd' fnameescape(cwd)
     endif
 
-    let job = s:JobStart(make_id, a:maker.exe, args)
+    let job = s:JobStart(make_id, exe, args)
     let jobinfo.start = localtime()
     let jobinfo.last_register = 0
 
