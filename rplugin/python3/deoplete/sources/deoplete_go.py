@@ -2,11 +2,10 @@ import os
 import re
 import subprocess
 
-from .base import Base
+from collections import OrderedDict
 
-from deoplete.util import charpos2bytepos
-from deoplete.util import error
-from deoplete.util import load_external_module
+from .base import Base
+from deoplete.util import charpos2bytepos, error, load_external_module
 
 load_external_module(__file__, 'sources/deoplete_go')
 from clang_index import Clang_Index
@@ -46,6 +45,8 @@ class Source(Base):
             self.vim.vars['deoplete#sources#go#json_directory']
         self.debug_enabled = \
             self.vim.vars.get('deoplete#sources#go#debug', 0)
+        self.use_on_event = \
+            self.vim.vars['deoplete#sources#go#on_event']
         self.cgo = \
             self.vim.vars['deoplete#sources#go#cgo']
 
@@ -75,7 +76,7 @@ class Source(Base):
             self.complete_pos = re.compile(self.complete_pos.pattern + r'|\*$')
 
     def on_event(self, context):
-        if context['event'] == 'BufWinEnter':
+        if self.use_on_event and context['event'] == 'BufWinEnter':
             buffer = self.vim.current.buffer
             context['complete_position'] = self.vim.current.window.cursor[1]
 
@@ -108,13 +109,7 @@ class Source(Base):
                 return []
 
             if self.sort_class:
-                class_dict = {
-                    'package': [],
-                    'func': [],
-                    'type': [],
-                    'var': [],
-                    'const': [],
-                }
+                class_dict = OrderedDict((x, []) for x in self.sort_class)
 
             out = []
             sep = ' '
@@ -137,7 +132,6 @@ class Source(Base):
                                   abbr=abbr,
                                   kind=kind,
                                   info=info,
-                                  menu=self.mark,
                                   dup=1)
 
                 if not self.sort_class or _class == 'import':
@@ -145,11 +139,9 @@ class Source(Base):
                 else:
                     class_dict[_class].append(candidates)
 
-            # append with sort by complete['class']
             if self.sort_class:
-                for c in self.sort_class:
-                    for x in class_dict[c]:
-                        out.append(x)
+                for v in class_dict.values():
+                    out += v
 
             return out
         except Exception:
@@ -186,7 +178,7 @@ class Source(Base):
         column = context['complete_position']
 
         offset = self.vim.call('line2byte', line) + \
-            charpos2bytepos(self.vim, context['input'][: column],
+            charpos2bytepos('utf-8', context['input'][: column],
                             column) - 1
         source = '\n'.join(buffer).encode()
 
@@ -249,6 +241,7 @@ class Source(Base):
         _type = ""
         word = ""
         placeholder = ""
+        sep = ' '
 
         for chunk in [x for x in result.string if x.spelling]:
             chunk_spelling = chunk.spelling
@@ -264,20 +257,24 @@ class Source(Base):
                 placeholder += chunk_spelling
 
         completion['word'] = word
-        completion['abbr'] = completion['info'] = placeholder
+        completion['abbr'] = completion['info'] = placeholder + sep + _type
 
         completion['kind'] = \
             ' '.join([(Clang_Index.kinds[result.cursorKind]
                        if (result.cursorKind in Clang_Index.kinds) else
-                       str(result.cursorKind)), _type])
+                       str(result.cursorKind))])
 
         return completion
 
     def cgo_complete(self, count, headers):
-        files = [('fake.c', headers + """
-char CString() {
+        fname = 'fake.c'
+        main = """
+int main(void) {
 }
-""")]
+"""
+        template = headers + main
+        files = [(fname, template)]
+
         # clang.TranslationUnit
         # PARSE_NONE = 0
         # PARSE_DETAILED_PROCESSING_RECORD = 1
@@ -288,12 +285,14 @@ char CString() {
         # PARSE_INCLUDE_BRIEF_COMMENTS_IN_CODE_COMPLETION = 128
         options = 15
 
-        tu = self.index.parse('fake.c',
+        # Index.parse(path, args=None, unsaved_files=None, options = 0)
+        tu = self.index.parse(fname,
                               self.cgo_std,
                               unsaved_files=files,
                               options=options)
 
-        cr = tu.codeComplete('fake.c', (count + 2),
+        # TranslationUnit.codeComplete(path, line, column, ...)
+        cr = tu.codeComplete(fname, (count + 2),
                              1,
                              unsaved_files=files,
                              include_macros=False,
@@ -302,6 +301,33 @@ char CString() {
 
         self.cgo_cache[headers] = \
             list(map(self.cgo_parse_candidates, cr.results))
+        self.cgo_cache[headers] += [
+            {'word': 'CString',
+             'abbr': 'CString(string) *C.char',
+             'info': 'CString(string) *C.char',
+             'kind': 'function',
+             'dup': 1},
+            {'word': 'CBytes',
+             'abbr': 'CBytes([]byte) unsafe.Pointer',
+             'info': 'CBytes([]byte) unsafe.Pointer',
+             'kind': 'function',
+             'dup': 1},
+            {'word': 'GoString',
+             'abbr': 'GoString(*C.char) string',
+             'info': 'GoString(*C.char) string',
+             'kind': 'function',
+             'dup': 1},
+            {'word': 'GoStringN',
+             'abbr': 'GoStringN(*C.char, C.int) string',
+             'info': 'GoStringN(*C.char, C.int) string',
+             'kind': 'function',
+             'dup': 1},
+            {'word': 'GoBytes',
+             'abbr': 'GoBytes(unsafe.Pointer, C.int) []byte',
+             'info': 'GoBytes(unsafe.Pointer, C.int) []byte',
+             'kind': 'function',
+             'dup': 1},
+        ]
         return self.cgo_cache[headers]
 
     def find_gocode_binary(self):
