@@ -45,15 +45,15 @@ nnoremap <C-N> :bnext<CR>
 nnoremap <C-P> :bprev<CR>
 
 " Indentation
-set tabstop=2
+set expandtab
 set shiftwidth=2
-set noexpandtab
 set smartindent
+set tabstop=2
 
 au BufNewFile,BufRead *.css, *.html, *.j2, *.js
-	\ set tabstop=2 |
-	\ set softtabstop=2 |
 	\ set shiftwidth=2
+	\ set softtabstop=2 |
+	\ set tabstop=2 |
 
 " Completion
 set wildignore+=.git,*.o,*.obj,*.pyc,*.DS_STORE,*.swc,*.bak " Ignore some files
