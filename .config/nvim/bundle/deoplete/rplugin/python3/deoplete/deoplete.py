@@ -242,14 +242,15 @@ class Deoplete(logger.LoggingMixin):
 
     def load_sources(self, context):
         # Load sources from runtimepath
-        for path in globruntime(self.__vim, context['runtimepath'],
+        for path in globruntime(context['runtimepath'],
                                 'rplugin/python3/deoplete/sources/base.py'
                                 ) + globruntime(
-                                    self.__vim, context['runtimepath'],
+                                    context['runtimepath'],
                                     'rplugin/python3/deoplete/sources/*.py'):
             name = os.path.basename(path)[: -3]
             module = importlib.machinery.SourceFileLoader(
                 'deoplete.sources.' + name, path).load_module()
+            self.debug(path)
             if not hasattr(module, 'Source') or name in self.__sources:
                 continue
 
@@ -296,6 +297,9 @@ class Deoplete(logger.LoggingMixin):
             source.mark = get_custom(
                 context['custom'], source.name,
                 'mark', source.mark)
+            source.debug_enabled = get_custom(
+                context['custom'], source.name,
+                'debug_enabled', source.debug_enabled)
 
             self.__sources[source.name] = source
             self.debug('Loaded Source: %s (%s)', name, module.__file__)
@@ -303,10 +307,10 @@ class Deoplete(logger.LoggingMixin):
 
     def load_filters(self, context):
         # Load filters from runtimepath
-        for path in globruntime(self.__vim, context['runtimepath'],
+        for path in globruntime(context['runtimepath'],
                                 'rplugin/python3/deoplete/filters/base.py'
                                 ) + globruntime(
-                                    self.__vim, context['runtimepath'],
+                                    context['runtimepath'],
                                     'rplugin/python3/deoplete/filters/*.py'):
             name = os.path.basename(path)[: -3]
             module = importlib.machinery.SourceFileLoader(
