@@ -23,5 +23,6 @@ pull-worktree .config/nvim/bundle/gruvbox https://github.com/morhetz/gruvbox.git
 pull-worktree .config/nvim/bundle/html5 https://github.com/othree/html5.vim.git
 pull-worktree .config/nvim/bundle/jinja2 https://github.com/mitsuhiko/jinja2.git
 pull-worktree .config/nvim/bundle/neomake https://github.com/benekastah/neomake
+pull-worktree .config/nvim/bundle/scala https://github.com/derekwyatt/vim-scala.git
 pull-worktree .config/nvim/bundle/surround https://github.com/tpope/vim-surround.git
 pull-worktree .config/nvim/bundle/tcomment_vim https://github.com/tomtom/tcomment_vim.git
