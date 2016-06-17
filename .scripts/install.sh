@@ -84,6 +84,8 @@ sudo pacman -Syu && sudo pacman --needed --noconfirm -S \
 	pulseaudio \
 	pulseaudio-alsa \
 	pv \
+  python2-jedi \
+  python-jedi \
 	python-neovim \
 	python-pip \
 	python-virtualenvwrapper \
