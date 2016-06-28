@@ -16,6 +16,7 @@ CONTENTS                                                      *neomake-contents*
 2. Commands                                                   |neomake-commands|
 3. Configuration                                         |neomake-configuration|
 4. Functions                                                 |neomake-functions|
+5. Autocommands                                               |neomake-autocmds|
 
 ==============================================================================
 1. Introduction                                           *neomake-introduction*
@@ -86,7 +87,6 @@ The 'exe' and 'args' entries can be a function (callback) or a dictionary with
 an expected entry 'fn' (which has to be a function).
 The function has to return a string, and receives no arguments.
 
-<
 Running "|:Neomake!| lint" from file.txt would cause "lint /path/to/file.txt" to
 be run.
 
@@ -134,7 +134,8 @@ You can define two optional properties on a maker object to process the maker
 output: 'mapexpr' is applied to the maker output before any processing, and
 'postprocess' is applied to the quickfix or location list entry.
 
-The 'mapexpr' property will be passed directly into |map| as the expr argument like so: >
+The 'mapexpr' property will be passed directly into |map| as the expr argument
+like so: >
     call map(lines, maker.mapexpr)
 <where 'lines' contains the maker output.
 This allows you to manipulate the lines as needed. Currently this is called
@@ -164,13 +165,14 @@ a maker, try setting buffer_output to 1: >
         \ }
 <
 This tells the maker only to process output when either the output type
-changes (from stderr to stout or vice versa) or at the end of the job. Your
-results will take longer, but multiline error messages should parse properly.
+changes (from stderr to stdout or vice versa) or at the end of the job. Your
+results will take longer to appear, but multiline error messages should get
+parsed properly.
 
 				         *neomake-makers-remove_invalid_entries*
 Makers can filter invalid entries (e.g. entries that do not match the
 |errorformat|) in the location/quickfix list. Set the 'remove_invalid_entries'
-property to 0 to keep all the maker output in the list:
+property to 0 to keep all the maker output in the list: >
     let g:neomake_ft_maker_remove_invalid_entries = 0
 <
 
@@ -373,5 +375,17 @@ the job output to be processed. Currently, that will happen on |WinEnter| and
 |CursorHold|. You can also call this function directly if you need to force
 it. This function is not currently used for |:Neomake!|, which always
 processes its output as it arrives.
+
+==============================================================================
+5. Autocommands                                               *neomake-autocmds*
+
+Neomake triggers the *NeomakeMakerFinished* autocommand after a maker is
+finished. This can be used to e.g. update information in your statusline: >
+
+    autocmd User NeomakeMakerFinished call MyNeomakeOpenForErrors()
+<
+`g:neomake_current_maker` will contain a reference to the maker object that
+triggered this event. This contains e.g. the `file_mode` property, which
+allows you distinguish between project or file mode.
 
 vim: ft=help tw=78
