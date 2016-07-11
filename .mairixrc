@@ -1,0 +1,6 @@
+base=/home/fabien/.mail/fastmail
+maildir=Inbox
+maildir=Archive
+mfolder=Search
+database=/home/fabien/.mail/mairix_database
+
