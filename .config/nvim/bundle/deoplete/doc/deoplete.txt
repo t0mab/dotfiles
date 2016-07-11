@@ -47,7 +47,7 @@ Note: deoplete requires Neovim(latest is recommended) with Python3 enabled.
 
 1. Extract the files and put them in your Neovim directory
    (usually `$XDG_CONFIG_HOME/nvim/`).
-2. Execute the |:UpdateRemotePlugins| and restart Neovim.
+2. Execute the ":UpdateRemotePlugins" and restart Neovim.
 3. Call |deoplete#enable()| or set "let g:deoplete#enable_at_startup = 1" in
    your `init.vim`
 
@@ -266,7 +266,7 @@ g:deoplete#member#prefix_patterns
 		does not complete member candidates.
 		Note: It is Python3 regexp.
 
-		Default value: in g:deoplete#member#_prefix_patterns
+		Default value: defined in member.py
 
 					*b:deoplete_member_prefix_patterns*
 b:deoplete_member_prefix_patterns
@@ -290,7 +290,7 @@ g:deoplete#omni#input_patterns
 		let g:deoplete#omni#input_patterns.php =
 		\ '\w+|[^. \t]->\w*|\w+::\w*'
 <
-		Default value: in g:deoplete#omni#_input_patterns
+		Default value: defined in omni.py.
 
 					*b:deoplete_omni_input_patterns*
 b:deoplete_omni_input_patterns
@@ -316,10 +316,6 @@ g:deoplete#file#enable_buffer_path
 		path instead of the current directory.
 
 		Default value: 0
-
-					*b:deoplete_file_enable_buffer_path*
-b:deoplete_file_enable_buffer_path
-		Buffer local variable of |g:deoplete#file#enable_buffer_path|.
 
 					*g:deoplete#tag#cache_limit_size*
 g:deoplete#tag#cache_limit_size
@@ -742,9 +738,14 @@ on_post_filter
 
 					*deoplete-source-attribute-on_event*
 on_event	(Function)			(Optional)
-		It is called when |BufEnter|, |BufRead|, |BufNewFile|,
-		|BufNew|, |BufWinEnter|, |BufWritePost|.
+		It is called when |BufRead|, |BufNewFile|, |BufNew|,
+		|BufWritePost|.
 		It is useful to make cache.
+		It takes {self} and {context} as its parameter.
+
+					*deoplete-source-attribute-on_init*
+on_init		(Function)			(Optional)
+		It is called after the source is initialized.
 		It takes {self} and {context} as its parameter.
 
 						*deoplete-source-attribute-__*
@@ -932,7 +933,7 @@ A:
 >
 	$ sudo pip3 install neovim --upgrade
 <
-  3. Please execute |:UpdateRemotePlugins| or |:NeoBundleRemotePlugins| (for
+  3. Please execute ":UpdateRemotePlugins" or ":NeoBundleRemotePlugins" (for
   using NeoBundle) command manually.
 
   4. Please check if Python3 interface works.  You can check it by ":echo
