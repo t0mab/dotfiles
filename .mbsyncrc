@@ -2,7 +2,7 @@ IMAPAccount fastmail
 Host mail.messagingengine.com
 Port 993
 User fabienengels@fastmail.com
-PassCmd "pass Divers/fabienengels@fastmail.com"
+PassCmd "pass fastmail.com+fabienengels"
 SSLType IMAPS
 CertificateFile ~/.mutt/ca-bundle.crt
 
