@@ -185,7 +185,7 @@ alias g="git"
 alias goprojects="cd ~/Go/src/github.com/fabienengels"
 
 # Hope that'll help me to sleep ...
-alias redshift-strasbourg="redshift -v -l 48.57:7.75"
+alias redshift-strasbourg="redshift -v -l 48.57:7.75 -b 1.0:0.6"
 
 # List listening services
 alias listening="lsof -i TCP -i UDP -n -P | grep LISTEN"
