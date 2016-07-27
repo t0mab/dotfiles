@@ -1,5 +1,5 @@
 # Paths
-set folder=$HOME/.mail/fastmail
+set folder=$HOME/.mail/gmail
 set alias_file=~/.mutt/alias
 set header_cache=~/.cache/mutt/headers
 set message_cachedir=~/.cache/mutt/bodies

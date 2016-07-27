@@ -1,8 +1,8 @@
-IMAPAccount fastmail
-Host mail.messagingengine.com
+IMAPAccount gmail
+Host imap.gmail.com
 Port 993
-User fabienengels@fastmail.com
-PassCmd "pass fastmail.com+fabienengels"
+User fabien.engels@gmail.com
+PassCmd "pass imap.gmail.com"
 SSLType IMAPS
 CertificateFile ~/.mutt/ca-bundle.crt
 
@@ -10,45 +10,49 @@ Create Both
 Expunge Both
 SyncState *
 
-MaildirStore fastmail-local
-Path ~/.mail/fastmail/
-Inbox ~/.mail/fastmail/Inbox
+MaildirStore gmail-local
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/Inbox
 
-IMAPStore fastmail-remote
-Account fastmail
+IMAPStore gmail-remote
+Account gmail
 
-Channel fastmail-inbox
-Master ":fastmail-remote:INBOX"
-Slave ":fastmail-local:Inbox"
+Channel gmail-inbox
+Master ":gmail-remote:INBOX"
+Slave ":gmail-local:Inbox"
 
-Channel fastmail-sent
-Master ":fastmail-remote:INBOX/Sent Items"
-Slave ":fastmail-local:Sent"
+Channel gmail-sent
+Master ":gmail-remote:[Gmail]/Sent Mail"
+Slave ":gmail-local:Sent"
 
-Channel fastmail-archive
-Master ":fastmail-remote:INBOX/Archive"
-Slave ":fastmail-local:Archive"
+Channel gmail-archive
+Master ":gmail-remote:[Gmail]/All Mail"
+Slave ":gmail-local:Archive"
 
-Channel fastmail-drafts
-Master ":fastmail-remote:INBOX/Drafts"
-Slave ":fastmail-local:Drafts"
+Channel gmail-drafts
+Master ":gmail-remote:[Gmail]/Drafts"
+Slave ":gmail-local:Drafts"
 
-Channel fastmail-perles
-Master ":fastmail-remote:INBOX/Perles"
-Slave ":fastmail-local:Perles"
+Channel gmail-spam
+Master ":gmail-remote:[Gmail]/Spam"
+Slave ":gmail-local:Spam"
 
-Channel fastmail-voyages
-Master ":fastmail-remote:INBOX/Voyages"
-Slave ":fastmail-local:Voyages"
+Channel gmail-trash
+Master ":gmail-remote:[Gmail]/Trash"
+Slave ":gmail-local:Trash"
 
-Channel fastmail-later
-Master ":fastmail-remote:INBOX/Later"
-Slave ":fastmail-local:Later"
+Channel gmail-later
+Master ":gmail-remote:Later"
+Slave ":gmail-local:Later"
 
-Channel fastmail-trash
-Master ":fastmail-remote:INBOX/Trash"
-Slave ":fastmail-local:Trash"
+Channel gmail-notes
+Master ":gmail-remote:Notes"
+Slave ":gmail-local:Notes"
 
-Channel fastmail-spam
-Master ":fastmail-remote:INBOX/Junk Mail"
-Slave ":fastmail-local:Spam"
+Channel gmail-perles
+Master ":gmail-remote:Perles"
+Slave ":gmail-local:Perles"
+
+Channel gmail-voyages
+Master ":gmail-remote:Voyages"
+Slave ":gmail-local:Voyages"
