@@ -29,58 +29,86 @@ class Source(Base):
         self.input_pattern = r'(?:\b[^\W\d]\w*|[\]\)])\.(?:[^\W\d]\w*)?'
         self.rank = 500
 
-        self.complete_pos = None
+    def on_init(self, context):
+        vars = context['vars']
 
-        self.gocode_binary = \
-            self.vim.vars['deoplete#sources#go#gocode_binary']
-        self.package_dot = \
-            self.vim.vars['deoplete#sources#go#package_dot']
-        self.sort_class = \
-            self.vim.vars['deoplete#sources#go#sort_class']
-        self.pointer = \
-            self.vim.vars['deoplete#sources#go#pointer']
-        self.use_cache = \
-            self.vim.vars['deoplete#sources#go#use_cache']
-        self.json_directory = \
-            self.vim.vars['deoplete#sources#go#json_directory']
-        self.debug_enabled = \
-            self.vim.vars.get('deoplete#sources#go#debug', 0)
-        self.use_on_event = \
-            self.vim.vars['deoplete#sources#go#on_event']
-        self.cgo = \
-            self.vim.vars['deoplete#sources#go#cgo']
+        self.gocode_binary = vars.get(
+            'deoplete#sources#go#gocode_binary',
+            ''
+        )
+        self.package_dot = vars.get(
+            'deoplete#sources#go#package_dot',
+            False
+        )
+        self.sort_class = vars.get(
+            'deoplete#sources#go#sort_class',
+            []
+        )
+        self.pointer = vars.get(
+            'deoplete#sources#go#pointer',
+            False
+        )
+        self.use_cache = vars.get(
+            'deoplete#sources#go#use_cache',
+            False
+        )
+        self.json_directory = vars.get(
+            'deoplete#sources#go#json_directory',
+            ''
+        )
+        self.use_on_event = vars.get(
+            'deoplete#sources#go#on_event',
+            False
+        )
+        self.cgo = vars.get(
+            'deoplete#sources#go#cgo',
+            False
+        )
+        self.debug_enabled = vars.get(
+            'deoplete#sources#go#debug',
+            False
+        )
 
-        if self.cgo:
-            self.complete_pos = re.compile(r'\w*$|(?<=")[./\-\w]*$')
-            load_external_module(__file__, 'clang')
-            import clang.cindex as clang
-
-            self.libclang_path = \
-                self.vim.vars.get('deoplete#sources#go#cgo#libclang_path', '')
-            self.cgo_std = \
-                ['-std',
-                 self.vim.vars.get('deoplete#sources#go#cgo#std', 'c11'),
-                 '-x', 'c']
-
-            if not clang.Config.loaded:
-                clang.Config.set_library_file(self.libclang_path)
-                clang.Config.set_compatibility_check(False)
-
-            self.index = clang.Index.create(0)
-
-            self.cgo_cache, self.cgo_headers = dict(), None
-        else:
-            self.complete_pos = re.compile(r'\w*$|(?<=")[./\-\w]*$')
+        self.complete_pos = re.compile(r'\w*$|(?<=")[./\-\w]*$')
 
         if self.pointer:
             self.complete_pos = re.compile(self.complete_pos.pattern + r'|\*$')
 
-    def on_event(self, context):
-        if self.use_on_event and context['event'] == 'BufWinEnter':
-            buffer = self.vim.current.buffer
-            context['complete_position'] = self.vim.current.window.cursor[1]
+        if self.cgo:
+            load_external_module(__file__, 'clang')
+            import clang.cindex as clang
 
-            self.get_complete_result(buffer, context, kill=True)
+            self.libclang_path = vars.get(
+                'deoplete#sources#go#cgo#libclang_path',
+                ''
+            )
+            if self.libclang_path == '':
+                return
+            self.std = vars.get('deoplete#sources#go#cgo#std', 'c11')
+
+            if not clang.Config.loaded or \
+                    clang.Config.library_path is not None and \
+                    clang.Config.library_path != self.libclang_path:
+                clang.Config.set_library_file(self.libclang_path)
+                clang.Config.set_compatibility_check(False)
+
+            self.cgo_complete_pattern = re.compile(r'[^\W\d]*C\.')
+            # Create clang.cindex.Index database
+            self.index = clang.Index.create(0)
+            # for inmemory-cache
+            self.cgo_cache, self.cgo_inline_source = dict(), None
+
+    def on_event(self, context):
+        if self.use_on_event and context['event'] == 'BufRead':
+            # Note that dummy execute for make cache
+            try:
+                buffer = self.vim.current.buffer
+                context['complete_position'] = \
+                    self.vim.current.window.cursor[1]
+                self.get_complete_result(buffer, context, kill=True)
+            except Exception:
+                # Ignore the error
+                pass
 
     def get_complete_position(self, context):
         m = self.complete_pos.search(context['input'])
@@ -89,15 +117,18 @@ class Source(Base):
     def gather_candidates(self, context):
         buffer = self.vim.current.buffer
 
-        if self.cgo and re.search(r'[^\W\d]*C\.', context['input']):
-            if self.cgo_get_include_header(buffer)[0] == 0:
+        # When enabled cgo option and match the cgo_complete_pattern
+        if self.cgo and self.cgo_complete_pattern.search(context['input']):
+            # No include header
+            if self.cgo_get_inline_source(buffer)[0] == 0:
                 pass
-
-            elif self.cgo_headers == self.cgo_get_include_header(buffer)[1]:
-                return self.cgo_cache[self.cgo_headers]
+            # Use inline-memory(self.cgo_headers) cacahe
+            elif self.cgo_inline_source == self.cgo_get_inline_source(buffer)[1]:
+                return self.cgo_cache[self.cgo_inline_source]
+            # return candidates use libclang-python3
             else:
-                count, self.cgo_headers = self.cgo_get_include_header(buffer)
-                return self.cgo_complete(count, self.cgo_headers)
+                count, self.cgo_inline_source = self.cgo_get_inline_source(buffer)
+                return self.cgo_complete(count, self.cgo_inline_source)
 
         result = self.get_cache(context, buffer)
         if result is None:
@@ -136,7 +167,7 @@ class Source(Base):
 
                 if not self.sort_class or _class == 'import':
                     out.append(candidates)
-                else:
+                elif _class in class_dict.keys():
                     class_dict[_class].append(candidates)
 
             if self.sort_class:
@@ -151,6 +182,7 @@ class Source(Base):
         if not self.use_cache:
             return None
 
+        # get package prefix at current input text
         m = re.findall(r'(?:\b[\w\d]+)(?=\.)', context['input'])
         package = str(m[-1]) if m else ''
         current_import = self.parse_import_package(buffer)
@@ -221,20 +253,20 @@ class Source(Base):
                     packages.append(dict(library='none', package=package_name))
         return packages
 
-    def cgo_get_include_header(self, buffer):
-        headers = []
-        count = 0
+    def cgo_get_inline_source(self, buffer):
+        if 'import "C"' not in buffer:
+               return (0, '')
 
-        for b in buffer:
-            m = re.search(r'(^#include\s<[^>]+>)$', b)
+        pos_import_c = list(buffer).index('import "C"')
+        c_inline = buffer[:pos_import_c]
 
-            if m:
-                headers.append(m.group(1))
-                count += 1
-            elif re.match(r'^\s*import \"C\"', b):
-                break
+        if c_inline[len(c_inline) - 1] == '*/':
+            comment_start = \
+                next(i for i, v in zip(range(len(c_inline) - 1, 0, -1),
+                                       reversed(c_inline)) if v == '/*')
+            c_inline = c_inline[comment_start + 1:len(c_inline) - 1]
 
-        return (count, '\n'.join(headers))
+        return (len(c_inline), '\n'.join(c_inline))
 
     def cgo_parse_candidates(self, result):
         completion = {'dup': 1}
@@ -246,11 +278,11 @@ class Source(Base):
         for chunk in [x for x in result.string if x.spelling]:
             chunk_spelling = chunk.spelling
 
-            if chunk.isKindTypedText():
+            # ignore fake.c main(void) function
+            if chunk.isKindTypedText() and chunk_spelling != 'main':
                 word += chunk_spelling
                 placeholder += chunk_spelling
                 continue
-
             elif chunk.isKindResultType():
                 _type += chunk_spelling
             else:
@@ -266,13 +298,31 @@ class Source(Base):
 
         return completion
 
-    def cgo_complete(self, count, headers):
-        fname = 'fake.c'
+    def get_pkgconfig(self, packages):
+        out = []
+        for pkg in packages:
+            flag = os.popen("pkg-config " + pkg + " --cflags --libs").read()
+            out += flag.rstrip().split(' ')
+        return out
+
+    def cgo_complete(self, line_count, source):
+        cgo_pattern = r'#cgo (\S+): (.+)'
+        flags = set()
+        for key, value in re.findall(cgo_pattern, source):
+            if key == 'pkg-config':
+                for flag in self.get_pkgconfig(value.split()):
+                    flags.add(flag)
+            else:
+                flags.add('%s=%s' % (key, value))
+
+        cgo_flags = ['-std', self.std, '-x', 'c'] + list(flags)
+
+        fname = 'cgo_inline.c'
         main = """
 int main(void) {
 }
 """
-        template = headers + main
+        template = source + main
         files = [(fname, template)]
 
         # clang.TranslationUnit
@@ -287,21 +337,41 @@ int main(void) {
 
         # Index.parse(path, args=None, unsaved_files=None, options = 0)
         tu = self.index.parse(fname,
-                              self.cgo_std,
+                              cgo_flags,
                               unsaved_files=files,
                               options=options)
 
         # TranslationUnit.codeComplete(path, line, column, ...)
-        cr = tu.codeComplete(fname, (count + 2),
+        cr = tu.codeComplete(fname, (line_count + 2),
                              1,
                              unsaved_files=files,
                              include_macros=False,
                              include_code_patterns=False,
                              include_brief_comments=False)
 
-        self.cgo_cache[headers] = \
-            list(map(self.cgo_parse_candidates, cr.results))
-        self.cgo_cache[headers] += [
+        # Go string to C string
+        #  The C string is allocated in the C heap using malloc.
+        #  It is the caller's responsibility to arrange for it to be
+        #  freed, such as by calling C.free (be sure to include stdlib.h
+        #  if C.free is needed).
+        #  func C.CString(string) *C.char
+        #
+        # Go []byte slice to C array
+        #  The C array is allocated in the C heap using malloc.
+        #  It is the caller's responsibility to arrange for it to be
+        #  freed, such as by calling C.free (be sure to include stdlib.h
+        #  if C.free is needed).
+        #  func C.CBytes([]byte) unsafe.Pointer
+        #
+        # C string to Go string
+        #  func C.GoString(*C.char) string
+        #
+        # C data with explicit length to Go string
+        #  func C.GoStringN(*C.char, C.int) string
+        #
+        # C data with explicit length to Go []byte
+        #  func C.GoBytes(unsafe.Pointer, C.int) []byte
+        self.cgo_cache[source] = [
             {'word': 'CString',
              'abbr': 'CString(string) *C.char',
              'info': 'CString(string) *C.char',
@@ -328,7 +398,9 @@ int main(void) {
              'kind': 'function',
              'dup': 1},
         ]
-        return self.cgo_cache[headers]
+        self.cgo_cache[source] += \
+            list(map(self.cgo_parse_candidates, cr.results))
+        return self.cgo_cache[source]
 
     def find_gocode_binary(self):
         try:
@@ -354,4 +426,4 @@ int main(void) {
                 binary = os.path.join(path, cmd)
                 if is_exec(binary):
                     return binary
-        return error(self.vim, 'gocode binary not found')
+        return error(self.vim, cmd + ' binary not found')
