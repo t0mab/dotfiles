@@ -180,10 +180,10 @@ g:deoplete#max_menu_width
 
 					*g:deoplete#auto_complete_delay*
 g:deoplete#auto_complete_delay
-		It is the auto completion delay time after your input.
-		The unit is ms.
+		Delay the completion after input in milliseconds.
+		Requires |+timers| (Neovim 0.1.5)
 
-		Default value: 0
+		Default value: 50
 
 						*g:deoplete#keyword_patterns*
 g:deoplete#keyword_patterns
@@ -429,10 +429,15 @@ deoplete#manual_complete([{sources}])
 		|g:deoplete#disable_auto_complete|, which should be 1 then
 		typically.
 >
-		inoremap <silent><expr> <Tab>
-		\ pumvisible() ? "\<C-n>" : deoplete#manual_complete()
+		inoremap <silent><expr> <TAB>
+		\ pumvisible() ? "\<C-n>" :
+		\ <SID>check_back_space() ? "\<TAB>" :
+		\ deoplete#mappings#manual_complete()
+		function! s:check_back_space() abort "{{{
+		let col = col('.') - 1
+		return !col || getline('.')[col - 1]  =~ '\s'
+		endfunction"}}}
 <
-
 				*deoplete#smart_close_popup()*
 deoplete#smart_close_popup()
 		Insert candidate and re-generate popup menu for deoplete.
@@ -872,10 +877,6 @@ https://github.com/vhakulinen/neovim-intellij-complete-deoplete
 tmux-complete: "tmuxcomplete" source for tmux panes
 https://github.com/wellle/tmux-complete.vim
 
-deoplete-cpp: "cmake" and "cpp" and "identifier" sources for "cmake", "c",
-"cpp", "objc", "objcpp" and "arduino" filetypes
-https://github.com/kiddos/deoplete-cpp
-
 deoplete-github: "github" source for "gitcommit" filetype
 https://github.com/SevereOverfl0w/deoplete-github
 
@@ -885,8 +886,11 @@ https://github.com/steelsojka/deoplete-flow
 deoplete-d: "d" source for D language
 https://github.com/landaire/deoplete-d
 
-deoplete-rtags: "rtags" source for "c", "cpp", "objc" and "objcpp" filetypes.
+deoplete-rtags: "rtags" source for "c", "cpp", "objc" and "objcpp" filetypes
 https://github.com/LuXuryPro/deoplete-rtags
+
+deoplete-ruby: "ruby" source for Ruby language
+https://github.com/fishbullet/deoplete-ruby
 
 ==============================================================================
 EXTERNAL PLUGINS				*deoplete-external-plugins*
@@ -1156,6 +1160,11 @@ Q: I want to change the UltiSnips source order.
 A: >
 	call deoplete#custom#set('ultisnips', 'rank', 1000)
 <
+
+Q: tag source does not work.
+https://github.com/Shougo/deoplete.nvim/issues/309
+
+A: Please increase |g:deoplete#tag#cache_limit_size| value.
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
