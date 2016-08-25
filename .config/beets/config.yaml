@@ -7,6 +7,12 @@ import:
   default_action: skip
   languages: en
   move: yes
+replace:
+  '[?.":\!`]': ''
+  '[*\/]': '-'
+  '✝': '+'
+  '&': 'and'
+original_date: no
 plugins: the convert embedart fetchart ftintitle lastgenre missing scrub duplicates
 asciify_paths: yes
 paths:
@@ -14,6 +20,9 @@ paths:
   singleton: Singletons/%the{$artist}/$title
   comp: Compilations/$album%aunique{}/$track $title
   albumtype:soundtrack: Soundtracks/$album/$track $title
+match:
+  preferred:
+    countries: ['FR', 'US', 'GB|UK']
 embedart:
   remove_art_file: yes
 convert:
