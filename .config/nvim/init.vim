@@ -1,5 +1,5 @@
 " Termite supports true colors so let's use them
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+set termguicolors
 
 " Map the leader key to SPACE
 let mapleader="\<SPACE>"
