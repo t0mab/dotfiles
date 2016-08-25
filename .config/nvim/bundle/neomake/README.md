@@ -99,6 +99,11 @@ CSS:
 D:
 - dmd
 
+Elixir:
+- credo [not enabled by default]
+- dogma [not enabled by default]
+- elixirc
+
 Erlang:
 - erlc
 
@@ -176,7 +181,13 @@ Scala:
 - scalac
 - scalastyle
 
+scss:
+- [sass-lint](https://github.com/sasstools/sass-lint) node.js-based linter
+- [scss-lint](https://github.com/brigade/scss-lint) ruby gem-based linter
+
 sh:
+
+- sh
 - shellcheck
 
 Slim:
@@ -201,6 +212,9 @@ Tex/Latex:
 TypeScript:
 - tsc
 
+VHDL:
+- [GHDL](https://github.com/tgingold/ghdl)
+
 Vimscript:
 
 - vint
@@ -218,6 +232,11 @@ Vimscript:
 
 YAML:
 - [yamllint](http://yamllint.readthedocs.org/)
+
+Zsh:
+
+- shellcheck (not enabled by default, current versions do not support Zsh)
+- zsh
 
 Since this list may be out of date, look at
 [autoload/neomake/makers](https://github.com/benekastah/neomake/tree/master/autoload/neomake/makers)
