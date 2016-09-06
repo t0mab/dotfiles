@@ -1,5 +1,3 @@
-**[Maintainers needed!](https://github.com/neomake/neomake)** Contact an organization owner if interested.
-
 [![Build Status](https://travis-ci.org/neomake/neomake.svg?branch=master)](https://travis-ci.org/neomake/neomake)
 
 # Neomake
@@ -9,7 +7,7 @@ job-control functionality. It is inspired by the excellent vim plugins
 [Syntastic](https://github.com/scrooloose/syntastic) and
 [Dispatch](https://github.com/tpope/vim-dispatch).
 
-**This plugin also works in ordinary vim, but without the asynchronous benefits.**
+**This plugin also works in ordinary Vim, but without the asynchronous benefits.**
 
 The minimum Neovim version supported by Neomake is `NVIM 0.0.0-alpha+201503292107` (commit `960b9108c`).
 The minimum Vim version supported by Neomake is 7.4.503 (although if you don't
@@ -58,6 +56,9 @@ Where `{ language }` is replaced with the name of the language, and `{ makername
 does not follow this convention, neomake will not be able to see it, and you
 will get an error message like `{ makername } not found`.
 
+Explanation for the strings making up the errorformat can be found by typing
+`:h errorformat` in Neovim/Vim.
+
 If the string `'%:p'` shows up anywhere in the `'args'` list, it will be
 `expand()`ed to the full path of the current file in place. Otherwise, the full
 path to the file will be `add()`ed to the end of the list, unless the maker's
@@ -70,7 +71,14 @@ Once you have created your makers, run `:Neomake` as normal. Run
 filetype to use makers will currently cause the `makeprg` to be ignored (this
 should be remedied).
 
-Makers provided by neomake as of this writing are:
+## Plugin documentation
+
+For more detailed documentation please refer to the
+[plugin's help](https://github.com/neomake/neomake/tree/master/doc/neomake.txt)
+(`:h neomake`).
+
+
+## Makers provided by Neomake as of this writing are:
 
 Applescript:
 - osacompile
@@ -85,6 +93,9 @@ C++:
 - clang++
 - g++
 - clang-tidy
+
+CFEngine 3:
+- cf-promises
 
 CUDA:
 - nvcc
@@ -107,6 +118,9 @@ Elixir:
 Erlang:
 - erlc
 
+fish:
+- fish
+
 Go:
 - go
 - golint
@@ -128,6 +142,7 @@ Javascript:
 - jshint
 - jsxhint
 - flow
+- xo
 
 JSON:
 - jsonlint
@@ -245,3 +260,10 @@ for all supported makers.
 If you find this plugin useful, please contribute your maker recipes to the
 repository! Check out `autoload/neomake/makers/**/*.vim` to see how that is
 currently done.
+
+
+# Contributing
+
+This is a community driven project, and maintainers are wanted.
+Please contact [@bl;eyed](https://github.com/blueyed) if you are interested.
+You should have a good profile of issue triaging and PRs on this repo already.

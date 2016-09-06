@@ -9,7 +9,9 @@ VIM_ARGS='+$(VADER) *.vader'
 testnvim: TEST_VIM:=VADER_OUTPUT_FILE=/dev/stderr nvim --headless
 testnvim: tests/vader
 testnvim:
-	cd tests && HOME=/dev/null $(TEST_VIM) -nNu vimrc -i NONE $(VIM_ARGS)
+	@# Use a temporary dir with Neovim (https://github.com/neovim/neovim/issues/5277).
+	tmp=$(shell mktemp -d --suffix=.neomaketests); \
+	cd tests && HOME=$$tmp $(TEST_VIM) -nNu vimrc -i NONE $(VIM_ARGS)
 	
 testvim: TEST_VIM:=vim -X
 testvim: tests/vader
@@ -46,4 +48,15 @@ $(_TESTS_REL_AND_ABS):
 tags:
 	ctags -R --langmap=vim:+.vader
 
+# Linters, called from .travis.yml.
+vint:
+	vint .
+vint-errors:
+	vint --error .
+vimlint:
+	sh /tmp/vimlint/bin/vimlint.sh -l /tmp/vimlint -p /tmp/vimlparser .
+vimlint-errors:
+	sh /tmp/vimlint/bin/vimlint.sh -E -l /tmp/vimlint -p /tmp/vimlparser .
+
+.PHONY: vint vint-errors vimlint vimlint-errors
 .PHONY: test testnvim testvim testinteractive runvim runnvim tags _run_tests
