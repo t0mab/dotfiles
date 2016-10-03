@@ -129,9 +129,6 @@ function! s:MakeJob(make_id, maker) abort
                 \ 'on_exit': function('neomake#MakeHandler')
                 \ }
             let job = jobstart(argv, opts)
-            let jobinfo.start = localtime()
-            let jobinfo.last_register = 0
-
             if job == 0
                 throw 'Job table is full or invalid arguments given'
             elseif job == -1
@@ -230,7 +227,7 @@ function! neomake#GetMaker(name_or_maker, ...) abort
         \ 'exe': maker.name,
         \ 'args': [],
         \ 'errorformat': &errorformat,
-        \ 'buffer_output': 0,
+        \ 'buffer_output': 1,
         \ 'remove_invalid_entries': 1
         \ }
     let bufnr = bufnr('%')
@@ -373,16 +370,16 @@ function! s:Make(options, ...) abort
     endif
 
     " Empty the quickfix/location list (using a valid 'errorformat' setting).
-    let l:efm = &efm
+    let l:efm = &errorformat
     try
-        let &efm = '%-G'
+        let &errorformat = '%-G'
         if file_mode
             lgetexpr ''
         else
             cgetexpr ''
         endif
     finally
-        let &efm = l:efm
+        let &errorformat = l:efm
     endtry
     call s:HandleLoclistQflistDisplay(file_mode)
 
@@ -558,7 +555,8 @@ endfunction
 function! s:neomake_hook(event, context) abort
     if exists('#User#'.a:event)
         let g:neomake_hook_context = a:context
-        call neomake#utils#DebugMessage('Calling User autocmd: '.a:event)
+        call neomake#utils#DebugMessage('Calling User autocmd '.a:event
+                                      \ .' with context: '.string(a:context))
         if v:version >= 704 || (v:version == 703 && has('patch442'))
             exec 'doautocmd <nomodeline> User ' . a:event
         else
@@ -668,8 +666,6 @@ function! neomake#MakeHandler(job_id, data, event_type) abort
     call neomake#utils#DebugMessage(printf('[#%d] %s: %s: %s',
                 \ a:job_id, a:event_type, maker.name, string(a:data)))
     if index(['stdout', 'stderr'], a:event_type) >= 0
-        " Register job output. Buffer registering of output for long running
-        " jobs.
         let last_event_type = get(jobinfo, 'event_type', a:event_type)
         let jobinfo.event_type = a:event_type
 
@@ -684,17 +680,12 @@ function! neomake#MakeHandler(job_id, data, event_type) abort
             let jobinfo.lines = a:data
         endif
 
-        let now = localtime()
-        if (!maker.buffer_output || last_event_type !=# a:event_type) ||
-                \ (last_event_type !=# a:event_type ||
-                \  now - jobinfo.start < 1 ||
-                \  now - jobinfo.last_register > 3)
+        if !maker.buffer_output || last_event_type !=# a:event_type
             let lines = jobinfo.lines[:-2]
             if len(lines)
                 call s:RegisterJobOutput(jobinfo, lines)
             endif
             let jobinfo.lines = jobinfo.lines[-1:]
-            let jobinfo.last_register = now
         endif
     elseif a:event_type ==# 'exit'
         " Handle any unfinished lines from stdout/stderr callbacks.
@@ -725,8 +716,9 @@ function! neomake#MakeHandler(job_id, data, event_type) abort
         call s:CleanJobinfo(jobinfo)
         if has('nvim')
             " Only report completion for neovim, since it is asynchronous
-            call neomake#utils#QuietMessage(get(maker, 'name', 'make').
-                                          \ ' completed with exit code '.status)
+            call neomake#utils#QuietMessage(printf(
+                        \ '[#%d] %s: completed with exit code %d.',
+                        \ jobinfo.id, maker.name, status))
         endif
 
         " If signs were not cleared before this point, then the maker did not return
@@ -860,13 +852,22 @@ function! neomake#Make(file_mode, enabled_makers, ...) abort
     return s:Make(options)
 endfunction
 
+function! neomake#ShCommand(bang, sh_command, ...) abort
+    let maker = neomake#utils#MakerFromCommand(&shell, a:sh_command)
+    let maker.name = 'sh: '.a:sh_command
+    let maker.remove_invalid_entries = 0
+    let maker.errorformat = '%+G'
+    let maker.buffer_output = !a:bang
+    if a:0
+        call extend(maker, a:1)
+    endif
+    return get(s:Make({'enabled_makers': [maker]}), 0, 0)
+endfunction
+
 function! neomake#Sh(sh_command, ...) abort
+    " Deprecated, but documented.
     let options = a:0 ? { 'exit_callback': a:1 } : {}
-    let custom_maker = neomake#utils#MakerFromCommand(&shell, a:sh_command)
-    let custom_maker.name = 'sh: '.a:sh_command
-    let custom_maker.remove_invalid_entries = 0
-    let options.enabled_makers = [custom_maker]
-    return get(s:Make(options), 0, 0)
+    return neomake#ShCommand(0, a:sh_command, options)
 endfunction
 
 function! neomake#DisplayInfo() abort
