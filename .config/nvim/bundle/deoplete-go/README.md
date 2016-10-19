@@ -96,6 +96,7 @@ Plug 'zchee/deoplete-go', { 'do': 'make'}
 | `g:deoplete#sources#go#use_cache`      | `0`     | **Recommend** |
 | `g:deoplete#sources#go#json_directory` | `''`    | **Recommend** |
 | `g:deoplete#sources#go#cgo`            | `0`     | *Any*         |
+| `g:deoplete#sources#go#goos`           | `''`    | No            |
 
 ### `g:deoplete#sources#go#gocode_binary`
 #### `gocode` Binary
@@ -309,6 +310,23 @@ In darwin, `libclang.dylib`, In Linux, `libclang.so`.
 
 C language standard version option.  
 If not set, deoplete-go use `c11`(latest) version.
+
+### `g:deoplete#sources#go#auto_goos`
+#### Automatically set GOOS environment variable when calling `gocode`
+
+| **Default**  | `0`     |
+|--------------|---------|
+| **Required** | No      |
+| **Type**     | boolean |
+| **Example**  | `1`     |
+
+When enabled, deoplete-go will try to set `GOOS` by checking the file name for
+`name_<OS>.go`.  If not found, the file will be checked for a `// +build <OS>`
+directive.  If the file's OS doesn't match your OS (e.g.  `file_darwin.go`
+while on `linux`), `CGO_ENABLED=0` will also be set.
+
+**Note:** There may be a 5-10 second delay if `gocode` needs to compile the
+platform-specific sources for the first time.
 
 ===
 
