@@ -13,11 +13,13 @@ from __future__ import unicode_literals
 import os
 import re
 import sys
+import time
 import struct
 import logging
 import argparse
 import functools
 import subprocess
+
 from glob import glob
 
 # This is be possible because the path is inserted in deoplete_jedi.py as well
@@ -25,7 +27,8 @@ from glob import glob
 from deoplete_jedi import utils
 
 log = logging.getLogger('server')
-log.addHandler(logging.NullHandler)
+nullHandler = logging.NullHandler()
+log.addHandler(nullHandler)
 
 try:
     import cPickle as pickle
@@ -95,7 +98,7 @@ def stream_read(pipe):
 def stream_write(pipe, obj):
     """Write data to the pipe."""
     data = pickle.dumps(obj, 2)
-    header = struct.pack('I', len(data))
+    header = struct.pack(b'I', len(data))
     buffer = getattr(pipe, 'buffer', pipe)
     buffer.write(header + data)
     pipe.flush()
@@ -143,6 +146,7 @@ class Server(object):
         self.unresolved_imports = set()
 
         from jedi import settings
+
         settings.use_filesystem_cache = False
 
     def _loop(self):
@@ -249,6 +253,7 @@ class Server(object):
         log.debug('Remainder to match: %r', match_mod)
 
         import jedi
+
         completions = jedi.api.names(path=found, references=True)
         completions = utils.jedi_walk(completions)
         while len(match_mod):
@@ -265,29 +270,25 @@ class Server(object):
         tmp_filecache = {}
         seen = set()
         for c in completions:
-            name, type_, desc, abbr = self.parse_completion(c, tmp_filecache)
-            seen_key = (type_, name)
+            parsed = self.parse_completion(c, tmp_filecache)
+            seen_key = (parsed['type'], parsed['name'])
             if seen_key in seen:
                 continue
             seen.add(seen_key)
-            kind = type_ if not self.use_short_types \
-                else _types.get(type_) or type_
-            out.append((c.module_path, name, type_, desc, abbr, kind))
+            out.append(parsed)
         return out
 
     @retry_completion
     def script_completion(self, source, line, col, filename):
         """Standard Jedi completions"""
         import jedi
+
         log.debug('Line: %r, Col: %r, Filename: %r', line, col, filename)
         completions = jedi.Script(source, line, col, filename).completions()
         out = []
         tmp_filecache = {}
         for c in completions:
-            name, type_, desc, abbr = self.parse_completion(c, tmp_filecache)
-            kind = type_ if not self.use_short_types \
-                else _types.get(type_) or type_
-            out.append((c.module_path, name, type_, desc, abbr, kind))
+            out.append(self.parse_completion(c, tmp_filecache))
         return out
 
     def get_parents(self, c):
@@ -333,6 +334,7 @@ class Server(object):
         This would be slow in Vim without threading.
         """
         import jedi
+
         completions = jedi.api.names(source, filename, all_scopes=True)
         out = []
         tmp_filecache = {}
@@ -350,61 +352,43 @@ class Server(object):
                     continue
                 else:
                     c = resolved
-            name, type_, desc, abbr = self.parse_completion(c, tmp_filecache)
-            seen_key = (type_, name)
+            parsed = self.parse_completion(c, tmp_filecache)
+            seen_key = (parsed['name'], parsed['type'])
             if seen_key in seen:
                 continue
             seen.add(seen_key)
-            kind = type_ if not self.use_short_types \
-                else _types.get(type_) or type_
-            out.append((c.module_path, name, type_, desc, abbr, kind))
+            out.append(parsed)
         return out
 
-    def call_signature(self, comp):
-        """Construct the function's call signature.
+    def completion_dict(self, name, type_, comp):
+        """Final construction of the completion dict."""
+        doc = comp.docstring()
+        i = doc.find('\n\n')
+        if i != -1:
+            doc = doc[i:]
 
-        comp.docstring() is not reliable and we don't need the entire
-        docstring.
-
-        Returns a tuple of (full, abbr) call signatures.
-        """
-        params = []
-        params_abbr = []
+        params = None
         try:
-            # Total length includes parenthesis
-            length = len(comp.name)
-            for i, p in enumerate(comp.params):
-                desc = p.description.strip()
-                if i == 0 and desc == 'self':
-                    continue
+            if type_ in ('function', 'class'):
+                params = []
+                for i, p in enumerate(comp.params):
+                    desc = p.description.strip()
+                    if i == 0 and desc == 'self':
+                        continue
+                    if '\\n' in desc:
+                        desc = desc.replace('\\n', '\\x0A')
+                    params.append(desc)
+        except Exception:
+            params = None
 
-                if '\\n' in desc:
-                    desc = desc.replace('\\n', '\\x0A')
-
-                length += len(desc) + 2
-                params.append(desc)
-
-            params_abbr = params[:]
-            if self.desc_len > 0:
-                if length > self.desc_len:
-                    # First remove all keyword params to see if that makes it
-                    # short enough.
-                    params_abbr = [x.split('=', 1)[0] for x in params_abbr]
-                    length = len(comp.name) + sum([len(x) + 2
-                                                   for x in params_abbr])
-
-                while length + 3 > self.desc_len \
-                        and len(params_abbr):
-                    # Keep removing params until short enough.
-                    length -= len(params_abbr[-1]) - 3
-                    params_abbr = params_abbr[:-1]
-                if len(params) > len(params_abbr):
-                    params_abbr.append('...')
-        except AttributeError:
-            pass
-
-        return ('{}({})'.format(comp.name, ', '.join(params)),
-                '{}({})'.format(comp.name, ', '.join(params_abbr)))
+        return {
+            'module': comp.module_path,
+            'name': name,
+            'type': type_,
+            'short_type': _types.get(type_),
+            'doc': doc.strip(),
+            'params': params,
+        }
 
     def parse_completion(self, comp, cache):
         """Return a tuple describing the completion.
@@ -412,6 +396,7 @@ class Server(object):
         Returns (name, type, description, abbreviated)
         """
         from jedi.api.classes import Completion
+
         name = comp.name
 
         if isinstance(comp, Completion):
@@ -424,16 +409,10 @@ class Server(object):
             # Simple description
             builtin_type = desc.rsplit('.', 1)[-1]
             if builtin_type in _types:
-                return (name, builtin_type, '', '')
+                return self.completion_dict(name, builtin_type, comp)
 
         if type_ == 'class' and desc.startswith('builtins.'):
-            if self.show_docstring:
-                return (name,
-                        type_,
-                        comp.docstring(),
-                        self.call_signature(comp)[1])
-            else:
-                return (name, type_) + self.call_signature(comp)
+            return self.completion_dict(name, type_, comp)
 
         if type_ == 'function':
             if comp.module_path not in cache and comp.line and comp.line > 1 \
@@ -451,17 +430,11 @@ class Server(object):
                     if not line.startswith('@'):
                         break
                     if line.startswith('@property'):
-                        return (name, 'property', desc, '')
+                        return self.completion_dict(name, 'property', comp)
                     i -= 1
-            if self.show_docstring:
-                return (name,
-                        type_,
-                        comp.docstring(),
-                        self.call_signature(comp)[1])
-            else:
-                return (name, type_) + self.call_signature(comp)
+            return self.completion_dict(name, type_, comp)
 
-        return (name, type_, '', '')
+        return self.completion_dict(name, type_, comp)
 
 
 class Client(object):
@@ -474,7 +447,6 @@ class Client(object):
     def __init__(self, desc_len=0, short_types=False, show_docstring=False,
                  debug=False, python_path=None):
         self._server = None
-        self._count = 0
         self.version = (0, 0, 0, 'final', 0)
         self.env = os.environ.copy()
         self.env.update({
@@ -516,6 +488,7 @@ class Client(object):
         self._server = subprocess.Popen(self.cmd, stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, env=self.env)
         self.version = stream_read(self._server.stdout)
+        self._count = 0
 
     def completions(self, *args):
         """Get completions from the server.
@@ -524,12 +497,17 @@ class Client(object):
         restart the server.
         """
         if self._count > self.max_completion_count:
-            self._count = 0
             self.restart()
 
         self._count += 1
-        stream_write(self._server.stdin, args)
-        return stream_read(self._server.stdout)
+        try:
+            stream_write(self._server.stdin, args)
+            return stream_read(self._server.stdout)
+        except StreamError as exc:
+            log.error('Caught %s during handling completions(%s), '
+                      ' restarting server', exc, args)
+            self.restart()
+            time.sleep(0.2)
 
 
 if __name__ == '__main__':
@@ -541,7 +519,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.debug:
-        log.removeHandler(logging.NullHandler)
+        log.removeHandler(nullHandler)
         handler = logging.FileHandler('/tmp/jedi-server.log')
         handler.setLevel(logging.DEBUG)
         log.addHandler(handler)
