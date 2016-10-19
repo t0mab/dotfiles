@@ -9,6 +9,7 @@ import os
 import re
 from os.path import exists, dirname
 from .base import Base
+from deoplete.util import expand
 
 
 class Source(Base):
@@ -57,7 +58,8 @@ class Source(Base):
                 ] + [{'word': x} for x in files]
 
     def __longest_path_that_exists(self, context, input_str):
-        data = re.split(r'(%s+)' % self.__isfname, input_str)
+        data = re.split(r'((?:%s+|(?<![\w\s])(?:~|\.{1,2})?/))' %
+                        self.__isfname, input_str)
         data = [''.join(data[i:]) for i in range(len(data))]
         existing_paths = sorted(filter(lambda x: exists(
             dirname(self.__substitute_path(context, x))), data))
@@ -75,4 +77,4 @@ class Source(Base):
                 base = dirname(base)
             path = os.path.abspath(os.path.join(base, path[len(m.group(0)):]))
             return path
-        return os.path.expandvars(os.path.expanduser(path))
+        return expand(path)
