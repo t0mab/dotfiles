@@ -16,6 +16,7 @@ pull-worktree .config/nvim/bundle/ctrlp https://github.com/ctrlpvim/ctrlp.vim.gi
 pull-worktree .config/nvim/bundle/deoplete https://github.com/Shougo/deoplete.nvim.git
 pull-worktree .config/nvim/bundle/deoplete-go https://github.com/zchee/deoplete-go.git
 pull-worktree .config/nvim/bundle/deoplete-jedi https://github.com/zchee/deoplete-jedi.git
+pull-worktree .config/nvim/bundle/elm https://github.com/ElmCast/elm-vim.git
 pull-worktree .config/nvim/bundle/fugitive https://github.com/tpope/vim-fugitive.git
 pull-worktree .config/nvim/bundle/gitgutter https://github.com/airblade/vim-gitgutter.git
 pull-worktree .config/nvim/bundle/go https://github.com/fatih/vim-go.git
