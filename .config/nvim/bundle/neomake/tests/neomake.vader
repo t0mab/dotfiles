@@ -6,11 +6,16 @@ Execute (neomake#GetMakers):
   AssertEqual sort(neomake#GetMakers('sh')), ['checkbashisms', 'sh', 'shellcheck']
 
 Execute (neomake#GetMaker with non-existent maker prints errors):
-  let g:neomake_verbose = 0
   AssertEqual neomake#GetMaker('non-existent'), {}
   AssertEqual g:neomake_test_messages[-1], [0, 'Invalid maker name: non-existent']
   AssertEqual neomake#GetMaker('nonexistent'), {}
   AssertEqual g:neomake_test_messages[-1], [0, 'Maker not found: nonexistent']
+
+Execute (neomake#GetMaker: uses defined errorformat):
+  let maker = neomake#GetMaker('makeprg', '')
+  AssertEqual maker, {'name': 'makeprg', 'ft': '', 'args': ['-c', 'make'],
+    \ 'errorformat': &errorformat,
+    \ 'exe': &shell, 'remove_invalid_entries': 0, 'buffer_output': 1}
 
 Execute (neomake#GetMaker uses defaults from b:/g:):
   Save g:neomake_test_remove_invalid_entries
@@ -70,11 +75,21 @@ Execute (neomake#CancelJob):
 Execute (Reports exit status):
   if neomake#has_async_support()
     let job_id = neomake#Sh("sh -c 'exit 7'")
+    let jobinfo = neomake#GetJobs()[job_id]
     NeomakeTestsWaitForFinishedJobs
 
-    let msg = printf('[#%d] sh: sh -c ''exit 7'': completed with exit code 7.', job_id)
-    AssertNeomakeMessage msg, 1
+    AssertNeomakeMessage 'sh: sh -c ''exit 7'': completed with exit code 7.', 1
 
-    let msg = printf('[#%d] exit: sh: sh -c ''exit 7'': 7', job_id)
+    let msg = printf('[%d.%d] exit: sh: sh -c ''exit 7'': 7',
+      \ jobinfo.make_id, job_id)
     AssertNeomakeMessage msg, 3
+  endif
+
+Execute (neomake#Sh: job_id):
+  let job_id = neomake#Sh('true')
+  if neomake#has_async_support()
+    Assert job_id >= 0, 'Correct job_id for async.'
+    NeomakeTestsWaitForFinishedJobs
+  else
+    Assert job_id == -1, 'Correct job_id for sync.'
   endif
