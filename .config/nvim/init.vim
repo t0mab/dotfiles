@@ -93,10 +93,7 @@ let g:airline_powerline_fonts=1
 let g:delimitMate_expand_cr=1
 
 "Elm
-call neocomplete#util#set_default_dictionary(
-  \ 'g:neocomplete#sources#omni#input_patterns',
-  \ 'elm'
-  \ '\.')
+let g:elm_format_autosave = 1
 
 " Git
 " Just use it to visualize change, nothing else
