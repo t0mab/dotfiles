@@ -7,7 +7,7 @@
 import re
 from .base import Base
 from deoplete.util import \
-    get_buffer_config, error, convert2list, set_pattern
+    get_buffer_config, error_vim, convert2list, set_pattern
 
 
 class Source(Base):
@@ -46,8 +46,10 @@ class Source(Base):
                                       {'_': ''})):
                 if omnifunc == '':
                     omnifunc = context['omni__omnifunc']
-                if omnifunc in ['', 'ccomplete#Complete',
-                                'htmlcomplete#CompleteTags']:
+                if omnifunc in [
+                        '', 'ccomplete#Complete',
+                        'htmlcomplete#CompleteTags'] or not self.vim.call(
+                            'deoplete#util#exists_omnifunc', omnifunc):
                     continue
                 self.__omnifunc = omnifunc
                 for input_pattern in convert2list(
@@ -66,9 +68,9 @@ class Source(Base):
                     try:
                         complete_pos = self.vim.call(self.__omnifunc, 1, '')
                     except:
-                        error(self.vim,
-                              'Error occurred calling omnifunction: ' +
-                              self.__omnifunc)
+                        error_vim(self.vim,
+                                  'Error occurred calling omnifunction: ' +
+                                  self.__omnifunc)
                         return -1
                     return complete_pos
         return -1
@@ -85,9 +87,9 @@ class Source(Base):
             elif candidates is int:
                 candidates = []
         except:
-            error(self.vim,
-                  'Error occurred calling omnifunction: ' +
-                  self.__omnifunc)
+            error_vim(self.vim,
+                      'Error occurred calling omnifunction: ' +
+                      self.__omnifunc)
             candidates = []
 
         self.__prev_linenr = context['position'][1]
