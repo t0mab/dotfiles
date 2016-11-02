@@ -7,7 +7,9 @@ import hashlib
 import logging
 import threading
 import subprocess
+
 from string import whitespace
+from itertools import chain
 
 from deoplete_jedi import utils
 
@@ -18,7 +20,7 @@ _cache_path = None
 _file_cache = set(['import~'])
 
 # Cache version allows us to invalidate outdated cache data structures.
-_cache_version = 9
+_cache_version = 10
 _cache_lock = threading.RLock()
 _cache = {}
 
@@ -345,7 +347,7 @@ def is_package(module, refresh=False):
     return any(map(glob.glob, pglobs))
 
 
-def cache_context(filename, context, source):
+def cache_context(filename, context, source, extra_path):
     """Caching based on context input.
 
     If the input is blank, it was triggered with `.` to get module completions.
@@ -389,16 +391,20 @@ def cache_context(filename, context, source):
                 # Dot completion on the import line
                 import_key, _ = import_key.rsplit('.', 1)
             import_key = import_key.rstrip('.')
-            module_file = utils.module_search(import_key,
-                                              [os.getcwd(),
-                                               os.path.dirname(filename)])
+            module_file = utils.module_search(
+                import_key,
+                chain(extra_path,
+                      [context.get('cwd'), os.path.dirname(filename)],
+                      utils.rplugin_runtime_paths(context)))
             if module_file:
                 cache_key = (import_key, 'local')
                 extra_modules.append(module_file)
             elif is_package(import_key):
                 cache_key = (import_key, 'package')
-            else:
+            elif not cinput.endswith('.'):
                 cache_key = ('import~',)
+            else:
+                return None, extra_modules
 
     if not cache_key:
         obj = split_module(cinput.strip())
