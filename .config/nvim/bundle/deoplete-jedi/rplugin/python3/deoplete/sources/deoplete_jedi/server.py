@@ -26,9 +26,11 @@ from glob import glob
 # as set in PYTHONPATH by the Client class.
 from deoplete_jedi import utils
 
-log = logging.getLogger('server')
+log = logging.getLogger('deoplete')
 nullHandler = logging.NullHandler()
-log.addHandler(nullHandler)
+
+if not log.handlers:
+    log.addHandler(nullHandler)
 
 try:
     import cPickle as pickle
@@ -157,7 +159,7 @@ class Server(object):
             if not isinstance(data, tuple):
                 continue
 
-            cache_key, source, line, col, filename = data
+            cache_key, source, line, col, filename, options = data
             orig_path = sys.path[:]
             venv = os.getenv('VIRTUAL_ENV')
             if venv:
@@ -170,6 +172,16 @@ class Server(object):
                 sys.path.insert(0, add_path)
             if filename:
                 sys.path.append(os.path.dirname(filename))
+
+            if isinstance(options, dict):
+                extra = options.get('extra_path')
+                if extra:
+                    if not isinstance(extra, list):
+                        extra = [extra]
+                    sys.path.extend(extra)
+
+                # Add extra paths if working on a Python remote plugin.
+                sys.path.extend(utils.rplugin_runtime_paths(options))
 
             # Decorators on incomplete functions cause an error to be raised by
             # Jedi.  I assume this is because Jedi is attempting to evaluate
@@ -469,7 +481,8 @@ class Client(object):
         if show_docstring:
             self.cmd.append('--docstrings')
         if debug:
-            self.cmd.append('--debug')
+            self.cmd.extend(('--debug', debug[0], '--debug-level',
+                             str(debug[1])))
 
         self.restart()
 
@@ -515,15 +528,22 @@ if __name__ == '__main__':
     parser.add_argument('--desc-length', type=int)
     parser.add_argument('--short-types', action='store_true')
     parser.add_argument('--docstrings', action='store_true')
-    parser.add_argument('--debug', action='store_true')
+    parser.add_argument('--debug', default='')
+    parser.add_argument('--debug-level', type=int, default=logging.DEBUG)
     args = parser.parse_args()
 
     if args.debug:
         log.removeHandler(nullHandler)
-        handler = logging.FileHandler('/tmp/jedi-server.log')
-        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s %(levelname)-8s '
+                                      '(%(name)s) %(message)s')
+        handler = logging.FileHandler(args.debug)
+        handler.setFormatter(formatter)
+        handler.setLevel(args.debug_level)
         log.addHandler(handler)
         log.setLevel(logging.DEBUG)
+        log = log.getChild('jedi.server')
 
     s = Server(args.desc_length, args.short_types, args.docstrings)
     s.run()
+else:
+    log = log.getChild('jedi.client')
