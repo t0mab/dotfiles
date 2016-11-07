@@ -203,7 +203,7 @@ alias gparted="sudo gparted"
 alias run_mongodb26="docker run -it --rm -p 27017:27017 mongo:2.6"
 
 # Launch Jupyter server
-alias notebook="jupyter-notebook --no-browser"
+alias notebook="jupyter-notebook --no-browser --no-mathjax"
 
 # iPhone ...
 iphone_mount="ifuse ~/.iphone"
