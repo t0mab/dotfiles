@@ -9,7 +9,7 @@ import:
   move: yes
 replace:
   '[?.":\!`]': ''
-  '[*\/]': '-'
+  '[*<>\/\\]': '-'
   '✝': '+'
   '&': 'and'
 original_date: no
