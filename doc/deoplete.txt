@@ -290,7 +290,7 @@ g:deoplete#omni#input_patterns
 		If this pattern is not defined or empty pattern, deoplete
 		does not call 'omnifunc'.
 		Note: Some omnifuncs which moves the cursor is not worked.
-		For example, htmlcomplete, vim-go, etc...
+		For example, htmlcomplete, phpcomplete, etc...
 		Note: It is Python3 regexp.
 >
 		let g:deoplete#omni#input_patterns = {}
@@ -347,6 +347,13 @@ g:deoplete#tag#cache_limit_size
 		deoplete does not make the tag file cache.
 
 		Default value: 500000
+
+				*g:deoplete#buffer#require_same_filetype*
+g:deoplete#buffer#require_same_filetype
+		If it is zero, deoplete collects keywords from buffers of any
+		filetype
+
+		Default value: 1
 
 ------------------------------------------------------------------------------
 FUNCTIONS 						*deoplete-functions*
