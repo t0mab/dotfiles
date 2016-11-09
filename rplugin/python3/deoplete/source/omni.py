@@ -56,9 +56,9 @@ class Source(Base):
                     # In the blacklist
                     error_vim(self.vim,
                               'omni source does not support omnifunction: ' +
-                              self.__omnifunc)
+                              omnifunc)
                     error_vim(self.vim,
-                              'You must use g:deoplete#omni#input_patterns' +
+                              'You must use g:deoplete#omni_patterns' +
                               ' instead.')
                     continue
                 self.__omnifunc = omnifunc
