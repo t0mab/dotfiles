@@ -23,7 +23,7 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
     let verbose = get(g:, 'neomake_verbose', 1)
     let logfile = get(g:, 'neomake_logfile')
 
-    if exists(':Log') != 2 && verbose < a:level && logfile is ''
+    if exists(':Log') != 2 && verbose < a:level && logfile is# ''
         return
     endif
 
@@ -43,7 +43,9 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
         " Log is defined during Vader tests.
         let test_msg = '['.s:level_to_name[a:level].'] ['.s:timestr().']: '.msg
         call vader#log(test_msg)
-        let g:neomake_test_messages += [[a:level, a:msg, jobinfo]]
+        " Only keep jobinfo entries that are relevant for / used in the message.
+        let g:neomake_test_messages += [[a:level, a:msg,
+                    \ filter(copy(jobinfo), "index(['id', 'make_id'], v:key) != -1")]]
     endif
 
     if verbose >= a:level
@@ -181,6 +183,9 @@ function! neomake#utils#MakerIsAvailable(ft, maker_name) abort
     endif
     if !has_key(s:available_makers, a:maker_name)
         let maker = neomake#GetMaker(a:maker_name, a:ft)
+        if empty(maker)
+            return 0
+        endif
         let s:available_makers[a:maker_name] = executable(maker.exe)
     endif
     return s:available_makers[a:maker_name]
@@ -216,23 +221,24 @@ endfunction
 " Get a setting by key, based on filetypes, from the buffer or global
 " namespace, defaulting to default.
 function! neomake#utils#GetSetting(key, maker, default, fts, bufnr) abort
-  if has_key(a:maker, 'name')
-    if len(a:fts)
-      for ft in a:fts
-        " Look through the neomake setting override vars for a filetype maker,
-        " like neomake_scss_sasslint_exe (should be a string), and 
-        " neomake_scss_sasslint_args (should be a list)
-        let config_var = 'neomake_'.ft.'_'.a:maker.name.'_'.a:key
-        if has_key(g:, config_var)
-              \ || !empty(getbufvar(a:bufnr, config_var))
-          break
-        endif
-      endfor
-    else
-      " Following this, we're checking the neomake overrides for global makers
-      let config_var = 'neomake_'.a:maker.name.'_'.a:key
-    endif
+  let maker_name = has_key(a:maker, 'name') ? '_'.a:maker.name : ''
+  if len(a:fts)
+    for ft in a:fts
+      " Look through the neomake setting override vars for a filetype maker,
+      " like neomake_scss_sasslint_exe (should be a string), and
+      " neomake_scss_sasslint_args (should be a list)
+      let config_var = 'neomake_'.ft.maker_name.'_'.a:key
+      if has_key(g:, config_var)
+            \ || !empty(getbufvar(a:bufnr, config_var))
+        break
+      endif
+    endfor
+  elseif len(maker_name)
+    " Following this, we're checking the neomake overrides for global makers
+    let config_var = 'neomake'.maker_name.'_'.a:key
+  endif
 
+  if exists('config_var')
     if !empty(getbufvar(a:bufnr, config_var))
       return copy(getbufvar(a:bufnr, config_var))
     elseif has_key(g:, config_var)
