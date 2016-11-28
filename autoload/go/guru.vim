@@ -82,7 +82,7 @@ function! s:guru_cmd(args) range abort
     let scopes = go#util#StripTrailingSlash(scopes)
 
     " create shell-safe entries of the list
-    if !has('job') | let scopes = go#util#Shelllist(scopes) | endif
+    if !go#util#has_job() | let scopes = go#util#Shelllist(scopes) | endif
 
     " guru expect a comma-separated list of patterns, construct it
     let l:scope = join(scopes, ",")
@@ -138,7 +138,7 @@ function! s:sync_guru(args) abort
   if has_key(a:args, 'custom_parse')
     call a:args.custom_parse(go#util#ShellError(), out)
   else
-    call s:parse_guru_output(go#util#ShellError(), out)
+    call s:parse_guru_output(go#util#ShellError(), out, a:args.mode)
   endif
 
   return out
@@ -152,7 +152,7 @@ function! s:async_guru(args) abort
     return
   endif
 
-  let import_path =  go#package#ImportPath(expand('%:p:h'))
+  let status_dir =  expand('%:p:h')
   let statusline_type = printf("%s", a:args.mode)
 
   if !has_key(a:args, 'disable_progress')
@@ -188,12 +188,12 @@ function! s:async_guru(args) abort
       let status.state = "failed"
     endif
 
-    call go#statusline#Update(import_path, status)
+    call go#statusline#Update(status_dir, status)
 
     if has_key(a:args, 'custom_parse')
       call a:args.custom_parse(l:info.exitval, out)
     else
-      call s:parse_guru_output(l:info.exitval, out)
+      call s:parse_guru_output(l:info.exitval, out, a:args.mode)
     endif
   endfunction
 
@@ -208,7 +208,7 @@ function! s:async_guru(args) abort
     let l:start_options.in_name = l:tmpname
   endif
 
-  call go#statusline#Update(import_path, {
+  call go#statusline#Update(status_dir, {
         \ 'desc': "current status",
         \ 'type': statusline_type,
         \ 'state': "analysing",
@@ -219,10 +219,7 @@ endfunc
 
 " run_guru runs the given guru argument
 function! s:run_guru(args) abort
-  " NOTE(arslan): Having just 'job' is not sufficient as there are still many
-  " fixes after vim8 was released. Therefor we also need at minimum the patch
-  " 15 which has some core fixes we need (8.0.0015). 
-  if has('job') && has("patch15")
+  if go#util#has_job()
     return s:async_guru(a:args)
   endif
 
@@ -281,7 +278,7 @@ function! go#guru#DescribeInfo() abort
     return
   endif
 
-  function! s:info(exit_val, output) abort
+  function! s:info(exit_val, output)
     if a:exit_val != 0
       return
     endif
@@ -290,12 +287,12 @@ function! go#guru#DescribeInfo() abort
       return
     endif
 
-    if empty(a:output) || type(a:output) != v:t_string
+    if empty(a:output) || type(a:output) != type("")
       return
     endif
 
     let result = json_decode(a:output)
-    if type(result) != v:t_dict
+    if type(result) != type({})
       call go#util#EchoError(printf("malformed output from guru: %s", a:output))
       return
     endif
@@ -498,7 +495,7 @@ function! s:same_ids_highlight(exit_val, output) abort
   endif
 
   let result = json_decode(a:output)
-  if type(result) != v:t_dict && !get(g:, 'go_auto_sameids', 0)
+  if type(result) != type({}) && !get(g:, 'go_auto_sameids', 0)
     call go#util#EchoError("malformed output from guru")
     return
   endif
@@ -587,7 +584,7 @@ endfunction
 " We discard line2 and col2 for the first errorformat, because it's not
 " useful and location only has the ability to show one line and column
 " number
-function! s:parse_guru_output(exit_val, output) abort
+function! s:parse_guru_output(exit_val, output, title) abort
   if a:exit_val
     call go#util#EchoError(a:output)
     return
@@ -595,7 +592,7 @@ function! s:parse_guru_output(exit_val, output) abort
 
   let old_errorformat = &errorformat
   let errformat = "%f:%l.%c-%[%^:]%#:\ %m,%f:%l:%c:\ %m"
-  call go#list#ParseFormat("locationlist", errformat, a:output)
+  call go#list#ParseFormat("locationlist", errformat, a:output, a:title)
   let &errorformat = old_errorformat
 
   let errors = go#list#Get("locationlist")
