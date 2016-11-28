@@ -1,6 +1,6 @@
 function! go#cmd#autowrite() abort
   if &autowrite == 1
-    silent wall
+    silent! wall
   endif
 endfunction
 
@@ -21,7 +21,7 @@ function! go#cmd#Build(bang, ...) abort
   " placeholder with the current folder (indicated with '.')
   let args = ["build"]  + goargs + [".", "errors"]
 
-  if has('job')
+  if go#util#has_job()
     if get(g:, 'go_echo_command_info', 1)
       call go#util#EchoProgress("building dispatched ...")
     endif
@@ -93,7 +93,7 @@ function! go#cmd#Run(bang, ...) abort
     return
   endif
 
-  if has('job')
+  if go#util#has_job()
     " NOTE(arslan): 'term': 'open' case is not implement for +jobs. This means
     " executions waiting for stdin will not work. That's why we don't do
     " anything. Once this is implemented we're going to make :GoRun async
@@ -133,7 +133,7 @@ function! go#cmd#Run(bang, ...) abort
   let items = go#list#Get(l:listtype)
   let errors = go#tool#FilterValids(items)
 
-  call go#list#Populate(l:listtype, errors)
+  call go#list#Populate(l:listtype, errors, &makeprg)
   call go#list#Window(l:listtype, len(errors))
   if !empty(errors) && !a:bang
     call go#list#JumpToFirst(l:listtype)
@@ -148,7 +148,7 @@ endfunction
 " those packages. Errors are populated in the location window.
 function! go#cmd#Install(bang, ...) abort
   " use vim's job functionality to call it asynchronously
-  if has('job')
+  if go#util#has_job()
     " expand all wildcards(i.e: '%' to the current file name)
     let goargs = map(copy(a:000), "expand(v:val)")
 
@@ -216,9 +216,15 @@ function! go#cmd#Test(bang, compile, ...) abort
   endif
 
   if a:0
-    " expand all wildcards(i.e: '%' to the current file name)
-    let goargs = map(copy(a:000), "expand(v:val)")
-    if !has('nvim')
+    let goargs = a:000
+
+    " do not expand for coverage mode as we're passing the arg ourself
+    if a:1 != '-coverprofile'
+      " expand all wildcards(i.e: '%' to the current file name)
+      let goargs = map(copy(a:000), "expand(v:val)")
+    endif
+
+    if !(has('nvim') || go#util#has_job())
       let goargs = go#util#Shelllist(goargs, 1)
     endif
 
@@ -237,7 +243,7 @@ function! go#cmd#Test(bang, compile, ...) abort
     endif
   endif
 
-  if has('job')
+  if go#util#has_job()
     " use vim's job functionality to call it asynchronously
     let job_args = {
           \ 'cmd': ['go'] + args,
@@ -285,7 +291,7 @@ function! go#cmd#Test(bang, compile, ...) abort
     let errors = go#tool#ParseErrors(split(out, '\n'))
     let errors = go#tool#FilterValids(errors)
 
-    call go#list#Populate(l:listtype, errors)
+    call go#list#Populate(l:listtype, errors, command)
     call go#list#Window(l:listtype, len(errors))
     if !empty(errors) && !a:bang
       call go#list#JumpToFirst(l:listtype)

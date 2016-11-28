@@ -44,7 +44,7 @@ function! go#coverage#Buffer(bang, ...) abort
   let s:toggle = 1
   let l:tmpname = tempname()
 
-  if has('job')
+  if go#util#has_job()
     call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
           \ 'custom_cb': function('s:coverage_callback', [l:tmpname]),
@@ -85,10 +85,7 @@ endfunction
 
 " Clear clears and resets the buffer annotation matches
 function! go#coverage#Clear() abort
-  " only reset the syntax if the user has syntax enabled
-  if !empty(&syntax)
-    if exists("g:syntax_on") | syntax enable | endif
-  endif
+  call clearmatches()
 
   if exists("s:toggle") | let s:toggle = 0 | endif
 
@@ -96,15 +93,13 @@ function! go#coverage#Clear() abort
   if exists("#BufWinLeave#<buffer>") 
     autocmd! BufWinLeave <buffer>
   endif
-
-  call clearmatches()
 endfunction
 
 " Browser creates a new cover profile with 'go test -coverprofile' and opens
 " a new HTML coverage page from that profile in a new browser
 function! go#coverage#Browser(bang, ...) abort
   let l:tmpname = tempname()
-  if has('job')
+  if go#util#has_job()
     call s:coverage_job({
           \ 'cmd': ['go', 'test', '-coverprofile', l:tmpname],
           \ 'custom_cb': function('s:coverage_browser_callback', [l:tmpname]),
@@ -224,7 +219,7 @@ function! go#coverage#overlay(file) abort
     let cnt += 1
   endwhile
 
-  let fname = expand('%:t')
+  let fname = expand('%')
 
   " when called for a _test.go file, run the coverage for the actuall file
   " file
@@ -241,6 +236,9 @@ function! go#coverage#overlay(file) abort
     exe ":edit ". fnamemodify(fname, ":p")
   endif
 
+  " cov.file includes only the filename itself, without full path
+  let fname = fnamemodify(fname, ":t")
+
   for line in lines[1:]
     let cov = go#coverage#parsegocoverline(line)
 
@@ -252,8 +250,6 @@ function! go#coverage#overlay(file) abort
 
     call extend(matches, go#coverage#genmatch(cov))
   endfor
-
-  syntax manual
 
   " clear the matches if we leave the buffer
   autocmd BufWinLeave <buffer> call go#coverage#Clear()
@@ -272,7 +268,7 @@ function s:coverage_job(args)
   " autowrite is not enabled for jobs
   call go#cmd#autowrite()
 
-  let import_path =  go#package#ImportPath(expand('%:p:h'))
+  let status_dir =  expand('%:p:h')
   function! s:error_info_cb(job, exit_status, data) closure
     let status = {
           \ 'desc': 'last status',
@@ -284,7 +280,7 @@ function s:coverage_job(args)
       let status.state = "failed"
     endif
 
-    call go#statusline#Update(import_path, status)
+    call go#statusline#Update(status_dir, status)
   endfunction
 
   let a:args.error_info_cb = function('s:error_info_cb')
@@ -305,7 +301,7 @@ function s:coverage_job(args)
   let jobdir = fnameescape(expand("%:p:h"))
   execute cd . jobdir
 
-  call go#statusline#Update(import_path, {
+  call go#statusline#Update(status_dir, {
         \ 'desc': "current status",
         \ 'type': "coverage",
         \ 'state': "started",
