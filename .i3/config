@@ -9,7 +9,7 @@ floating_modifier $mod
 bindsym $mod+Return exec termite
 
 # start Firefox
-bindsym $mod+B exec firefox
+bindsym $mod+B exec chromium
 
 # start Thunar
 bindsym $mod+E exec thunar
