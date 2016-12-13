@@ -1,15 +1,14 @@
+import glob
+import hashlib
+import json
+import logging
 import os
 import re
-import glob
-import json
-import time
-import hashlib
-import logging
-import threading
 import subprocess
-
-from string import whitespace
+import threading
+import time
 from itertools import chain
+from string import whitespace
 
 from deoplete_jedi import utils
 
@@ -20,7 +19,7 @@ _cache_path = None
 _file_cache = set(['import~'])
 
 # Cache version allows us to invalidate outdated cache data structures.
-_cache_version = 10
+_cache_version = 11
 _cache_lock = threading.RLock()
 _cache = {}
 

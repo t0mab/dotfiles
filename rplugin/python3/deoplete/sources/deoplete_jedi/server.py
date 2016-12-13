@@ -10,16 +10,15 @@ should make deoplete-jedi's completions pretty fast and responsive.
 """
 from __future__ import unicode_literals
 
-import os
-import re
-import sys
-import time
-import struct
-import logging
 import argparse
 import functools
+import logging
+import os
+import re
+import struct
 import subprocess
-
+import sys
+import time
 from glob import glob
 
 # This is be possible because the path is inserted in deoplete_jedi.py as well
@@ -130,7 +129,7 @@ def retry_completion(func):
                 log.warn('Retrying completion %r', func.__name__)
                 try:
                     return func(self, strip_decor(source), *args, **kwargs)
-                except:
+                except Exception:
                     pass
             log.warn('Failed completion %r', func.__name__)
     return wrapper
@@ -188,18 +187,24 @@ class Server(object):
             # the return value of the wrapped, but broken, function.
             # Our solution is to simply strip decorators from the source since
             # we are a completion service, not the syntax police.
-            out = None
+            out = self.script_completion(source, line, col, filename)
 
-            if cache_key[-1] == 'vars':
+            if not out and cache_key[-1] == 'vars':
                 # Attempt scope completion.  If it fails, it should fall
                 # through to script completion.
+                log.debug('Fallback to scoped completions')
                 out = self.scoped_completions(source, filename, cache_key[-2])
 
-            if not out:
-                out = self.script_completion(source, line, col, filename)
+            if not out and 'synthetic' in options:
+                synthetic = options.get('synthetic')
+                log.debug('Using synthetic completion: %r', synthetic)
+                out = self.script_completion(synthetic['src'],
+                                             synthetic['line'],
+                                             synthetic['col'], filename)
 
             if not out and cache_key[-1] in ('package', 'local'):
                 # The backup plan
+                log.debug('Fallback to module completions')
                 try:
                     out = self.module_completions(cache_key[0], sys.path)
                 except Exception:
