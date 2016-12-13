@@ -72,8 +72,17 @@ function! neomake#makers#ft#python#flake8() abort
 endfunction
 
 function! neomake#makers#ft#python#Flake8EntryProcess(entry) abort
-    if a:entry.type ==# 'F'  " PyFlake errors
-        let type = 'E'
+    if a:entry.type ==# 'F'  " pyflakes
+        " Ref: http://flake8.pycqa.org/en/latest/user/error-codes.html
+        if a:entry.nr > 400 && a:entry.nr < 500
+            if a:entry.nr == 407
+                let type = 'E'  " 'an undefined __future__ feature name was imported'
+            else
+                let type = 'W'
+            endif
+        else
+            let type = 'E'
+        endif
     elseif a:entry.type ==# 'E' && a:entry.nr >= 900  " PEP8 runtime errors (E901, E902)
         let type = 'E'
     elseif a:entry.type ==# 'E' || a:entry.type ==# 'W'  " PEP8 errors & warnings
@@ -85,6 +94,11 @@ function! neomake#makers#ft#python#Flake8EntryProcess(entry) abort
     else
         let type = ''
     endif
+    let l:token = matchstr(a:entry.text, "'.*'")
+    if strlen(l:token)
+        let a:entry.length = strlen(l:token) - 2 " subtract the quotes
+    endif
+
     let a:entry.text = a:entry.type . a:entry.nr . ' ' . a:entry.text
     let a:entry.type = type
     let a:entry.nr = ''  " Avoid redundancy in the displayed error message.
@@ -147,7 +161,6 @@ function! neomake#makers#ft#python#PylamaEntryProcess(entry) abort
     elseif a:entry.type ==# 'R'  " Radon
         let a:entry.type = 'W'
     endif
-    return a:entry
 endfunction
 
 function! neomake#makers#ft#python#pylama() abort
