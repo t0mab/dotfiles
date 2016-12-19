@@ -55,6 +55,8 @@ class Deoplete(logger.LoggingMixin):
         }
 
         self.__vim.feedkeys(context['start_complete'])
+        if self.__vim.call('has', 'patch-7.4.1758'):
+            self.__vim.feedkeys('', 'x!')
 
     def gather_candidates(self, context):
         self.check_recache(context)
@@ -187,7 +189,7 @@ class Deoplete(logger.LoggingMixin):
                                   {}))
 
         for source_name, source in sources:
-            if (source_name in ignore_sources):
+            if source.filetypes is None or source_name in ignore_sources:
                 continue
             if context['sources'] and source_name not in context['sources']:
                 continue
