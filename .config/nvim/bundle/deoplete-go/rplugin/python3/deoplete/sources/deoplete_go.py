@@ -106,7 +106,8 @@ class Source(Base):
 
         result = self.get_cache(context, getlines(self.vim))
         if result is None:
-            result = self.get_complete_result(context, getlines(self.vim), context['bufname'])
+            bufname = self.vim.current.buffer.name
+            result = self.get_complete_result(context, getlines(self.vim), bufname)
 
         try:
             if result[1][0]['class'] == 'PANIC':
