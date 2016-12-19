@@ -19,6 +19,8 @@ function! s:timestr() abort
     return strftime('%H:%M:%S')
 endfunction
 
+let s:unset = {}
+
 function! neomake#utils#LogMessage(level, msg, ...) abort
     let verbose = get(g:, 'neomake_verbose', 1)
     let logfile = get(g:, 'neomake_logfile')
@@ -30,9 +32,9 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
     if a:0
         let jobinfo = a:1
         if has_key(jobinfo, 'id')
-            let msg = printf('[%d.%d] %s', jobinfo.make_id, jobinfo.id, a:msg)
+            let msg = printf('[%s.%d] %s', get(jobinfo, 'make_id', '-'), jobinfo.id, a:msg)
         else
-            let msg = printf('[%d] %s', jobinfo.make_id, a:msg)
+            let msg = printf('[%s] %s', get(jobinfo, 'make_id', '?'), a:msg)
         endif
     else
         let jobinfo = {}
@@ -221,26 +223,26 @@ endfunction
 " Get a setting by key, based on filetypes, from the buffer or global
 " namespace, defaulting to default.
 function! neomake#utils#GetSetting(key, maker, default, fts, bufnr) abort
-  let maker_name = has_key(a:maker, 'name') ? '_'.a:maker.name : ''
-  if len(a:fts)
-    for ft in a:fts
-      " Look through the neomake setting override vars for a filetype maker,
-      " like neomake_scss_sasslint_exe (should be a string), and
-      " neomake_scss_sasslint_args (should be a list)
-      let config_var = 'neomake_'.ft.maker_name.'_'.a:key
-      if has_key(g:, config_var)
-            \ || !empty(getbufvar(a:bufnr, config_var))
+  let maker_name = has_key(a:maker, 'name') ? a:maker.name : ''
+  for ft in a:fts + ['']
+    " Look through the override vars for a filetype maker, like
+    " neomake_scss_sasslint_exe (should be a string), and
+    " neomake_scss_sasslint_args (should be a list).
+    let part = join(filter([ft, maker_name], 'len(v:val)'), '_')
+    if !len(part)
         break
-      endif
-    endfor
-  elseif len(maker_name)
-    " Following this, we're checking the neomake overrides for global makers
-    let config_var = 'neomake'.maker_name.'_'.a:key
-  endif
+    endif
+    let config_var = 'neomake_'.part.'_'.a:key
+    if has_key(g:, config_var)
+          \ || neomake#compat#getbufvar(a:bufnr, config_var, s:unset) isnot s:unset
+      break
+    endif
+  endfor
 
   if exists('config_var')
-    if !empty(getbufvar(a:bufnr, config_var))
-      return copy(getbufvar(a:bufnr, config_var))
+    let bufcfgvar = neomake#compat#getbufvar(a:bufnr, config_var, s:unset)
+    if bufcfgvar isnot s:unset
+      return copy(bufcfgvar)
     elseif has_key(g:, config_var)
       return copy(get(g:, config_var))
     endif
@@ -249,13 +251,12 @@ function! neomake#utils#GetSetting(key, maker, default, fts, bufnr) abort
     return a:maker[a:key]
   endif
   " Look for 'neomake_'.key in the buffer and global namespace.
-  let bufvar = getbufvar(a:bufnr, 'neomake_'.a:key)
-  if !empty(bufvar)
+  let bufvar = neomake#compat#getbufvar(a:bufnr, 'neomake_'.a:key, s:unset)
+  if bufvar isnot s:unset
       return bufvar
   endif
-  let var = get(g:, 'neomake_'.a:key)
-  if !empty(var)
-      return var
+  if has_key(g:, 'neomake_'.a:key)
+      return get(g:, 'neomake_'.a:key)
   endif
   return a:default
 endfunction
@@ -326,13 +327,13 @@ endfunction
 
 function! neomake#utils#ExpandArgs(args) abort
     " Only expand those args that start with \ and a single %
-    call map(a:args, "v:val =~# '\\(^\\\\\\|^%$\\|^%[^%]\\)' ? expand(v:val) : v:val")
+    call map(a:args, "v:val =~# '\\(^%$\\|^%:\\l\\+$\\)' ? expand(v:val) : v:val")
 endfunction
 
 function! neomake#utils#hook(event, context) abort
     if exists('#User#'.a:event)
         let g:neomake_hook_context = a:context
-        call neomake#utils#DebugMessage('Calling User autocmd '.a:event
+        call neomake#utils#LoudMessage('Calling User autocmd '.a:event
                                       \ .' with context: '.string(a:context))
         if v:version >= 704 || (v:version == 703 && has('patch442'))
             exec 'doautocmd <nomodeline> User ' . a:event
@@ -340,5 +341,8 @@ function! neomake#utils#hook(event, context) abort
             exec 'doautocmd User ' . a:event
         endif
         unlet g:neomake_hook_context
+    else
+        call neomake#utils#DebugMessage(printf(
+                    \ 'Skipping User autocmd %s: no hooks.', a:event))
     endif
 endfunction
