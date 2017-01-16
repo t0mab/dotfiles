@@ -3,7 +3,7 @@ RPLUGIN_HOME := $(CURRENT)/rplugin/python3
 RPLUGIN_PATH := $(RPLUGIN_HOME)/deoplete/sources
 MODULE_NAME := deoplete_go.py deoplete_go/cgo.py deoplete_go/stdlib.py
 
-TARGET = $(RPLUGIN_HOME)/deoplete/ujson.so 
+TARGET = $(RPLUGIN_HOME)/deoplete/ujson.so
 
 GOCODE := $(shell which gocode)
 GO_VERSION = $(shell go version | awk '{print $$3}' | sed -e 's/go//')
@@ -22,7 +22,7 @@ ifneq ($(PACKAGE),unsafe)
 	PACKAGE += unsafe
 endif
 
-PIP_FLAGS ?= 
+PIP_FLAGS ?=
 
 
 all: $(TARGET)
@@ -31,11 +31,10 @@ all: $(TARGET)
 rplugin/python3/deoplete/ujson/.git:
 	$(GIT) submodule update --init
 
-build: rplugin/python3/deoplete/ujson/.git
-	cd ./rplugin/python3/deoplete/ujson; $(PYTHON3) setup.py build --build-base=$(CURRENT)/build --build-lib=$(CURRENT)/build
 
-$(TARGET): build
-	mv $(shell find $(CURRENT)/build -name ujson*.so) $@
+$(TARGET): rplugin/python3/deoplete/ujson/.git
+	cd ./rplugin/python3/deoplete/ujson; $(PYTHON3) setup.py build --build-base=$(CURRENT)/build --build-lib=$(CURRENT)/build
+	mv $(CURRENT)/build/ujson.*.so $@
 
 
 data/stdlib-$(GO_VERSION)_$(GOOS)_$(GOARCH).txt:

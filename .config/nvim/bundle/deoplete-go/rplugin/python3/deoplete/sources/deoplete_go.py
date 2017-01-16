@@ -19,15 +19,14 @@ except ImportError:
     from json import loads
 
 known_goos = (
-    'android', 'darwin', 'dragonfly', 'freebsd', 'linux', 'nacl', 'netbsd',
-    'openbsd', 'plan9', 'solaris', 'windows'
-)
+    'appengine', 'android', 'darwin', 'dragonfly', 'freebsd', 'linux', 'nacl',
+    'netbsd', 'openbsd', 'plan9', 'solaris', 'windows')
 
 
 class Source(Base):
 
     def __init__(self, vim):
-        Base.__init__(self, vim)
+        super(Source, self).__init__(vim)
 
         self.name = 'go'
         self.mark = '[Go]'
@@ -107,7 +106,8 @@ class Source(Base):
         result = self.get_cache(context, getlines(self.vim))
         if result is None:
             bufname = self.vim.current.buffer.name
-            result = self.get_complete_result(context, getlines(self.vim), bufname)
+            result = self.get_complete_result(
+                context, getlines(self.vim), bufname)
 
         try:
             if result[1][0]['class'] == 'PANIC':
@@ -202,12 +202,7 @@ class Source(Base):
         return result
 
     def get_complete_result(self, context, buffer, bufname):
-        line = self.vim.current.window.cursor[0]
-        column = context['complete_position']
-
-        offset = self.vim.call('line2byte', line) + \
-            charpos2bytepos('utf-8', context['input'][: column],
-                            column) - 1
+        offset = self.get_cursor_offset(context)
 
         env = os.environ.copy()
         if self.auto_goos:
@@ -261,6 +256,13 @@ class Source(Base):
         )
 
         return loads(stdout_data.decode())
+
+    def get_cursor_offset(self, context):
+        line = self.vim.current.window.cursor[0]
+        column = context['complete_position']
+
+        return self.vim.call('line2byte', line) + \
+            charpos2bytepos('utf-8', context['input'][: column], column) - 1
 
     def parse_import_package(self, buffer):
         start = 0
