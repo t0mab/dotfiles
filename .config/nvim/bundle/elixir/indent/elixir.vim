@@ -14,7 +14,7 @@ set cpo&vim
 function! elixir#indent()
   " initiates the `old_ind` dictionary
   let b:old_ind = get(b:, 'old_ind', {})
-  " initialtes the `line` dictionary
+  " initiates the `line` dictionary
   let line = s:build_line(v:lnum)
 
   if s:is_beginning_of_file(line)
@@ -28,23 +28,39 @@ function! elixir#indent()
     return indent(line.last.num)
   else
     " Calculates the indenation level based on the rules
-    " All the rules are defined in `autoload/indent.vim`
+    " All the rules are defined in `autoload/elixir/indent.vim`
     let ind = indent(line.last.num)
-    let ind = elixir#indent#deindent_case_arrow(ind, line)
-    let ind = elixir#indent#indent_parenthesis(ind, line)
-    let ind = elixir#indent#indent_square_brackets(ind, line)
-    let ind = elixir#indent#indent_brackets(ind, line)
-    let ind = elixir#indent#deindent_opened_symbols(ind, line)
-    let ind = elixir#indent#indent_pipeline_assignment(ind, line)
-    let ind = elixir#indent#indent_pipeline_continuation(ind, line)
-    let ind = elixir#indent#indent_after_pipeline(ind, line)
-    let ind = elixir#indent#indent_assignment(ind, line)
-    let ind = elixir#indent#indent_ending_symbols(ind, line)
-    let ind = elixir#indent#indent_keywords(ind, line)
-    let ind = elixir#indent#deindent_keywords(ind, line)
-    let ind = elixir#indent#deindent_ending_symbols(ind, line)
-    let ind = elixir#indent#indent_case_arrow(ind, line)
+    call s:debug('>>> line_num = ' . line.current.num . ', line_text = "' . line.current.text . '", initial = ' . ind)
+    let ind = s:indent('deindent_case_arrow', ind, line)
+    let ind = s:indent('indent_parenthesis', ind, line)
+    let ind = s:indent('indent_square_brackets', ind, line)
+    let ind = s:indent('indent_brackets', ind, line)
+    let ind = s:indent('deindent_opened_symbols', ind, line)
+    let ind = s:indent('indent_pipeline_assignment', ind, line)
+    let ind = s:indent('indent_pipeline_continuation', ind, line)
+    let ind = s:indent('indent_after_pipeline', ind, line)
+    let ind = s:indent('indent_assignment', ind, line)
+    let ind = s:indent('indent_ending_symbols', ind, line)
+    let ind = s:indent('indent_keywords', ind, line)
+    let ind = s:indent('deindent_keywords', ind, line)
+    let ind = s:indent('deindent_ending_symbols', ind, line)
+    let ind = s:indent('indent_case_arrow', ind, line)
+    let ind = s:indent('indent_ecto_queries', ind, line)
+    call s:debug('<<< final = ' . ind)
     return ind
+  end
+endfunction
+
+function s:indent(rule, ind, line)
+  let Fn = function('elixir#indent#'.a:rule)
+  let ind = Fn(a:ind, a:line)
+  call s:debug(a:rule . ' = ' . ind)
+  return ind
+endfunction
+
+function s:debug(message)
+  if get(g:, 'elixir_indent_debug', 0)
+    echom a:message
   end
 endfunction
 
