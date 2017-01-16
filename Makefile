@@ -1,13 +1,15 @@
 # Do not let mess "cd" with user-defined paths.
 CDPATH:=
 
-test: testnvim testvim
+test:
+	$(MAKE) testnvim
+	$(MAKE) testvim
 
-# This is expected in tests.
-export SHELL:=/bin/bash
+SHELL:=/bin/bash -o pipefail
 
 VADER:=Vader!
-VADER_ARGS:=tests/neomake.vader
+VADER_OPTIONS?=
+VADER_ARGS=tests/neomake.vader $(VADER_OPTIONS)
 VIM_ARGS='+$(VADER) $(VADER_ARGS)'
 
 DEFAULT_VADER_DIR:=tests/vim/plugins/vader
@@ -18,9 +20,17 @@ $(TESTS_VADER_DIR) $(DEFAULT_VADER_DIR):
 
 TEST_VIMRC:=tests/vim/vimrc
 
-TEST_VIM_PREFIX:=
+# This is expected in tests.
+TEST_VIM_PREFIX:=SHELL=/bin/bash
 
-testnvim: TEST_VIM:=nvim
+testx: export VADER_OPTIONS=-x
+testx: test
+
+# Neovim might quit after ~5s with stdin being closed.  Use --headless mode to
+# work around this.
+# > Vim: Error reading input, exiting...
+# > Vim: Finished.
+testnvim: TEST_VIM:=nvim --headless
 # Neovim needs a valid HOME (https://github.com/neovim/neovim/issues/5277).
 testnvim: build/neovim-test-home
 testnvim: TEST_VIM_PREFIX+=HOME=build/neovim-test-home
@@ -31,13 +41,22 @@ testvim: TEST_VIM:=vim -X
 testvim: TEST_VIM_PREFIX+=HOME=/dev/null
 testvim: _run_vim
 
-INTERACTIVE=$(shell [ -t 0 ] && echo 1)
-_SED_HIGHLIGHT_ERRORS=$(if $(INTERACTIVE),| sed --unbuffered 's/([[:digit:]]\+\/[[:digit:]]\+) \[[ [:alpha:]]\+\] (X).*/[31m[1m\0[0m/',)
-_REDIR_STDOUT:=2>&1 >/dev/null $(_SED_HIGHLIGHT_ERRORS)
+# Add coloring to Vader's output:
+# 1. failures (includes pending) in red "(X)"
+# 2. test case header in bold "(2/2)"
+# 3. Neomake's debug log messages in less intense grey
+# 4. non-Neomake log lines (e.g. from :Log) in bold/bright yellow.
+_SED_HIGHLIGHT_ERRORS:=| sed -e 's/^ \+([ [:digit:]]\+\/[[:digit:]]\+) \[[ [:alpha:]]\+\] (X).*/[31m[1m\0[0m/' \
+	-e 's/^ \+([ [:digit:]]\+\/[[:digit:]]\+)/[1m\0[0m/' \
+	-e 's/^ \+> \[\(debug\)\] \[[.[:digit:]]\+\]: .*/[38;5;8m\0[0m/' \
+	-e '/\[\(verb \|quiet\|error\)\]/! s/^ \+> .*/[33;1m\0[0m/'
+# Need to close stdin to fix spurious 'sed: couldn't write X items to stdout: Resource temporarily unavailable'.
+# Redirect to stderr again for Docker (where only stderr is used from).
+_REDIR_STDOUT:=2>&1 </dev/null >/dev/null $(_SED_HIGHLIGHT_ERRORS) >&2
 _run_vim: | build $(TESTS_VADER_DIR)
 _run_vim:
 	@echo $(TEST_VIM_PREFIX) $(TEST_VIM) -u $(TEST_VIMRC) -i NONE $(VIM_ARGS)
-	@$(TEST_VIM_PREFIX) $(TEST_VIM) -u $(TEST_VIMRC) -i NONE $(VIM_ARGS) 2>&1 $(_REDIR_STDOUT)
+	@$(TEST_VIM_PREFIX) $(TEST_VIM) -u $(TEST_VIMRC) -i NONE $(VIM_ARGS) $(_REDIR_STDOUT)
 
 # Interactive tests, keep Vader open.
 _run_interactive: VADER:=Vader
@@ -127,7 +146,7 @@ docker_push:
 	docker push $(DOCKER_IMAGE)
 
 # docker run --rm $(DOCKER_IMAGE) sh -c 'cd /vim-build/bin && ls vim*'
-DOCKER_VIMS:=vim73 vim74-trusty vim74-xenial vim8000 vim8069 vim-master
+DOCKER_VIMS:=vim73 vim74-trusty vim74-xenial vim8069 vim-master
 _DOCKER_VIM_TARGETS:=$(addprefix docker_test-,$(DOCKER_VIMS))
 
 docker_test_all: $(_DOCKER_VIM_TARGETS)
