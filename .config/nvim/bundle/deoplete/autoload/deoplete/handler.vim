@@ -51,6 +51,7 @@ endfunction
 function! s:completion_begin(event) abort
   let context = deoplete#init#_context(a:event, [])
   if s:is_skip(a:event, context)
+    call deoplete#mapping#_restore_completeopt()
     return
   endif
 
@@ -66,7 +67,7 @@ function! s:completion_begin(event) abort
           \ 'b:deoplete_omni_patterns',
           \ 'g:deoplete#omni_patterns',
           \ 'g:deoplete#_omni_patterns'))
-      if pattern != '' && &l:omnifunc != ''
+      if pattern !=# '' && &l:omnifunc !=# ''
             \ && context.input =~# '\%('.pattern.'\)$'
         call deoplete#mapping#_set_completeopt()
         call feedkeys("\<C-x>\<C-o>", 'n')
@@ -75,7 +76,6 @@ function! s:completion_begin(event) abort
     endfor
   endfor
 
-  call deoplete#mapping#_set_completeopt()
   call rpcnotify(g:deoplete#_channel_id,
         \ 'deoplete_auto_completion_begin', context)
 endfunction
@@ -92,7 +92,7 @@ function! s:is_skip(event, context) abort
   if &paste
         \ || mode() !=# 'i'
         \ || (a:event !=# 'Manual' && disable_auto_complete)
-        \ || (&l:completefunc != '' && &l:buftype =~# 'nofile')
+        \ || (&l:completefunc !=# '' && &l:buftype =~# 'nofile')
         \ || (a:event ==# 'InsertEnter'
         \     && has_key(g:deoplete#_context, 'position'))
     return 1
@@ -103,7 +103,7 @@ function! s:is_skip(event, context) abort
     let word = get(v:completed_item, 'word', '')
     let delimiters = filter(copy(g:deoplete#delimiters),
         \         'strridx(word, v:val) == (len(word) - len(v:val))')
-    if word == '' || empty(delimiters)
+    if word ==# '' || empty(delimiters)
       return 1
     endif
   endif
@@ -127,7 +127,7 @@ function! s:is_skip_text(event) abort
         \   'b:deoplete_skip_chars', 'g:deoplete#skip_chars')
 
   return (!pumvisible() && virtcol('.') != displaywidth)
-        \ || (a:event !=# 'Manual' && input != ''
+        \ || (a:event !=# 'Manual' && input !=# ''
         \     && index(skip_chars, input[-1:]) >= 0)
 endfunction
 
@@ -137,15 +137,12 @@ function! s:on_event(event) abort
 endfunction
 
 function! s:on_insert_leave() abort
-  if exists('g:deoplete#_saved_completeopt')
-    let &completeopt = g:deoplete#_saved_completeopt
-    unlet g:deoplete#_saved_completeopt
-  endif
+  call deoplete#mapping#_restore_completeopt()
   let g:deoplete#_context = {}
 endfunction
 
 function! s:complete_done() abort
-  if get(v:completed_item, 'word', '') != ''
+  if get(v:completed_item, 'word', '') !=# ''
     let word = v:completed_item.word
     if !has_key(g:deoplete#_rank, word)
       let g:deoplete#_rank[word] = 1

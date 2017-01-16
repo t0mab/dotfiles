@@ -41,7 +41,7 @@ class DeopleteHandlers(object):
                             version.append(m.group(1))
         self.__vim.vars['deoplete#_neovim_python_version'] = version
 
-    @neovim.rpc_export('deoplete_enable_logging', sync=True)
+    @neovim.rpc_export('deoplete_enable_logging')
     def enable_logging(self, level, logfile):
         logger.setup(self.__vim, level, logfile)
         self.__deoplete.debug_enabled = True
@@ -51,7 +51,7 @@ class DeopleteHandlers(object):
         context['rpc'] = 'deoplete_auto_completion_begin'
         self.__deoplete.completion_begin(context)
 
-    @neovim.rpc_export('deoplete_manual_completion_begin', sync=True)
+    @neovim.rpc_export('deoplete_manual_completion_begin')
     def manual_completion_begin(self, context):
         context['rpc'] = 'deoplete_manual_completion_begin'
         self.__deoplete.completion_begin(context)
