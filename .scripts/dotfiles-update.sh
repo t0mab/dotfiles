@@ -5,7 +5,7 @@
 . ~/.zshrc
 
 function pull-worktree {
-	dotfiles subtree pull -P $1 $2 master --squash
+	dotfiles subtree pull -P $1 -m "Merge $2 to subtree $1" $2 master --squash
 }
 
 cd ~
