@@ -21,7 +21,6 @@ Create filter		|deoplete-create-filter|
 FILTERS			|deoplete-filters|
 External sources	|deoplete-external-sources|
 External plugins	|deoplete-external-plugins|
-External omnifuncs	|deoplete-external-omnifuncs|
 Vim8 async API support	|deoplete-vim8|
 FAQ			|deoplete-faq|
 Compatibility		|deoplete-compatibility|
@@ -1019,6 +1018,15 @@ https://github.com/rafaelndev/deoplete-laravel-plugin
 deoplete-rct: "rct" source for Ruby
 https://github.com/Shougo/deoplete-rct
 
+deoplete-zsh: "zsh" source for Zsh
+https://github.com/zchee/deoplete-zsh
+
+deoplete-fish: "fish" source for fish shell
+https://github.com/ponko2/deoplete-fish
+
+deoplete-fsharp: "fsharp" source for F#
+https://github.com/callmekohei/deoplete-fsharp
+
 ==============================================================================
 EXTERNAL PLUGINS				*deoplete-external-plugins*
 
@@ -1044,13 +1052,15 @@ FastFold:
 Speed up the updating folds when you use auto completion plugins.
 https://github.com/Konfekt/FastFold
 
-==============================================================================
-EXTERNAL OMNIFUNCS				*deoplete-external-omnifuncs*
+						*deoplete-external-omnifuncs*
 
 These are my recommended omnifuncs for deoplete.
 
 phpcomplete: PHP omnifunc
 https://github.com/shawncplus/phpcomplete.vim
+
+phpcd.vim: another PHP omnifunc. Faster.
+https://github.com/php-vim/phpcd.vim
 
 ==============================================================================
 VIM8 ASYNC API SUPPORT					*deoplete-vim8*
