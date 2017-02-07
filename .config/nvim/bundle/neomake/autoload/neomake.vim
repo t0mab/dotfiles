@@ -33,6 +33,9 @@ function! s:sort_jobs(a, b) abort
 endfunction
 
 function! neomake#GetJobs(...) abort
+    if !len(s:jobs)
+        return []
+    endif
     let jobs = copy(values(s:jobs))
     if a:0
         call filter(jobs, 'index(a:1, v:val.id) != -1')
@@ -54,7 +57,7 @@ endfunction
 function! neomake#ListJobs() abort
     call neomake#utils#DebugMessage('call neomake#ListJobs()')
     for jobinfo in values(s:jobs)
-        echom jobinfo.id.' '.jobinfo.name
+        echom jobinfo.id.' '.jobinfo.name.' '.jobinfo.maker.name
     endfor
 endfunction
 
@@ -291,9 +294,9 @@ function! s:maker_base.get_argv(...) abort dict
             let argv = exe . (len(args) ? ' ' . args : '')
         endif
         if !has('nvim')
-            if neomake#utils#IsRunningWindows()
-                let argv = &shell.' '.&shellcmdflag.' '.shellescape(args_is_list ? join(argv) : argv)
-            elseif !args_is_list
+            if !args_is_list
+                " Have to use a shell to handle argv properly (Vim splits it
+                " at spaces).
                 let argv = [&shell, &shellcmdflag, argv]
             endif
         endif
@@ -674,8 +677,8 @@ function! s:AddExprCallback(jobinfo, prev_index) abort
             endif
         endif
 
-        if !entry.valid
-            if maker.remove_invalid_entries
+        if entry.valid <= 0
+            if entry.valid < 0 || maker.remove_invalid_entries
                 let index -= 1
                 call remove(list, index)
                 let list_modified = 1
