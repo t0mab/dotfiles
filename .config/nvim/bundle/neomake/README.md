@@ -1,4 +1,4 @@
-#[![Neomake](https://cloud.githubusercontent.com/assets/111942/21837263/b47caf4e-d798-11e6-989c-393699da9637.png)](#neomake)
+#[![Neomake](https://cloud.githubusercontent.com/assets/111942/22717189/9e3e1760-ed67-11e6-94c5-e8955869d6d0.png)](#neomake)
 
 [![Build Status](https://travis-ci.org/neomake/neomake.svg?branch=master)](https://travis-ci.org/neomake/neomake)
 
@@ -139,8 +139,6 @@ You should have a good profile of issue triaging and PRs on this repo already.
 We are using [Vader](https://github.com/junegunn/vader.vim) for our tests, and
 they get run for every pull request in different environments (via Docker
 also).
-
-You can run the tests locally, of course.
 
 ### Running tests
 
