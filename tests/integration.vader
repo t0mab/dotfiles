@@ -48,6 +48,7 @@ Execute (Neomake: handle result for current window):
   call g:NeomakeSetupAutocmdWrappers()
   let orig_winnr = winnr()
   call neomake#Make(1, [g:neomake_test_sleep_efm_maker])
+  lgetexpr ''
   if neomake#has_async_support()
     new
     NeomakeTestsWaitForFinishedJobs
@@ -226,7 +227,6 @@ Execute (NeomakeInfo with FuncRef):
   \ 'errorformat': 'custom_efm: %m'}
 
   let info = split(neomake#utils#redir('NeomakeInfo'), '\n')
-  Log info
   let idx = 0
   for line in [
       \ 'For the current filetype (with :Neomake):',
@@ -285,7 +285,9 @@ Execute (NeomakeSh: two jobs after each other):
     NeomakeSh sh -c 'echo 2'
     NeomakeTestsWaitForFinishedJobs
     AssertEqual len(g:neomake_test_finished), 2
-    AssertEqual sort(map(copy(getqflist()), 'v:val.text')), ['1', '2']
+    " NOTE: 2nd job clears list.
+    " TODO: add a command/option to skip that, e.g. NeomakeSh -append?!
+    AssertEqual len(getqflist()), 1, 'only one quickfix entry'
     AssertEqual len(g:neomake_test_finished), 2, 'two jobs have run'
   endif
 
@@ -418,3 +420,141 @@ Execute (Neomake: append_file from settings):
   NeomakeTestsWaitForFinishedJobs
   AssertEqual getloclist(0),
     \ [{'lnum': 0, 'bufnr': 0, 'col': 0, 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'pattern': '', 'text': 'output'}]
+
+Execute (Quickfix list should be cleared only after maker finished):
+  cgetexpr 'init'
+  AssertEqual getqflist()[0].text, 'init'
+
+  NeomakeSh echo finished
+  if neomake#has_async_support()
+    AssertEqual getqflist()[0].text, 'init'
+  else
+    AssertEqual getqflist()[0].text, 'finished'
+  endif
+  NeomakeTestsWaitForFinishedJobs
+  if neomake#has_async_support()
+    AssertEqual getqflist()[0].text, 'finished'
+  endif
+
+Execute (neomake#Sh: exit_callback):
+  let g:neomake_test_cb = 0
+  function! g:NeomakeTestsAfterExit(job_status)
+    let g:neomake_test_cb = 1
+  endfunction
+  call neomake#Sh('true', function('g:NeomakeTestsAfterExit'))
+  NeomakeTestsWaitForFinishedJobs
+  AssertEqual g:neomake_test_cb, 1
+
+Execute (neomake#Make: exit_callback):
+  let g:neomake_test_cb = 0
+  function! g:NeomakeTestsAfterExit(job_status)
+    let g:neomake_test_cb = 1
+  endfunction
+  let maker = {'exe': 'true'}
+  call neomake#Make(0, [maker], function('g:NeomakeTestsAfterExit'))
+  NeomakeTestsWaitForFinishedJobs
+  AssertEqual g:neomake_test_cb, 1
+
+Execute (neomake#Make: exit_callback with maker names):
+  let g:neomake_test_cb = 0
+  function! g:NeomakeTestsAfterExit(job_status)
+    let g:neomake_test_cb = 1
+  endfunction
+  Save g:neomake_mymaker_maker
+  let g:neomake_mymaker_maker = {'exe': 'true'}
+  call neomake#Make(0, ['mymaker'], function('g:NeomakeTestsAfterExit'))
+  NeomakeTestsWaitForFinishedJobs
+  AssertEqual g:neomake_test_cb, 1
+
+Execute (Location list should be cleared only after first output):
+  call g:NeomakeSetupAutocmdWrappers()
+  lgetexpr 'init'
+
+  let g:maker_success = NeomakeTestsCommandMaker('success-maker', 'true')
+  let g:maker_sleep = NeomakeTestsCommandMaker('sleep-maker', 'sleep .1; echo slept')
+
+  call neomake#Make(1, [g:maker_success, g:maker_sleep])
+
+  if neomake#has_async_support()
+    NeomakeTestsWaitForNextFinishedJob
+    AssertEqual getloclist(0)[0].text, 'init'
+    AssertEqual len(g:neomake_test_finished), 0
+    AssertEqual len(g:neomake_test_countschanged), 0
+  else
+    AssertEqual getloclist(0)[0].text, 'slept'
+  endif
+  NeomakeTestsWaitForFinishedJobs
+  if neomake#has_async_support()
+    AssertEqual getloclist(0)[0].text, 'slept'
+  endif
+  AssertEqual len(g:neomake_test_countschanged), 1
+
+Execute (Location list should be cleared after jobs finished):
+  call g:NeomakeSetupAutocmdWrappers()
+  lgetexpr 'init'
+
+  let g:maker_success = NeomakeTestsCommandMaker('success-maker', 'true')
+
+  call neomake#Make(1, [g:maker_success])
+  NeomakeTestsWaitForFinishedJobs
+
+  AssertEqual getloclist(0), []
+  AssertEqual len(g:neomake_test_countschanged), 0
+
+Execute (Highlights should be cleared after successful run):
+  call g:NeomakeSetupAutocmdWrappers()
+  lgetexpr 'init'
+
+  runtime autoload/neomake/highlights.vim
+
+  let g:maker_success = NeomakeTestsCommandMaker('success-maker', 'true')
+  let g:maker_error = NeomakeTestsCommandMaker('error-maker', 'echo error')
+  let g:maker_error.errorformat = '%E%m'
+  function! PostProcess(entry) abort
+    let e = a:entry
+    let a:entry.lnum = 1
+    let a:entry.col = 1
+    let a:entry.length = 5
+    let a:entry.bufnr = bufnr('%')
+  endfunction
+  let g:maker_error.postprocess = function('PostProcess')
+
+  call neomake#Make(1, [g:maker_error])
+  NeomakeTestsWaitForFinishedJobs
+
+  AssertEqual getloclist(0)[0].text, 'error'
+  AssertEqual getloclist(0), [{
+  \ 'lnum': 1,
+  \ 'bufnr': bufnr('%'),
+  \ 'col': 1,
+  \ 'valid': 1,
+  \ 'vcol': 0,
+  \ 'nr': -1,
+  \ 'type': 'E',
+  \ 'pattern': '',
+  \ 'text': 'error'}]
+
+  let highlights = neomake#highlights#_get()
+  if has('nvim')
+    let orig_highlight = highlights['file'][bufnr('%')]
+  else
+    AssertEqual highlights, {
+    \ 'file': {bufnr('%'): {'NeomakeError': [[1, 1, 5]], 'NeomakeInfo': [],
+    \                       'NeomakeMessage': [], 'NeomakeWarning': []}},
+    \ 'project': {}}
+  endif
+  AssertEqual len(highlights['file']), 1
+
+  call neomake#Make(1, [g:maker_success])
+  NeomakeTestsWaitForFinishedJobs
+
+  let highlights = neomake#highlights#_get()
+  if has('nvim')
+    let highlight = highlights['file'][bufnr('%')]
+    AssertEqual highlight, orig_highlight
+  else
+    AssertEqual highlights, {
+    \ 'file': {bufnr('%'): {'NeomakeError': [], 'NeomakeInfo': [],
+    \                       'NeomakeMessage': [], 'NeomakeWarning': []}},
+    \ 'project': {}}
+  endif

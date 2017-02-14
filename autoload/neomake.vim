@@ -5,7 +5,7 @@ let s:make_id = 0
 let s:job_id = 1
 let s:jobs = {}
 " A map of make_id to options, e.g. cwd when jobs where started.
-let s:make_options = {}
+let s:make_info = {}
 let s:jobs_by_maker = {}
 " Errors by [maker_type][bufnr][lnum]
 let s:current_errors = {
@@ -145,7 +145,7 @@ function! s:MakeJob(make_id, options) abort
         let maker = call(maker.fn, [jobinfo], maker)
     endif
 
-    let cwd = get(maker, 'cwd', s:make_options[a:make_id].cwd)
+    let cwd = get(maker, 'cwd', s:make_info[a:make_id].cwd)
     if len(cwd)
         let old_wd = getcwd()
         let cwd = expand(cwd, 1)
@@ -532,40 +532,17 @@ function! s:Make(options) abort
         endif
 
         let s:make_id += 1
-        let s:make_options[s:make_id] = {
+        let s:make_info[s:make_id] = {
                     \ 'cwd': getcwd(),
                     \ }
 
         if file_mode
+            " XXX: this clears counts for job's buffer only, but we
+            "      add counts for the entry's buffers, which might be
+            "      different!
             call neomake#statusline#ResetCountsForBuf(bufnr)
         else
             call neomake#statusline#ResetCountsForProject()
-        endif
-
-        " Empty the quickfix/location list (using a valid 'errorformat' setting).
-        let l:efm = &errorformat
-        try
-            let &errorformat = '%-G'
-            if file_mode
-                lgetexpr ''
-            else
-                cgetexpr ''
-            endif
-        finally
-            let &errorformat = l:efm
-        endtry
-        call s:HandleLoclistQflistDisplay(file_mode)
-
-        if file_mode
-            if g:neomake_place_signs
-                call neomake#signs#ResetFile(bufnr)
-            endif
-            let s:need_errors_cleaning['file'][bufnr] = 1
-        else
-            if g:neomake_place_signs
-                call neomake#signs#ResetProject()
-            endif
-            let s:need_errors_cleaning['project'] = 1
         endif
 
         call s:AddMakeInfoForCurrentWin(s:make_id)
@@ -584,6 +561,9 @@ function! s:Make(options) abort
         let maker = remove(enabled_makers, 0)
         if empty(maker)
             continue
+        endif
+        if has_key(a:options, 'exit_callback')
+            let maker.exit_callback = a:options.exit_callback
         endif
         " call neomake#utils#DebugMessage('Maker: '.string(enabled_makers), {'make_id': s:make_id})
 
@@ -751,6 +731,7 @@ endfunction
 
 function! s:CleanJobinfo(jobinfo) abort
     call neomake#utils#DebugMessage('Cleaning jobinfo', a:jobinfo)
+
     if has_key(a:jobinfo, 'id')
         call remove(s:jobs, a:jobinfo.id)
 
@@ -762,6 +743,13 @@ function! s:CleanJobinfo(jobinfo) abort
         if has_key(s:project_job_output, a:jobinfo.id)
             unlet s:project_job_output[a:jobinfo.id]
         endif
+    endif
+
+    call neomake#utils#hook('NeomakeJobFinished', {'jobinfo': a:jobinfo})
+
+    " Trigger autocmd if all jobs for a s:Make instance have finished.
+    if !len(filter(copy(s:jobs), 'v:val.make_id == a:jobinfo.make_id'))
+        call s:init_job_output(a:jobinfo)
 
         " If signs were not cleared before this point, then the maker did not return
         " any errors, so all signs must be removed
@@ -770,12 +758,7 @@ function! s:CleanJobinfo(jobinfo) abort
         else
             call neomake#CleanOldProjectSignsAndErrors()
         endif
-    endif
 
-    call neomake#utils#hook('NeomakeJobFinished', {'jobinfo': a:jobinfo})
-
-    " Trigger autocmd if all jobs for a s:Make instance have finished.
-    if !len(filter(copy(s:jobs), 'v:val.make_id == a:jobinfo.make_id'))
         " Remove make_id from its window.
         if !exists('l:t')
             let [t, w] = s:GetTabWinForMakeId(a:jobinfo.make_id)
@@ -807,6 +790,39 @@ function! s:CanProcessJobOutput() abort
     return 0
 endfunction
 
+function! s:init_job_output(jobinfo) abort
+    if get(s:make_info[a:jobinfo.make_id], 'initialized_for_output', 0)
+        return
+    endif
+
+    " Empty the quickfix/location list (using a valid 'errorformat' setting).
+    let l:efm = &errorformat
+    try
+        let &errorformat = '%-G'
+        if a:jobinfo.file_mode
+            lgetexpr ''
+        else
+            cgetexpr ''
+        endif
+    finally
+        let &errorformat = l:efm
+    endtry
+    call s:HandleLoclistQflistDisplay(a:jobinfo.file_mode)
+
+    if a:jobinfo.file_mode
+        if g:neomake_place_signs
+            call neomake#signs#ResetFile(a:jobinfo.bufnr)
+        endif
+        let s:need_errors_cleaning['file'][a:jobinfo.bufnr] = 1
+    else
+        if g:neomake_place_signs
+            call neomake#signs#ResetProject()
+        endif
+        let s:need_errors_cleaning['project'] = 1
+    endif
+    let s:make_info[a:jobinfo.make_id].initialized_for_output = 1
+endfunction
+
 function! s:ProcessJobOutput(jobinfo, lines, source) abort
     let maker = a:jobinfo.maker
     let file_mode = a:jobinfo.file_mode
@@ -823,6 +839,8 @@ function! s:ProcessJobOutput(jobinfo, lines, source) abort
         let l:neomake_output_source = a:source
         call map(a:lines, maker.mapexpr)
     endif
+
+    call s:init_job_output(a:jobinfo)
 
     let olderrformat = &errorformat
     let &errorformat = maker.errorformat
@@ -1131,6 +1149,7 @@ function! s:exit_handler(job_id, data, event_type) abort
     endfor
 
     let status = a:data
+    let jobinfo.exit_code = a:data
     if has_key(maker, 'exit_callback') && !get(jobinfo, 'failed_to_start')
         let callback_dict = { 'status': status,
                             \ 'name': maker.name,
@@ -1315,8 +1334,10 @@ function! neomake#CompleteJobs(...) abort
 endfunction
 
 function! neomake#Make(file_mode, enabled_makers, ...) abort
-    let options = a:0 ? { 'exit_callback': a:1 } : {}
-    let options.file_mode = a:file_mode
+    let options = {'file_mode': a:file_mode}
+    if a:0
+        let options.exit_callback = a:1
+    endif
     if a:file_mode
         let options.ft = &filetype
     endif
