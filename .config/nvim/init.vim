@@ -71,6 +71,7 @@ autocmd BufWritePost * Neomake
 autocmd BufNewFile,BufRead *.j2 set ft=jinja2
 autocmd BufNewFile,BufRead *.pde set ft=arduino
 autocmd BufNewFile,BufRead *.yml set ft=ansible
+autocmd BufNewFile,BufRead *.md set ft=markdown.pandoc
 
 " Colors
 colorscheme gruvbox
@@ -81,6 +82,9 @@ highlight GitGutterAdd guibg=none guifg=green
 highlight GitGutterChange guibg=none guifg=orange
 highlight GitGutterDelete guibg=none guifg=red
 highlight GitGutterChangeDelete guibg=none guifg=purple
+
+" AsciiDoctor
+autocmd BufWritePost *.adoc !asciidoctor -a source-highlighter=coderay -r asciidoctor-pdf -b pdf <afile>
 
 " Airline
 set completeopt-=preview
