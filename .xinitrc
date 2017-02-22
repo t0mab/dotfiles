@@ -12,6 +12,13 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
   unset f
 fi
 
+# Japanese input
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+
+fcitx &
+
 # Bind multimedia keys
 xbindkeys
 
