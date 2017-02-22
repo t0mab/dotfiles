@@ -16,13 +16,12 @@ original_date: no
 plugins: the convert embedart fetchart ftintitle lastgenre missing scrub duplicates
 #asciify_paths: yes
 paths:
-  default: Albums/%the{$albumartist}/$album%aunique{}/$track $title
-  singleton: Singletons/%the{$artist}/$title
-  comp: Compilations/$album%aunique{}/$track $title
-  albumtype:soundtrack: Soundtracks/$album/$track $title
+  default: Albums/%left{%lower{%the{$albumartist}}, 1}/$albumartist - $album%aunique{}/$track $title
+  comp: Albums/_/$album%aunique{}/$track $title
+  singleton: Singletons/%the{$artist} - $title
 match:
   preferred:
-    countries: ['FR', 'US', 'GB|UK']
+    countries: ['JP', 'FR', 'US', 'GB|UK']
 embedart:
   remove_art_file: yes
 convert:
