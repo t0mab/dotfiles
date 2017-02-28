@@ -26,7 +26,7 @@ embedart:
   remove_art_file: yes
 convert:
   format: aac-128
-  dest: /data/convert/aac-128
+  dest: /data/Convert
   formats:
           aac-128:
                   command: ffmpeg -i $source -y -vn -acodec aac -ab 128k -vn $dest
