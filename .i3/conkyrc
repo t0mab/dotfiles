@@ -21,9 +21,6 @@ TEXT
     "full_text" : " ${battery} - ${battery_time}"
   },${endif}
   {
-    "full_text" : " ${addr tun0}"
-  },
-  {
     "full_text" : " ${fs_free}"
   },
   {
