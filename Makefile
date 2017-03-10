@@ -49,10 +49,7 @@ testvim: _run_vim
 # 2. test case header in bold "(2/2)"
 # 3. Neomake's debug log messages in less intense grey
 # 4. non-Neomake log lines (e.g. from :Log) in bold/bright yellow.
-_SED_HIGHLIGHT_ERRORS:=| sed -e 's/^ \+([ [:digit:]]\+\/[[:digit:]]\+) \[[ [:alpha:]]\+\] (X).*/[31m[1m\0[0m/' \
-	-e 's/^ \+([ [:digit:]]\+\/[[:digit:]]\+)/[1m\0[0m/' \
-	-e 's/^ \+> \[\(debug\)\] \[[.[:digit:]]\+\]: .*/[38;5;8m\0[0m/' \
-	-e '/\[\(verb \|quiet\|error\)\]/! s/^ \+> .*/[33;1m\0[0m/'
+_SED_HIGHLIGHT_ERRORS:=| contrib/highlight-log vader
 # Need to close stdin to fix spurious 'sed: couldn't write X items to stdout: Resource temporarily unavailable'.
 # Redirect to stderr again for Docker (where only stderr is used from).
 _REDIR_STDOUT:=2>&1 </dev/null >/dev/null $(_SED_HIGHLIGHT_ERRORS) >&2
@@ -90,21 +87,21 @@ TESTS:=$(wildcard tests/*.vader tests/*/*.vader)
 uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 _TESTS_REL_AND_ABS:=$(call uniq,$(abspath $(TESTS)) $(TESTS))
 $(_TESTS_REL_AND_ABS):
-	make $(TEST_TARGET) VADER_ARGS='$@'
+	make $(TEST_TARGET) VADER_ARGS='$@ $(VADER_OPTIONS)'
 .PHONY: $(_TESTS_REL_AND_ABS)
 
 tags:
 	ctags -R --langmap=vim:+.vader
 
 # Linters, called from .travis.yml.
-LINT_FILES:=./plugin ./autoload
+LINT_ARGS:=./plugin ./autoload
 build/vint: | build
 	virtualenv $@
 	$@/bin/pip install vim-vint
 vint: build/vint
-	build/vint/bin/vint $(LINT_FILES)
+	build/vint/bin/vint $(LINT_ARGS)
 vint-errors: build/vint
-	build/vint/bin/vint --error $(LINT_FILES)
+	build/vint/bin/vint --error $(LINT_ARGS)
 
 # vimlint
 build/vimlint: | build
@@ -112,9 +109,9 @@ build/vimlint: | build
 build/vimlparser: | build
 	git clone --depth=1 https://github.com/ynkdir/vim-vimlparser $@
 vimlint: build/vimlint build/vimlparser
-	build/vimlint/bin/vimlint.sh -l build/vimlint -p build/vimlparser $(LINT_FILES)
+	build/vimlint/bin/vimlint.sh -l build/vimlint -p build/vimlparser $(LINT_ARGS)
 vimlint-errors: build/vimlint build/vimlparser
-	build/vimlint/bin/vimlint.sh -E -l build/vimlint -p build/vimlparser $(LINT_FILES)
+	build/vimlint/bin/vimlint.sh -E -l build/vimlint -p build/vimlparser $(LINT_ARGS)
 
 build build/neovim-test-home:
 	mkdir $@
@@ -169,15 +166,22 @@ docker_run:
 	$(DOCKER) $(if $(DOCKER_RUN),$(DOCKER_RUN),bash)
 
 check:
-	ret=0; \
+	@:; ret=0; \
+	echo '== Checking that all tests are included'; \
 	for f in $(filter-out neomake.vader,$(notdir $(shell git ls-files tests/*.vader))); do \
 		if ! grep -q "^Include.*: $$f" tests/neomake.vader; then \
 			echo "Test not included: $$f" >&2; ret=1; \
 		fi; \
 	done; \
+	echo '== Checking for absent Before sections in tests'; \
 	if grep '^Before:' tests/*.vader; then \
 	  echo "Before: should not be used in tests itself, because it overrides the global one."; \
 		(( ret+=2 )); \
+	fi; \
+	echo '== Checking for absent :Log calls'; \
+	if grep '^\s*Log\b' $(shell git ls-files tests/*.vader $(LINT_ARGS)); then \
+	  echo "Found Log commands."; \
+		(( ret+=4 )); \
 	fi; \
 	exit $$ret
 
