@@ -44,13 +44,19 @@ Include: include/setup.vader
 Execute (neomake#GetMakers):
   AssertEqual neomake#GetMakers('non-existent'), []
   AssertEqual neomake#GetMakers('pug'), ['puglint']
-  AssertEqual sort(neomake#GetMakers('sh')), ['checkbashisms', 'sh', 'shellcheck']
+
+  let sh_makers = ['checkbashisms', 'sh', 'shellcheck']
+  AssertEqual sort(neomake#GetMakers('sh')), sh_makers
+
+  Save g:neomake_sh_enabled_makers
+  let g:neomake_sh_enabled_makers = ['sh']
+  AssertEqual sort(neomake#GetMakers('sh')), sh_makers
 
 Execute (neomake#GetMaker with non-existent maker throws errors):
   AssertEqual neomake#GetMaker('non-existent'), {}
   AssertEqual g:neomake_test_messages[-1], [0, 'Invalid maker name: non-existent', {}]
   AssertThrows call neomake#GetMaker('nonexistent')
-  AssertEqual g:vader_exception, 'Neomake: Maker not found: nonexistent'
+  AssertEqual g:vader_exception, 'Neomake: project maker not found: nonexistent'
 
 Execute (Neomake with unknown maker):
   " Prevent 'Skipping User autocmd NeomakeCountsChanged: no hooks.' message.
@@ -58,8 +64,8 @@ Execute (Neomake with unknown maker):
 
   Neomake doesnotexist
   AssertEqual g:neomake_test_messages, [
-  \ [0, 'Maker not found: doesnotexist', {}],
-  \ [3, 'Nothing to make: no enabled makers.', {}],
+  \ [0, 'Maker not found (for filetypes []): doesnotexist', {}],
+  \ [3, 'Nothing to make: no valid makers.', {}],
   \ ]
 
 Execute (neomake#GetMaker uses defined errorformat with makeprg):
@@ -101,7 +107,7 @@ Execute (neomake#Make in file mode with no filetype and no makers):
   AssertEqual neomake#Make(1, []), []
   let make_id = neomake#GetStatus().last_make_id
   AssertEqual g:neomake_test_messages[-1],
-  \ [3, 'Nothing to make: no enabled makers.', {'make_id': make_id}]
+  \ [3, 'Nothing to make: no enabled file mode makers.', {'make_id': make_id}]
 
 Execute (neomake#Make in project mode with no filetype and no makers):
   Save makeprg
@@ -151,19 +157,13 @@ Execute (neomake#CancelJob):
 
 Execute (neomake#CancelJob with invalid job):
   if NeomakeAsyncTestsSetup()
-    let job_id = neomake#Sh("sh -c 'sleep 1'")
+    let job_id = neomake#Sh("sh -c 'sleep .1'")
     let jobinfo = neomake#GetJob(job_id)
     if has('nvim')
       call jobstop(job_id)
     else
       let vim_job = jobinfo.vim_job
-      call job_stop(vim_job)
-      " Wait for the job to be stopped really, but without sleep to not trigger
-      " the exit handler yet (which would remove the job).
-      let c = 1000
-      while c > 0 && job_status(vim_job) ==# 'run'
-        let c -= 1
-      endwhile
+      call ch_close(vim_job)
     endif
     let ret = neomake#CancelJob(job_id)
     Assert len(neomake#GetJobs()), 'There are jobs (1)'
@@ -177,16 +177,7 @@ Execute (neomake#CancelJob with invalid job):
     if has('nvim')
       AssertNeomakeMessage 'jobstop failed: Vim(call):E900: Invalid job id', 2, jobinfo
     else
-      try
-        AssertNeomakeMessage 'job_stop: job was not running anymore', 2, jobinfo
-      catch
-        " Happens at least on Vim 8.0.69.
-        if !has('patch-8.0.70')
-          throw v:exception.' (might be a flaky test)'
-        else
-          Log v:exception.' (ignoring potentially flaky test)'
-        endif
-      endtry
+      AssertNeomakeMessage 'job_stop: job was not running anymore', 2, jobinfo
     endif
     Assert len(neomake#GetJobs()), 'There are jobs'
 
@@ -198,8 +189,13 @@ Execute (neomake#CancelJob with invalid job):
     AssertNeomakeMessage 'Stopping job', 3, jobinfo
 
     AssertNeomakeMessageAbsent 'exit: job was canceled.', 3
-    NeomakeTestsWaitForNextMessage
-    AssertNeomakeMessage 'exit: job was canceled.', 3
+    if has('nvim')
+      " With Vim the exit callback is not invoked (since ch_close was used).
+      NeomakeTestsWaitForNextMessage
+      AssertNeomakeMessage 'exit: job was canceled.', 3
+    else
+      NeomakeCancelJobs!
+    endif
     let ret = neomake#CancelJob(job_id)
     AssertEqual ret, 0, "CancelJob (3) returned ".ret
     AssertNeomakeMessage 'CancelJob: job not found: '.job_id, 0
@@ -304,5 +300,5 @@ Execute (Neomake picks up custom maker correctly):
     AssertNeomakeMessage "Starting async job: ['echo', '".fname."', '--foo', 'bar']"
     NeomakeTestsWaitForFinishedJobs
   else
-    AssertNeomakeMessage "Starting: echo '".fname."' '--foo' 'bar'"
+    AssertNeomakeMessage "Starting: echo ".fname." --foo bar"
   endif
