@@ -44,7 +44,8 @@ Improvements in deoplete in comparison to |neocomplete|:
 ==============================================================================
 INSTALL							*deoplete-install*
 
-Note: deoplete requires Neovim(latest is recommended) with Python3 enabled.
+Note: deoplete requires Neovim(latest is recommended) with Python3 and
+|+timers| enabled.
 
 1. Extract the files and put them in your Neovim directory
    (usually `$XDG_CONFIG_HOME/nvim/`).
@@ -82,6 +83,18 @@ g:deoplete#enable_at_startup
 
 		With the default value 0, you cannot use deoplete
 		unless you start it manually.
+
+						*g:deoplete#complete_method*
+g:deoplete#complete_method
+		If it is "complete", deoplete use |complete()|.
+
+		If it is "completefunc", deoplete use |i_CTRL-X_CTRL-U|.
+		Note: It changes current 'completefunc' value.
+
+		If it is "omnifunc", deoplete use |i_CTRL-X_CTRL-O|.
+		Note: It changes current 'omnifunc' value.
+
+		Default value: "complete"
 
 					*g:deoplete#enable_ignore_case*
 g:deoplete#enable_ignore_case
@@ -182,7 +195,7 @@ g:deoplete#auto_complete_delay
 		Delay the completion after input in milliseconds.
 		Requires |+timers| (Neovim 0.1.5)
 
-		Default value: 0
+		Default value: 50
 
 					*g:deoplete#auto_refresh_delay*
 g:deoplete#auto_refresh_delay
@@ -843,6 +856,30 @@ __{name}	(Unspecified)			(Optional)
 		filetypes		(List[str])
 			It contains current 'filetype' and same
 			filetypes and composite filetypes.
+
+		is_async		(Bool)
+			If the gather is asynchronous, the source must set
+			it "True".
+
+	The below is the example of async deoplete source.
+	If "context['is_async']" is True, the gather_candidates is called
+	repeatedly.
+>
+	from .base import Base
+	
+	class Source(Base):
+	    def __init__(self, vim):
+	        super().__init__(vim)
+	        self.name = 'async'
+	        self.mark = '[async]'
+	        self.rank = 1000
+	        self._count = 0
+	
+	    def gather_candidates(self, context):
+	        self._count += 1
+	        context['is_async'] = self._count < 10
+	        return [context['input'] + str(self._count)]
+<
 
 ------------------------------------------------------------------------------
 CANDIDATE ATTRIBUTES			*deoplete-candidate-attributes*
