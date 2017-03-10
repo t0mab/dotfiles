@@ -9,12 +9,6 @@
 [color]
 	ui = auto
 
-[merge]
-	tool = mymeld
-
-[mergetool "mymeld"]
-	cmd = meld $LOCAL $BASE $REMOTE $MERGED
-
 [push]
 	default = simple
 
@@ -28,3 +22,5 @@
 	c = commit
 	d = diff
 	a = add
+  wk = log --graph --pretty='format:%h %s %d %n%n%n%n'
+  wk2 = log --graph --pretty='format:%h - %s%>|(80)%d%n%n%n' --line-prefix='    ' --all
