@@ -10,14 +10,9 @@ branches:
   only:
     - master
 
-cache:
-  pip: true
-before_cache:
-  # Remove pip's debug log, which is there already with Travis' base image.
-  - rm -f $HOME/.cache/pip/log/debug.log
-
 env:
   matrix:
+    - ENV=vimlint
     - ENV=testnvim
     - ENV=docker_test MAKE_ARGS=DOCKER_VIM=vim73
     - ENV=docker_test MAKE_ARGS=DOCKER_VIM=vim74-trusty
@@ -29,7 +24,6 @@ env:
     - ENV=vint-errors
     - ENV=testvim
     - ENV=vint
-    - ENV=vimlint
     - ENV=docker_vimhelplint
 
 matrix:
@@ -42,7 +36,7 @@ install:
     if [ "$ENV" = "vint-diff" ]; then
       # Run full vint against changed files.
       echo "Looking for changed files in $TRAVIS_COMMIT_RANGE."
-      CHANGED_VIM_FILES=($(git diff --name-only "$TRAVIS_COMMIT_RANGE" | grep '\.vim$'))
+      CHANGED_VIM_FILES=($(git diff --name-only --diff-filter=AM "$TRAVIS_COMMIT_RANGE" | grep '\.vim$'))
       if [ -z "$CHANGED_VIM_FILES" ]; then
         SKIP_BUILD_REASON="vint-diff: No changed .vim files."
       fi
@@ -53,11 +47,9 @@ install:
       fi
     elif [ "$ENV" = "testnvim" ]; then
       eval "$(curl -Ss https://raw.githubusercontent.com/neovim/bot-ci/master/scripts/travis-setup.sh) nightly-x64"
-    fi
 
-    if [ "${ENV#vint}" != "$ENV" ]; then
-      pip install -U pip
-      pip install -U wheel
+      # Install vim-vimhelplint for one build.
+      make build/vimhelplint
     fi
 
 script:
@@ -72,5 +64,6 @@ script:
       if [[ "$ENV" = "testvim" ]]; then
         vim --version
       fi
+      umask 022
       make $ENV $MAKE_ARGS
     fi
