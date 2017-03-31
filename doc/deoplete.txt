@@ -619,7 +619,7 @@ matcher_full_fuzzy
 					*deoplete-filter-matcher_length*
 matcher_length
 		Length matching matcher.
-		It removes shorter candidates than user input.
+		It removes candidates shorter than or equal to the user input.
 
 						*deoplete-filter-sorter_rank*
 sorter_rank	Matched rank order sorter.  The higher the head matched word
@@ -1045,6 +1045,9 @@ https://github.com/hkupty/acid.nvim
 deoplete-omnisharp: "cs" source for C#
 https://github.com/Robzz/deoplete-omnisharp/
 
+deoplete-omnisharp: Improved version of deoplete-omnisharp
+https://github.com/dimixar/deoplete-omnisharp/
+
 deoplete-hack: "hack" source for Hack and PHP
 https://github.com/zefei/deoplete-hack
 
@@ -1063,6 +1066,9 @@ https://github.com/ponko2/deoplete-fish
 
 deoplete-fsharp: "fsharp" source for F#
 https://github.com/callmekohei/deoplete-fsharp
+
+autocomplete-flow: "flow" source for JavaScript
+https://github.com/wokalski/autocomplete-flow
 
 ==============================================================================
 EXTERNAL PLUGINS				*deoplete-external-plugins*
