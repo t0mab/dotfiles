@@ -40,12 +40,21 @@ function! s:reltime_lastmsg() abort
     return printf(format, diff)
 endfunction
 
+" Get verbosity, optionally based on jobinfo's make_id (a:1).
+function! neomake#utils#get_verbosity(...) abort
+    if a:0 && has_key(a:1, 'make_id')
+        return neomake#GetMakeOptions(a:1.make_id).verbosity
+    endif
+    return get(g:, 'neomake_verbose', 1) + &verbose
+endfunction
+
 function! neomake#utils#LogMessage(level, msg, ...) abort
-    let jobinfo = a:0 ? a:1 : {}
-    if has_key(jobinfo, 'make_id')
-        let verbosity = neomake#GetMakeOptions(jobinfo.make_id).verbosity
+    if a:0
+        let context = a:1
+        let verbosity = neomake#utils#get_verbosity(context)
     else
-        let verbosity = get(g:, 'neomake_verbose', 1) + &verbose
+        let context = {}  " just for vimlint (EVL104)
+        let verbosity = neomake#utils#get_verbosity()
     endif
     let logfile = get(g:, 'neomake_logfile', '')
 
@@ -55,11 +64,11 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
     endif
 
     if a:0
-        if has_key(jobinfo, 'id')
-            let msg = printf('[%s.%d] %s', get(jobinfo, 'make_id', '-'), jobinfo.id, a:msg)
-        else
-            let msg = printf('[%s] %s', get(jobinfo, 'make_id', '?'), a:msg)
-        endif
+        let msg = printf('[%s.%s:%s] %s',
+                    \ get(context, 'make_id', '-'),
+                    \ get(context, 'id', '-'),
+                    \ get(context, 'bufnr', get(context, 'file_mode', 0) ? '?' : '-'),
+                    \ a:msg)
     else
         let msg = a:msg
     endif
@@ -75,9 +84,11 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
         endif
 
         call vader#log(test_msg)
-        " Only keep jobinfo entries that are relevant for / used in the message.
-        let g:neomake_test_messages += [[a:level, a:msg,
-                    \ filter(copy(jobinfo), "index(['id', 'make_id'], v:key) != -1")]]
+        " Only keep context entries that are relevant for / used in the message.
+        let context = a:0
+                    \ ? filter(copy(context), "index(['id', 'make_id', 'bufnr'], v:key) != -1")
+                    \ : {}
+        call add(g:neomake_test_messages, [a:level, a:msg, context])
     elseif verbosity >= a:level
         redraw
         if a:level ==# 0
@@ -226,14 +237,17 @@ function! s:command_maker.fn(jobinfo) dict abort
     let argv = split(&shell) + split(&shellcmdflag)
 
     if a:jobinfo.file_mode && get(self, 'append_file', 1)
-        let command .= ' '.fnameescape(fnamemodify(bufname(a:jobinfo.bufnr), ':p'))
+        let fname = self._get_fname_for_buffer(a:jobinfo)
+        let command .= ' '.fnamemodify(fname, ':p')
         let self.append_file = 0
     endif
     call extend(self, {
                 \ 'exe': argv[0],
                 \ 'args': argv[1:] + [command],
                 \ })
-    return filter(copy(self), "v:key !~# '^__' && v:key !~# 'fn'")
+
+    " Return a cleaned up copy of self.
+    return filter(copy(self), "v:key !~# '^__' && v:key !=# 'fn'")
 endfunction
 
 function! neomake#utils#MakerFromCommand(command) abort
@@ -244,36 +258,70 @@ function! neomake#utils#MakerFromCommand(command) abort
     return maker
 endfunction
 
+let s:super_ft_cache = {}
 function! neomake#utils#GetSupersetOf(ft) abort
-    try
-        return eval('neomake#makers#ft#' . a:ft . '#SupersetOf()')
-    catch /^Vim\%((\a\+)\)\=:E117/
-        return ''
-    endtry
+    if !has_key(s:super_ft_cache, a:ft)
+        call neomake#utils#load_ft_maker(a:ft)
+        let SupersetOf = 'neomake#makers#ft#'.a:ft.'#SupersetOf'
+        if exists('*'.SupersetOf)
+            let s:super_ft_cache[a:ft] = call(SupersetOf, [])
+        else
+            let s:super_ft_cache[a:ft] = ''
+        endif
+    endif
+    return s:super_ft_cache[a:ft]
 endfunction
 
-" Attempt to get list of filetypes in order of most specific to least specific.
-function! neomake#utils#GetSortedFiletypes(ft) abort
-    function! CompareFiletypes(ft1, ft2) abort
-        if neomake#utils#GetSupersetOf(a:ft1) ==# a:ft2
-            return -1
-        elseif neomake#utils#GetSupersetOf(a:ft2) ==# a:ft1
-            return 1
-        else
-            return 0
-        endif
-    endfunction
+let s:loaded_ft_maker_runtime = []
+function! neomake#utils#load_ft_maker(ft) abort
+    " Load ft maker, but only once (for performance reasons and to allow for
+    " monkeypatching it in tests).
+    if index(s:loaded_ft_maker_runtime, a:ft) == -1
+        exe 'runtime autoload/neomake/makers/ft/'.a:ft.'.vim'
+        call add(s:loaded_ft_maker_runtime, a:ft)
+    endif
+endfunction
 
-    return sort(split(a:ft, '\.'), function('CompareFiletypes'))
+function! neomake#utils#get_ft_confname(ft) abort
+    return substitute(a:ft, '\W', '_', 'g')
+endfunction
+
+" Resolve filetype a:ft into a list of filetypes suitable for config vars
+" (i.e. 'foo.bar' => ['foo_bar', 'foo', 'bar']).
+function! neomake#utils#get_config_fts(ft) abort
+    let r = []
+    let fts = split(a:ft, '\.')
+    for ft in fts
+        call add(r, ft)
+        let super_ft = neomake#utils#GetSupersetOf(ft)
+        while !empty(super_ft)
+            if empty(super_ft)
+                break
+            endif
+            if index(fts, super_ft) == -1
+                call add(r, super_ft)
+            endif
+            let super_ft = neomake#utils#GetSupersetOf(super_ft)
+        endwhile
+    endfor
+    if len(fts) > 1
+      call insert(r, a:ft, 0)
+    endif
+    return map(r, 'neomake#utils#get_ft_confname(v:val)')
 endfunction
 
 let s:unset = {}  " Sentinel.
 
 " Get a setting by key, based on filetypes, from the buffer or global
 " namespace, defaulting to default.
-function! neomake#utils#GetSetting(key, maker, default, fts, bufnr) abort
+function! neomake#utils#GetSetting(key, maker, default, ft, bufnr) abort
   let maker_name = has_key(a:maker, 'name') ? a:maker.name : ''
-  for ft in a:fts + ['']
+  if len(a:ft)
+      let fts = neomake#utils#get_config_fts(a:ft) + ['']
+  else
+      let fts = ['']
+  endif
+  for ft in fts
     " Look through the override vars for a filetype maker, like
     " neomake_scss_sasslint_exe (should be a string), and
     " neomake_scss_sasslint_args (should be a list).
@@ -282,10 +330,10 @@ function! neomake#utils#GetSetting(key, maker, default, fts, bufnr) abort
         break
     endif
     let config_var = 'neomake_'.part.'_'.a:key
-    unlet! bufcfgvar  " vim73
-    let bufcfgvar = neomake#compat#getbufvar(a:bufnr, config_var, s:unset)
-    if bufcfgvar isnot s:unset
-        return copy(bufcfgvar)
+    unlet! Bufcfgvar  " vim73
+    let Bufcfgvar = neomake#compat#getbufvar(a:bufnr, config_var, s:unset)
+    if Bufcfgvar isnot s:unset
+        return copy(Bufcfgvar)
     endif
     if has_key(g:, config_var)
         return copy(get(g:, config_var))
@@ -300,7 +348,7 @@ function! neomake#utils#GetSetting(key, maker, default, fts, bufnr) abort
   if bufvar isnot s:unset
       return bufvar
   endif
-  if has_key(g:, 'neomake_'.a:key)
+  if a:key !=# 'enabled_makers' && has_key(g:, 'neomake_'.a:key)
       return get(g:, 'neomake_'.a:key)
   endif
   return a:default
@@ -383,6 +431,11 @@ function! neomake#utils#ExpandArgs(args) abort
                     \ 'substitute(v:val, '
                     \ . '''\(\%(\\\@<!\\\)\@<!%\%(%\|\%(:[phtre]\+\)*\)\ze\)\w\@!'', '
                     \ . '''\=(submatch(1) == "%%" ? "%" : expand(submatch(1)))'', '
+                    \ . '''g'')')
+        let ret = map(ret,
+                    \ 'substitute(v:val, '
+                    \ . '''\(\%(\\\@<!\\\)\@<!\~\)'', '
+                    \ . 'expand(''~''), '
                     \ . '''g'')')
     finally
         let &iskeyword = isk

@@ -116,29 +116,17 @@ vimlint-errors: build/vimlint build/vimlparser
 build build/neovim-test-home:
 	mkdir $@
 build/neovim-test-home: | build
-build/vim-vimhelplint-master: | build
+build/vimhelplint: | build
 	cd build \
 	&& wget -O- https://github.com/machakann/vim-vimhelplint/archive/master.tar.gz \
-	  | tar xz
-vimhelplint: VIMHELPLINT_VIM:=vim
-vimhelplint: | build/vim-vimhelplint-master
-	out="$$($(VIMHELPLINT_VIM) -esN -c 'e doc/neomake.txt' -c 'set ft=help' \
-	  -c 'source build/vim-vimhelplint-master/ftplugin/help_lint.vim' \
-	  -c 'verb VimhelpLintEcho' -c q 2>&1)"; \
-	  if [ -n "$$out" ]; then \
-	    echo "$$out"; \
-	    exit 1; \
-	  fi
-
-docker_vimhelplint:
-	$(MAKE) docker_make "DOCKER_MAKE_TARGET=vimhelplint \
-	  VIMHELPLINT_VIM=/vim-build/bin/vim-master"
-
-docker_make: DOCKER_RUN=make -C /testplugin $(DOCKER_MAKE_TARGET)
-docker_make: docker_run
+	  | tar xz \
+	&& mv vim-vimhelplint-master vimhelplint
+vimhelplint: export VIMHELPLINT_VIM:=vim
+vimhelplint: | build/vimhelplint
+	contrib/vimhelplint doc/neomake.txt
 
 # Run tests in dockerized Vims.
-DOCKER_IMAGE:=neomake/vims-for-tests
+DOCKER_IMAGE:=neomake/vims-for-tests:1@sha256:1f24527dfe3eb8688c6afde514ec86ffeb1189211d4f0d09b5ee42799cb78737
 DOCKER_STREAMS:=-ti
 DOCKER=docker run $(DOCKER_STREAMS) --rm \
        -v $(PWD):/testplugin -v $(abspath $(TESTS_VADER_DIR)):/home/plugins/vader $(DOCKER_IMAGE)
@@ -164,6 +152,13 @@ docker_test: docker_make
 docker_run: $(TESTS_VADER_DIR)
 docker_run:
 	$(DOCKER) $(if $(DOCKER_RUN),$(DOCKER_RUN),bash)
+
+docker_make: DOCKER_RUN=make -C /testplugin $(DOCKER_MAKE_TARGET)
+docker_make: docker_run
+
+docker_vimhelplint:
+	$(MAKE) docker_make "DOCKER_MAKE_TARGET=vimhelplint \
+	  VIMHELPLINT_VIM=/vim-build/bin/vim-master"
 
 check:
 	@:; ret=0; \
