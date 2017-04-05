@@ -6,7 +6,11 @@ Execute (neomake#utils#LogMessage writes to logfile always):
   let g:neomake_logfile = tempname()
   call neomake#utils#LogMessage(1, 'msg0')
   call neomake#utils#LogMessage(1, 'msg1')
-  let logfile_msg = readfile(g:neomake_logfile)[1]
+  if has('patch-7.4.503')
+    let logfile_msg = readfile(g:neomake_logfile)[1]
+  else
+    let logfile_msg = readfile(g:neomake_logfile)[0]
+  endif
   Assert logfile_msg =~# '\v\d\d:\d\d:\d\d \[W      \] msg1$', 'unexpected msg: '.logfile_msg
 
   sleep 10m
@@ -376,7 +380,7 @@ Execute (neomake#utils#MakerFromCommand uses tempfile):
 
   set buftype=nofile
   let bound_maker = neomake#GetMaker(maker).fn(jobinfo)
-  let temp_file = bound_maker.tempfile_name
+  let temp_file = jobinfo.tempfile_name
   AssertEqual bound_maker.args, [&shellcmdflag, 'echo '.temp_file]
   AssertEqual bound_maker.append_file, 0
   AssertEqual bound_maker.exe, &shell
@@ -394,3 +398,17 @@ Execute (neomake#utils#get_config_fts):
   AssertEqual F('jsx.javascript'), ['jsx_javascript', 'jsx', 'javascript']
   AssertEqual F('javascript.jsx'), ['javascript_jsx', 'javascript', 'jsx']
   AssertEqual F('jsx'), ['jsx', 'javascript']
+
+Execute (neomake#utils#fnamemodify handles fugitive buffer):
+  NeomakeTestsLoadPlugin 'fugitive'
+  new
+  e! autoload/neomake.vim
+  let bufname = bufname('%')
+  Gedit
+  AssertNotEqual bufname, bufname('%')
+  Assert bufname('%') =~# '^fugitive://'
+
+  AssertEqual neomake#utils#fnamemodify(bufnr('%'), ''), bufname
+  AssertEqual neomake#utils#fnamemodify(bufnr('%'), ':p'), fnamemodify(bufname, ':p')
+  AssertEqual neomake#utils#fnamemodify(bufnr('%'), ':p:h'), fnamemodify(bufname, ':p:h')
+  bwipe

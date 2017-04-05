@@ -4,6 +4,11 @@ scriptencoding utf-8
 let s:level_to_name = {0: 'error  ', 1: 'warning', 2: 'verbose', 3: 'debug  '}
 let s:short_level_to_name = {0: 'E', 1: 'W', 2: 'V', 3: 'D'}
 
+" Use 'append' with writefile, but only if it is available.  Otherwise, just
+" overwrite the file.  'S' is used to disable fsync in Neovim
+" (https://github.com/neovim/neovim/pull/6427).
+let s:logfile_writefile_opts = has('patch-7.4.503') ? 'aS' : ''
+
 if exists('*reltimefloat')
     function! s:reltimefloat() abort
         return reltimefloat(reltime())
@@ -111,9 +116,9 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
         if !exists('timediff')
             let timediff = s:reltime_lastmsg()
         endif
-        call neomake#compat#writefile([printf('%s [%s %s] %s',
+        call writefile([printf('%s [%s %s] %s',
                     \ date, s:short_level_to_name[a:level], timediff, msg)],
-                    \ logfile, 'a')
+                    \ logfile, s:logfile_writefile_opts)
     endif
     " @vimlint(EVL104, 0, l:timediff)
 endfunction
@@ -535,4 +540,40 @@ function! neomake#utils#shellescape(arg) abort
   else
     return shellescape(a:arg)
   endif
+endfunction
+
+function! neomake#utils#write_tempfile(bufnr, temp_file) abort
+    let buflines = getbufline(a:bufnr, 1, '$')
+    " Special case: empty buffer; do not write an empty line in this case.
+    if len(buflines) > 1 || buflines != ['']
+        if getbufvar(a:bufnr, '&endofline')
+                    \ || (!getbufvar(a:bufnr, '&binary')
+                    \     && (!exists('+fixendofline') || getbufvar(a:bufnr, '&fixendofline')))
+            call add(buflines, '')
+        endif
+    endif
+    call writefile(buflines, a:temp_file, 'b')
+endfunction
+
+function! neomake#utils#get_or_create_buffer(filename) abort
+    " TODO: Remove usage of this once not supplying a bufnr to process_output
+    " works if the filename is not opened in a buffer yet.
+    let nr = bufnr(a:filename)
+    if nr == -1
+        execute 'badd ' . substitute(a:filename, ' ', '\\ ', 'g')
+        let nr = bufnr(a:filename)
+    endif
+    return nr
+endfunction
+
+" Wrapper around fnamemodify that handles special buffers (e.g. fugitive).
+function! neomake#utils#fnamemodify(bufnr, modifier) abort
+    let bufnr = +a:bufnr
+    if !empty(getbufvar(bufnr, 'fugitive_type'))
+        let fug_buffer = fugitive#buffer(bufnr)
+        let path = fnamemodify(fug_buffer.repo().translate(fug_buffer.path()), ':.')
+    else
+        let path = bufname(bufnr)
+    endif
+    return fnamemodify(path, a:modifier)
 endfunction
