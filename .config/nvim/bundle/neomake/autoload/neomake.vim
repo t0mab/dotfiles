@@ -204,11 +204,10 @@ function! s:MakeJob(make_id, options) abort
         return {}
     endif
 
-    let cwd = get(maker, 'cwd', s:make_info[a:make_id].cwd)
+    let cwd = get(jobinfo, 'cwd', s:make_info[a:make_id].cwd)
     if len(cwd)
         let old_wd = getcwd()
         let cd = haslocaldir() ? 'lcd' : (exists(':tcd') == 2 && haslocaldir(-1, 0)) ? 'tcd' : 'cd'
-        let cwd = expand(cwd, 1)
         try
             exe cd fnameescape(cwd)
         " Tests fail with E344, but in reality it is E472?!
@@ -330,7 +329,8 @@ function! s:command_maker_base._get_tempfilename(jobinfo) abort dict
     return tempname() . (has('win32') ? '\' : '/') . bufname
 endfunction
 
-" Check if a temporary file is used, and set self.tempfile_name in case it is.
+" Check if a temporary file is used, and set a:jobinfo.tempfile_name in case
+" it is.
 function! s:command_maker_base._get_fname_for_buffer(jobinfo) abort
     let bufnr = a:jobinfo.bufnr
     let bufname = bufname(bufnr)
@@ -371,10 +371,9 @@ function! s:command_maker_base._get_fname_for_buffer(jobinfo) abort
         if !isdirectory(temp_dir)
             call mkdir(temp_dir, 'p', 0750)
         endif
-        call writefile(getbufline(bufnr, 1, '$'), temp_file)
-
+        call neomake#utils#write_tempfile(bufnr, temp_file)
         let bufname = temp_file
-        let self.tempfile_name = temp_file
+        let a:jobinfo.tempfile_name = temp_file
     endif
     return bufname
 endfunction
@@ -650,7 +649,7 @@ function! s:Make(options) abort
     let make_id = s:make_id
     let options = copy(a:options)
     call extend(options, {
-                \ 'file_mode': 0,
+                \ 'file_mode': 1,
                 \ 'bufnr': bufnr('%'),
                 \ 'ft': '',
                 \ 'make_id': make_id,
@@ -769,7 +768,7 @@ function! s:AddExprCallback(jobinfo, prev_index) abort
         let index += 1
 
         let before = copy(entry)
-        if file_mode && has_key(a:jobinfo.maker, 'tempfile_name')
+        if file_mode && has_key(a:jobinfo, 'tempfile_name')
             let entry.bufnr = a:jobinfo.bufnr
         endif
         if !empty(s:postprocessors)
@@ -847,7 +846,7 @@ function! s:CleanJobinfo(jobinfo) abort
         endif
     endif
 
-    let temp_file = get(a:jobinfo.maker, 'tempfile_name', '')
+    let temp_file = get(a:jobinfo, 'tempfile_name', '')
     if !empty(temp_file)
         call neomake#utils#DebugMessage(printf('Removing temporary file: %s',
                     \ temp_file))
@@ -1617,6 +1616,16 @@ function! s:map_makers(jobinfo, makers, ...) abort
                 endif
             endif
 
+            if has_key(maker, 'cwd')
+                let cwd = maker.cwd
+                if cwd =~# '\m^%:'
+                    let cwd = neomake#utils#fnamemodify(a:jobinfo.bufnr, cwd[1:])
+                else
+                    let cwd = expand(cwd, 1)
+                endif
+                let a:jobinfo.cwd = fnamemodify(cwd, ':p')
+            endif
+
             if has_key(maker, '_bind_args')
                 call maker._bind_args()
                 if !executable(maker.exe)
@@ -1647,16 +1656,23 @@ function! s:map_makers(jobinfo, makers, ...) abort
     return r
 endfunction
 
-function! neomake#Make(file_mode, enabled_makers, ...) abort
-    let options = {'file_mode': a:file_mode}
-    if a:0
-        let options.exit_callback = a:1
+function! neomake#Make(file_mode_or_options, ...) abort
+    if type(a:file_mode_or_options) == type({})
+        return s:Make(a:file_mode_or_options)
     endif
-    if a:file_mode
+
+    let file_mode = a:file_mode_or_options
+    let options = {'file_mode': file_mode}
+    if file_mode
         let options.ft = &filetype
     endif
-    if len(a:enabled_makers)
-        let options.enabled_makers = a:enabled_makers
+    if a:0
+        if len(a:1)
+            let options.enabled_makers = a:1
+        endif
+        if a:0 > 1
+            let options.exit_callback = a:2
+        endif
     endif
     return s:Make(options)
 endfunction
@@ -1666,7 +1682,7 @@ function! neomake#ShCommand(bang, sh_command, ...) abort
     let maker.name = 'sh: '.a:sh_command
     let maker.buffer_output = !a:bang
     let maker.errorformat = '%m'
-    let options = {'enabled_makers': [maker]}
+    let options = {'enabled_makers': [maker], 'file_mode': 0}
     if a:0
         call extend(options, a:1)
     endif

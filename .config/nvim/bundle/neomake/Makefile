@@ -16,7 +16,13 @@ DEFAULT_VADER_DIR:=tests/vim/plugins/vader
 export TESTS_VADER_DIR:=$(firstword $(realpath $(wildcard tests/vim/plugins/vader.override)) $(DEFAULT_VADER_DIR))
 $(DEFAULT_VADER_DIR):
 	mkdir -p $(dir $@)
-	git clone --depth=1 https://github.com/junegunn/vader.vim $@
+	git clone --depth=1 -b display-source-with-exceptions https://github.com/blueyed/vader.vim $@
+TESTS_FUGITIVE_DIR:=tests/vim/plugins/fugitive
+$(TESTS_FUGITIVE_DIR):
+	mkdir -p $(dir $@)
+	git clone --depth=1 https://github.com/tpope/vim-fugitive $@
+
+DEP_PLUGINS=$(TESTS_VADER_DIR) $(TESTS_FUGITIVE_DIR)
 
 TEST_VIMRC:=tests/vim/vimrc
 
@@ -53,10 +59,9 @@ _SED_HIGHLIGHT_ERRORS:=| contrib/highlight-log vader
 # Need to close stdin to fix spurious 'sed: couldn't write X items to stdout: Resource temporarily unavailable'.
 # Redirect to stderr again for Docker (where only stderr is used from).
 _REDIR_STDOUT:=2>&1 </dev/null >/dev/null $(_SED_HIGHLIGHT_ERRORS) >&2
-_run_vim: | build $(TESTS_VADER_DIR)
+_run_vim: | build $(DEP_PLUGINS)
 _run_vim:
-	@echo $(TEST_VIM_PREFIX) $(TEST_VIM) -u $(TEST_VIMRC) -i NONE $(VIM_ARGS)
-	@$(TEST_VIM_PREFIX) $(TEST_VIM) -u $(TEST_VIMRC) -i NONE $(VIM_ARGS) $(_REDIR_STDOUT)
+	$(TEST_VIM_PREFIX) $(TEST_VIM) --noplugin -Nu $(TEST_VIMRC) -i NONE $(VIM_ARGS) $(_REDIR_STDOUT)
 
 # Interactive tests, keep Vader open.
 _run_interactive: VADER:=Vader
@@ -126,14 +131,17 @@ vimhelplint: | build/vimhelplint
 	contrib/vimhelplint doc/neomake.txt
 
 # Run tests in dockerized Vims.
-DOCKER_IMAGE:=neomake/vims-for-tests:1@sha256:1f24527dfe3eb8688c6afde514ec86ffeb1189211d4f0d09b5ee42799cb78737
+DOCKER_REPO:=neomake/vims-for-tests
+DOCKER_TAG:=1
+DOCKER_IMAGE_DIGEST=:$(DOCKER_TAG)
+DOCKER_IMAGE=$(DOCKER_REPO)$(DOCKER_IMAGE_DIGEST)
 DOCKER_STREAMS:=-ti
 DOCKER=docker run $(DOCKER_STREAMS) --rm \
-       -v $(PWD):/testplugin -v $(abspath $(TESTS_VADER_DIR)):/home/plugins/vader $(DOCKER_IMAGE)
+       -v $(PWD):/testplugin -v $(abspath $(TESTS_VADER_DIR)):/testplugin/tests/vim/plugins/vader $(DOCKER_IMAGE)
 docker_image:
-	docker build -f Dockerfile.tests -t $(DOCKER_IMAGE) .
+	docker build -f Dockerfile.tests -t $(DOCKER_REPO):$(DOCKER_TAG) .
 docker_push:
-	docker push $(DOCKER_IMAGE)
+	docker push $(DOCKER_REPO):$(DOCKER_TAG)
 
 # docker run --rm $(DOCKER_IMAGE) sh -c 'cd /vim-build/bin && ls vim*'
 DOCKER_VIMS:=vim73 vim74-trusty vim74-xenial vim8069 vim-master
@@ -149,7 +157,7 @@ docker_test: DOCKER_STREAMS:=-a stderr
 docker_test: DOCKER_MAKE_TARGET:=testvim TEST_VIM=/vim-build/bin/$(DOCKER_VIM) VIM_ARGS="$(VIM_ARGS)"
 docker_test: docker_make
 
-docker_run: $(TESTS_VADER_DIR)
+docker_run: $(DEP_PLUGINS)
 docker_run:
 	$(DOCKER) $(if $(DOCKER_RUN),$(DOCKER_RUN),bash)
 
