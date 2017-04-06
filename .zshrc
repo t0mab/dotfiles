@@ -207,3 +207,6 @@ alias notebook="jupyter-notebook --no-browser --no-mathjax"
 
 # Send Json POST request
 alias post_json="curl -X POST --header 'Content-Type: application/json' -d"
+
+# Launch a test RabbitMQ container
+alias docker_rabbitmq="docker run -it --rm -p 5672:5672 -p 15672:15672 rabbitmq:management-alpine"
