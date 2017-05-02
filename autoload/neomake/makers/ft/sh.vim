@@ -50,7 +50,7 @@ endfunction
 
 function! neomake#makers#ft#sh#sh() abort
     let shebang = matchstr(getline(1), '^#!\s*\zs.*$')
-    if len(shebang)
+    if !empty(shebang)
         let l = split(shebang)
         let exe = l[0]
         let args = l[1:] + ['-n']
@@ -64,7 +64,7 @@ function! neomake#makers#ft#sh#sh() abort
         \ 'exe': exe,
         \ 'args': args,
         \ 'errorformat':
-            \ '%f: line %l: %m,' .
-            \ '%f: %l: %m'
+            \ '%E%f: line %l: %m,' .
+            \ '%E%f: %l: %m'
         \}
 endfunction

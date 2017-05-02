@@ -5,7 +5,9 @@
 ~ Features
 Include (Completion): completion.vader
 Include (Compat): compat.vader
+Include (Config): config.vader
 Include (Current working dir): cwd.vader
+Include (Environment variables): env.vader
 Include (Error handling): errors.vader
 Include (Filetype handling): filetypes.vader
 Include (Hooks): hooks.vader
@@ -44,7 +46,8 @@ Include (Help): ft_help.vader
 Include (Asciidoc): ft_asciidoc.vader
 Include (Markdown): ft_markdown.vader
 Include (Pandoc): ft_pandoc.vader
-
+Include (TypeScript): ft_typescript.vader
+Include (JavaScript): ft_javascript.vader
 
 * Old/unorganized tests
 Include: include/setup.vader
@@ -125,7 +128,7 @@ Execute (neomake#Make in file mode with no filetype and no makers):
   AssertEqual neomake#Make(1, []), []
   let make_id = neomake#GetStatus().last_make_id
   AssertEqual g:neomake_test_messages[-1],
-  \ [3, 'Nothing to make: no enabled file mode makers.', {'make_id': make_id}]
+  \ [3, 'Nothing to make: no enabled file mode makers (filetype=).', {'make_id': make_id}]
 
 Execute (neomake#Make in project mode with no filetype and no makers):
   Save makeprg
@@ -289,11 +292,11 @@ Execute (neomake#Sh: job_id):
 Execute (neomake#CompleteJobs):
   if neomake#has_async_support()
     AssertEqual neomake#CompleteJobs(), ''
-    let job_ids = [neomake#Sh('sleep 1')]
-    AssertEqual neomake#CompleteJobs(), job_ids[0].': sh: sleep 1'
-    let job_ids += [neomake#Sh('sleep 2')]
+    let job_ids = [neomake#Sh('sleep 0.1')]
+    AssertEqual neomake#CompleteJobs(), job_ids[0].': sh: sleep 0.1'
+    let job_ids += [neomake#Sh('sleep 0.11')]
     AssertEqual neomake#CompleteJobs(), printf(
-      \ "%d: sh: sleep 1\n%d: sh: sleep 2", job_ids[0], job_ids[1])
+      \ "%d: sh: sleep 0.1\n%d: sh: sleep 0.11", job_ids[0], job_ids[1])
     NeomakeCancelJobs
     NeomakeTestsWaitForFinishedJobs
   endif
@@ -315,6 +318,7 @@ Execute (Neomake picks up custom maker correctly):
     \ 'append_file': 0,
     \ 'errorformat': '%f:%l:%c: %m',
     \ }
+  new
   file file1
   let fname = expand('%:p')
   Save &filetype
@@ -327,3 +331,4 @@ Execute (Neomake picks up custom maker correctly):
   else
     AssertNeomakeMessage "Starting: echo ".fname." --foo bar"
   endif
+  bwipe

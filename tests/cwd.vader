@@ -4,7 +4,7 @@ Execute (tcd is handled properly):
   if exists(':tcd') != 2
     NeomakeTestsSkip 'no :tcd'
   else
-    let maker = NeomakeTestsCommandMaker('sleep-maker', 'sleep .05')
+    let maker = NeomakeTestsCommandMaker('sleep-maker', 'sleep .01')
     for d in ['build/path1', 'build/path2']
       if !isdirectory(d)
         call mkdir(d, 'p')
@@ -66,7 +66,7 @@ Execute (cwd handles fugitive buffer):
   let maker.errorformat = '%m'
   let maker.append_file = 1
   new
-  e! autoload/neomake.vim
+  edit autoload/neomake.vim
   let expected_cwd = fnamemodify(bufname('%'), ':p:h')
   Gedit
   Assert bufname('%') =~# '^fugitive://', bufname('%')
@@ -89,7 +89,7 @@ Execute (cwd gets expanded correctly: relative and in another buffer):
     let maker.errorformat = '%m'
     let maker.append_file = 1
     new
-    e! tests/fixtures/errors.py
+    edit tests/fixtures/errors.py
     let b:neomake_serialize = 1
     let bufname = expand('%:p')
     let expected_cwd = fnamemodify(bufname, ':p:h')
@@ -109,3 +109,17 @@ Execute (cwd gets expanded correctly: relative and in another buffer):
     endtry
     bwipe
   endif
+
+Execute (cwd per maker):
+  let maker1 = {'exe': 'pwd', 'cwd': tempname()}
+  let maker2 = {'exe': 'pwd', 'cwd': tempname()}
+  call mkdir(maker1.cwd)
+  call mkdir(maker2.cwd)
+
+  call neomake#Make({
+  \ 'file_mode': 0,
+  \ 'enabled_makers': [maker1, maker2],
+  \ 'serialize': 1})
+  NeomakeTestsWaitForFinishedJobs
+
+  AssertEqual map(copy(getqflist()), 'v:val.text'), [maker1.cwd, maker2.cwd]
