@@ -30,8 +30,8 @@ for the template designer too hard by giving him too few functionality.
 
 For more informations visit the new `Jinja2 webpage`_ and `documentation`_.
 
-.. _sandboxed: http://en.wikipedia.org/wiki/Sandbox_(computer_security)
-.. _Django: http://www.djangoproject.com/
+.. _sandboxed: https://en.wikipedia.org/wiki/Sandbox_(computer_security)
+.. _Django: https://www.djangoproject.com/
 .. _Jinja2 webpage: http://jinja.pocoo.org/
 .. _documentation: http://jinja.pocoo.org/2/documentation/
 """
@@ -40,11 +40,7 @@ from setuptools import setup
 
 setup(
     name='Jinja2',
-<<<<<<< HEAD
     version='2.10.dev',
-=======
-    version='2.9.7.dev',
->>>>>>> 2.9-maintenance
     url='http://jinja.pocoo.org/',
     license='BSD',
     author='Armin Ronacher',
@@ -68,6 +64,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML'
