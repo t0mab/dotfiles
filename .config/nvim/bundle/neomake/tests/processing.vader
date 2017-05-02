@@ -157,13 +157,13 @@ Execute (Sleep in postprocess gets handled correctly):
       endif
     endfunction
 
-    let maker_1 = extend(neomake#utils#MakerFromCommand(
+    let maker = extend(neomake#utils#MakerFromCommand(
       \ 'echo out-1; sleep '.s:sleep.'; echo out-22; sleep '.s:sleep.'; echo out-333'), {
       \ 'buffer_output': 0, 'errorformat': '%m',
       \ 'append_file': 0,
       \ 'postprocess': function('s:postprocess')})
 
-    let job_ids = neomake#Make(1, [maker_1])
+    let job_ids = neomake#Make(1, [maker])
     let jobinfo = neomake#GetJob(job_ids[0])
     " norm! V
     NeomakeTestsWaitForFinishedJobs
@@ -200,6 +200,7 @@ Execute (Pending output with restarted job when not in normal/insert mode (locli
   if NeomakeAsyncTestsSetup()
     let g:neomake_test_inc_maker_counter = 0
 
+    new
     file b1
     let first_jobs = neomake#Make(1, [g:neomake_test_inc_maker])
     let jobinfo1 = neomake#GetJob(first_jobs[0])
@@ -227,12 +228,14 @@ Execute (Pending output with restarted job when not in normal/insert mode (locli
     \ ['1:0: buf: b1']
     AssertEqual len(g:neomake_test_finished), 2
     AssertEqual len(g:neomake_test_jobfinished), 2
+    bwipe
   endif
 
 Execute (Pending output with restarted job when not in normal/insert mode (quickfix)):
   if NeomakeAsyncTestsSetup()
     let g:neomake_test_inc_maker_counter = 0
 
+    new
     file b1
     let first_jobs = neomake#Make(0, [g:neomake_test_inc_maker])
     let jobinfo1 = neomake#GetJob(first_jobs[0])
@@ -260,6 +263,7 @@ Execute (Pending output with restarted job when not in normal/insert mode (quick
 
     AssertEqual len(g:neomake_test_finished), 2
     AssertEqual len(g:neomake_test_jobfinished), 2
+    bwipe
   endif
 
 Execute (Handle finished job that got canceled (#1158)):
@@ -268,8 +272,9 @@ Execute (Handle finished job that got canceled (#1158)):
   let jobs = neomake#Make(0, [g:success_maker])
   NeomakeTestsWaitForFinishedJobs
   let jobs = neomake#Make(0, [g:success_maker])
-  NeomakeTestsWaitForFinishedJobs
   if neomake#has_async_support()
+    AssertNeomakeMessage '\mRestarting already running job (\d\+.\d\+) for the same maker.'
+    NeomakeTestsWaitForFinishedJobs
     call neomake#CancelJob(jobs[0])
     AssertEqual len(g:neomake_test_jobfinished), 0
   else
@@ -279,19 +284,22 @@ Execute (Handle finished job that got canceled (#1158)):
 
 Execute (Job does not get restarted when canceled):
   if NeomakeAsyncTestsSetup()
-    let maker = NeomakeTestsCommandMaker('mymaker', 'echo output; sleep .1')
+    let maker = NeomakeTestsCommandMaker('mymaker', 'echo output; sleep .1; echo output2')
     let jobs = neomake#Make(1, [maker])
     let jobinfo = neomake#GetJob(jobs[0])
+    NeomakeTestsWaitForMessage "stdout: mymaker: ['output', '']", 3, jobinfo
     call neomake#CancelJob(jobinfo.id)
     let jobinfo2 = neomake#GetJob(neomake#Make(1, [maker])[0])
     NeomakeTestsWaitForFinishedJobs
+
+    AssertNeomakeMessage "stdout: mymaker: ['output', '']", 3, jobinfo2
+
+    " Vim does not call the output handler if a job is stopped (reliably)?!
     if has('nvim')
-      " Vim does not call the output handler if a job is stopped?!
-      AssertNeomakeMessage "stdout: mymaker: ['output', '']", 3, jobinfo
       AssertNeomakeMessage 'Ignoring output, job was canceled.', 3, jobinfo
     endif
-    AssertNeomakeMessage "stdout: mymaker: ['output', '']", 3, jobinfo2
     AssertNeomakeMessage 'exit: job was canceled.', 3, jobinfo
+    AssertNeomakeMessage "stdout: mymaker: ['output2', '']", 3, jobinfo2
 
     AssertEqual len(g:neomake_test_finished), 1
     AssertEqual len(g:neomake_test_jobfinished), 1
@@ -318,3 +326,76 @@ Execute (Mixed newlines get handled correctly):
   NeomakeTestsWaitForFinishedJobs
   AssertEqual map(copy(getqflist()), 'v:val.text'),
   \ ['line1', 'line2', 'line3']
+
+Execute (Exception in process_output gets logged as error):
+  if NeomakeAsyncTestsSetup()
+    function! Neomake_test_maker_process_output(context) abort
+      throw "TEST_ERROR"
+    endfunction
+
+    let maker = {
+    \ 'exe': 'printf',
+    \ 'args': ['foo'],
+    \ 'append_file': 0,
+    \ 'process_output': function('Neomake_test_maker_process_output')}
+
+    let jobinfo = neomake#GetJob(neomake#Make(1, [maker])[0])
+    let make_id = neomake#GetStatus().last_make_id
+
+    NeomakeTestsWaitForFinishedJobs
+    AssertNeomakeMessage 'unnamed_maker: processing 1 lines of output.'
+    AssertNeomakeMessage 'Error during output processing for unnamed_maker: TEST_ERROR', 0, jobinfo
+  endif
+
+Execute (Already running job gets restarted in case of exception):
+  if NeomakeAsyncTestsSetup()
+    Save g:neomake_test_counter
+    let g:neomake_test_counter = 0
+    function! Neomake_test_maker_process_output(context) abort
+      let g:neomake_test_counter += 1
+      if g:neomake_test_counter == 1
+        throw 'NeomakeTestsException'
+      endif
+      return []
+    endfunction
+
+    let maker = {
+    \ 'exe': 'printf',
+    \ 'args': ['foo'],
+    \ 'append_file': 0,
+    \ 'process_output': function('Neomake_test_maker_process_output')}
+
+    let jobinfo = neomake#GetJob(neomake#Make(1, [maker])[0])
+    let make_id = neomake#GetStatus().last_make_id
+
+    AssertThrows NeomakeTestsWaitForFinishedJobs
+    AssertEqual g:vader_exception, 'NeomakeTestsException'
+    AssertNeomakeMessage 'unnamed_maker: processing 1 lines of output.'
+
+    AssertEqual len(neomake#GetJobs()), 1, 'the job has not been clean because of the exception'
+
+    " Restart, which should work directly.
+    call neomake#Make(1, [maker])
+
+    AssertNeomakeMessage printf('Restarting already running job (%d.%d) for the same maker.',
+    \ make_id, jobinfo.id), 2, {'make_id': make_id+1}
+
+    if has('nvim')
+      AssertNeomakeMessage 'jobstop failed: Vim(call):E900: Invalid job id', 2, jobinfo
+    else
+      try
+        AssertNeomakeMessage 'job_stop: job was not running anymore', 2, jobinfo
+      catch
+        " Happens at least on Vim 8.0.69.
+        if !has('patch-8.0.70')
+          throw v:exception.' (might be a flaky test)'
+        endif
+      endtry
+    endif
+
+    AssertNeomakeMessage "Starting async job: ['printf', 'foo']"
+
+    " Needs careful cleanup after exception.
+    NeomakeTestsWaitForMessage 'Cleaning jobinfo'
+    NeomakeCancelJobs!
+  endif

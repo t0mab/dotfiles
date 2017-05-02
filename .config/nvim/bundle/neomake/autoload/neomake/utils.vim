@@ -9,25 +9,14 @@ let s:short_level_to_name = {0: 'E', 1: 'W', 2: 'V', 3: 'D'}
 " (https://github.com/neovim/neovim/pull/6427).
 let s:logfile_writefile_opts = has('patch-7.4.503') ? 'aS' : ''
 
-if exists('*reltimefloat')
-    function! s:reltimefloat() abort
-        return reltimefloat(reltime())
-    endfunction
-else
-    function! s:reltimefloat() abort
-        let t = split(reltimestr(reltime()), '\V.')
-        return str2float(t[0] . '.' . t[1])
-    endfunction
-endif
-
 function! s:reltime_lastmsg() abort
     if exists('s:last_msg_ts')
-        let cur = s:reltimefloat()
+        let cur = neomake#compat#reltimefloat()
         let diff = (cur - s:last_msg_ts)
     else
         let diff = 0
     endif
-    let s:last_msg_ts = s:reltimefloat()
+    let s:last_msg_ts = neomake#compat#reltimefloat()
 
     if diff < 0.01
         return '     '
@@ -111,7 +100,7 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
             echohl None
         endif
     endif
-    if type(logfile) ==# type('') && len(logfile)
+    if type(logfile) ==# type('') && !empty(logfile)
         let date = strftime('%H:%M:%S')
         if !exists('timediff')
             let timediff = s:reltime_lastmsg()
@@ -167,7 +156,7 @@ function! neomake#utils#DebugObject(msg, obj) abort
 endfunction
 
 function! neomake#utils#wstrpart(mb_string, start, len) abort
-  return matchstr(a:mb_string, '.\{,'.a:len.'}', 0, a:start+1)
+    return matchstr(a:mb_string, '.\{,'.a:len.'}', 0, a:start+1)
 endfunction
 
 " This comes straight out of syntastic.
@@ -310,7 +299,7 @@ function! neomake#utils#get_config_fts(ft) abort
         endwhile
     endfor
     if len(fts) > 1
-      call insert(r, a:ft, 0)
+        call insert(r, a:ft, 0)
     endif
     return map(r, 'neomake#utils#get_ft_confname(v:val)')
 endfunction
@@ -320,74 +309,85 @@ let s:unset = {}  " Sentinel.
 " Get a setting by key, based on filetypes, from the buffer or global
 " namespace, defaulting to default.
 function! neomake#utils#GetSetting(key, maker, default, ft, bufnr) abort
-  let maker_name = has_key(a:maker, 'name') ? a:maker.name : ''
-  if len(a:ft)
-      let fts = neomake#utils#get_config_fts(a:ft) + ['']
-  else
-      let fts = ['']
-  endif
-  for ft in fts
-    " Look through the override vars for a filetype maker, like
-    " neomake_scss_sasslint_exe (should be a string), and
-    " neomake_scss_sasslint_args (should be a list).
-    let part = join(filter([ft, maker_name], 'len(v:val)'), '_')
-    if !len(part)
-        break
+    " Check new-style config.
+    " Add maker and bufnr to context only if g:neomake or b:neomake exist.
+    let context = {'ft': a:ft}
+    if exists('g:neomake') || !empty(getbufvar(a:bufnr, 'neomake'))
+        call extend(context, {'maker': a:maker, 'bufnr': a:bufnr})
     endif
-    let config_var = 'neomake_'.part.'_'.a:key
-    unlet! Bufcfgvar  " vim73
-    let Bufcfgvar = neomake#compat#getbufvar(a:bufnr, config_var, s:unset)
-    if Bufcfgvar isnot s:unset
-        return copy(Bufcfgvar)
+    let Ret = neomake#config#get(a:key, g:neomake#config#undefined, context)
+    if Ret isnot g:neomake#config#undefined
+        return Ret
     endif
-    if has_key(g:, config_var)
-        return copy(get(g:, config_var))
-    endif
-  endfor
 
-  if has_key(a:maker, a:key)
-    return a:maker[a:key]
-  endif
-  " Look for 'neomake_'.key in the buffer and global namespace.
-  let bufvar = neomake#compat#getbufvar(a:bufnr, 'neomake_'.a:key, s:unset)
-  if bufvar isnot s:unset
-      return bufvar
-  endif
-  if a:key !=# 'enabled_makers' && has_key(g:, 'neomake_'.a:key)
-      return get(g:, 'neomake_'.a:key)
-  endif
-  return a:default
+    let maker_name = has_key(a:maker, 'name') ? a:maker.name : ''
+    if !empty(a:ft)
+        let fts = neomake#utils#get_config_fts(a:ft) + ['']
+    else
+        let fts = ['']
+    endif
+    for ft in fts
+        " Look through the override vars for a filetype maker, like
+        " neomake_scss_sasslint_exe (should be a string), and
+        " neomake_scss_sasslint_args (should be a list).
+        let part = join(filter([ft, maker_name], '!empty(v:val)'), '_')
+        if empty(part)
+            break
+        endif
+        let config_var = 'neomake_'.part.'_'.a:key
+        unlet! Bufcfgvar  " vim73
+        let Bufcfgvar = neomake#compat#getbufvar(a:bufnr, config_var, s:unset)
+        if Bufcfgvar isnot s:unset
+            return copy(Bufcfgvar)
+        endif
+        if has_key(g:, config_var)
+            return copy(get(g:, config_var))
+        endif
+    endfor
+
+    if has_key(a:maker, a:key)
+        return a:maker[a:key]
+    endif
+    " Look for 'neomake_'.key in the buffer and global namespace.
+    let bufvar = neomake#compat#getbufvar(a:bufnr, 'neomake_'.a:key, s:unset)
+    if bufvar isnot s:unset
+        return bufvar
+    endif
+    if a:key !=# 'enabled_makers' && has_key(g:, 'neomake_'.a:key)
+        return get(g:, 'neomake_'.a:key)
+    endif
+    return a:default
 endfunction
 
 " Get property from highlighting group.
 function! neomake#utils#GetHighlight(group, what) abort
-  let reverse = synIDattr(synIDtrans(hlID(a:group)), 'reverse')
-  let what = a:what
-  if reverse
-    let what = neomake#utils#ReverseSynIDattr(what)
-  endif
-  if what[-1:] ==# '#'
-      let val = synIDattr(synIDtrans(hlID(a:group)), what, 'gui')
-  else
-      let val = synIDattr(synIDtrans(hlID(a:group)), what, 'cterm')
-  endif
-  if empty(val) || val == -1
-    let val = 'NONE'
-  endif
-  return val
+    let reverse = synIDattr(synIDtrans(hlID(a:group)), 'reverse')
+    let what = a:what
+    if reverse
+        let what = neomake#utils#ReverseSynIDattr(what)
+    endif
+    if what[-1:] ==# '#'
+        let val = synIDattr(synIDtrans(hlID(a:group)), what, 'gui')
+    else
+        let val = synIDattr(synIDtrans(hlID(a:group)), what, 'cterm')
+    endif
+    if empty(val) || val == -1
+        let val = 'NONE'
+    endif
+    return val
 endfunction
 
 function! neomake#utils#ReverseSynIDattr(attr) abort
-  if a:attr ==# 'fg'
-    return 'bg'
-  elseif a:attr ==# 'bg'
-    return 'fg'
-  elseif a:attr ==# 'fg#'
-    return 'bg#'
-  elseif a:attr ==# 'bg#'
-    return 'fg#'
-  endif
-  return a:attr
+    if a:attr ==# 'fg'
+        return 'bg'
+    elseif a:attr ==# 'bg'
+        return 'fg'
+    elseif a:attr ==# 'fg#'
+        return 'bg#'
+    elseif a:attr ==# 'bg#'
+        return 'fg#'
+    endif
+    return a:attr
 endfunction
 
 function! neomake#utils#CompressWhitespace(entry) abort
@@ -456,7 +456,7 @@ function! neomake#utils#hook(event, context, ...) abort
 
         let args = ['Calling User autocmd '.a:event
                     \ .' with context: '.string(map(copy(a:context), "v:key ==# 'jobinfo' ? '…' : v:val"))]
-        if len(jobinfo)
+        if !empty(jobinfo)
             let args += [jobinfo]
         endif
         call call('neomake#utils#LoudMessage', args)
@@ -505,21 +505,20 @@ function! neomake#utils#path_sep() abort
     return neomake#utils#IsRunningWindows() ? ';' : ':'
 endfunction
 
-" Find a file by going up the directories from the start directory
-" and performing glob search for the file.
-function! neomake#utils#FindGlobFile(startDir, file) abort
-    let curDir = a:startDir
+" Find a file matching `a:glob` (using `globpath()`) by going up the
+" directories from the start directory (a:1, defaults to `expand('%:p:h')`,
+" i.e. the directory of the current buffer's file).)
+function! neomake#utils#FindGlobFile(glob, ...) abort
+    let curDir = a:0 ? a:1 : expand('%:p:h')
     let fileFound = ''
-
     while empty(fileFound)
-        let fileFound = globpath(curDir, a:file, 1)
+        let fileFound = globpath(curDir, a:glob, 1)
         let lastFolder = curDir
         let curDir = fnamemodify(curDir, ':h')
         if curDir ==# lastFolder
             break
         endif
     endwhile
-
     return fileFound
 endfunction
 
@@ -529,17 +528,17 @@ endfunction
 
 " Smarter shellescape, via vim-fugitive.
 function! s:gsub(str,pat,rep) abort
-  return substitute(a:str,'\v\C'.a:pat,a:rep,'g')
+    return substitute(a:str,'\v\C'.a:pat,a:rep,'g')
 endfunction
 
 function! neomake#utils#shellescape(arg) abort
-  if a:arg =~# '^[A-Za-z0-9_/.-]\+$'
-    return a:arg
-  elseif &shell =~? 'cmd' || exists('+shellslash') && !&shellslash
-    return '"'.s:gsub(s:gsub(a:arg, '"', '""'), '\%', '"%"').'"'
-  else
-    return shellescape(a:arg)
-  endif
+    if a:arg =~# '^[A-Za-z0-9_/.-]\+$'
+        return a:arg
+    elseif &shell =~? 'cmd' || exists('+shellslash') && !&shellslash
+        return '"'.s:gsub(s:gsub(a:arg, '"', '""'), '\%', '"%"').'"'
+    else
+        return shellescape(a:arg)
+    endif
 endfunction
 
 function! neomake#utils#write_tempfile(bufnr, temp_file) abort
@@ -575,5 +574,5 @@ function! neomake#utils#fnamemodify(bufnr, modifier) abort
     else
         let path = bufname(bufnr)
     endif
-    return fnamemodify(path, a:modifier)
+    return empty(path) ? '' : fnamemodify(path, a:modifier)
 endfunction

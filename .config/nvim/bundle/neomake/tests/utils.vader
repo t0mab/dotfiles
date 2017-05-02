@@ -157,6 +157,23 @@ Execute (neomake#utils#GetSetting without name):
   let g:neomake_myft_setting = {'custom': 1}
   AssertEqual GetSetting('setting'), {'custom': 1}
 
+Execute (neomake#utils#GetSetting with new-style config):
+  Save g:neomake
+  new
+  set ft=neomake_tests
+
+  let b:neomake_neomake_tests_foo = 'bar'
+  let maker = {'foo': 'baz'}
+  AssertEqual neomake#utils#GetSetting(
+  \ 'foo', maker, -1, 'neomake_tests', bufnr('%')), 'bar'
+
+  " New-style global setting overrides old-style buffer setting?!
+  call neomake#config#set('ft.neomake_tests.foo', 'new_bar')
+  AssertEqual neomake#utils#GetSetting(
+  \ 'foo', maker, -1, 'neomake_tests', bufnr('%')), 'new_bar'
+
+  bwipe
+
 Execute(neomake#utils#redir):
   command! NeomakeTestCommand echo 1 | echo 2
   command! NeomakeTestErrorCommand echoerr 'error'
@@ -281,7 +298,7 @@ Execute (neomake#utils#MakerFromCommand splits shell/shellcmdflag):
   else
     let expected_argv = "/bin/bash -o pipefail -c 'echo 1'"
   endif
-  let bound_maker = neomake#GetMaker(maker.fn(jobinfo))
+  let bound_maker = neomake#GetMaker(maker).fn(jobinfo)
   AssertEqual bound_maker._get_argv(jobinfo), expected_argv
 
   let &shell = '/bin/bash'
@@ -292,7 +309,7 @@ Execute (neomake#utils#MakerFromCommand splits shell/shellcmdflag):
   else
     let expected_argv = "/bin/bash -o pipefail -c 'echo 2'"
   endif
-  let bound_maker = neomake#GetMaker(maker.fn(jobinfo))
+  let bound_maker = neomake#GetMaker(maker).fn(jobinfo)
   AssertEqual bound_maker._get_argv(jobinfo), expected_argv
 
 Execute (neomake#utils#MakerFromCommand appends args for file_mode):
@@ -302,14 +319,17 @@ Execute (neomake#utils#MakerFromCommand appends args for file_mode):
   AssertEqual maker.fn(jobinfo), {
   \ 'args': [&shellcmdflag, 'echo'], 'exe': &shell, 'remove_invalid_entries': 0}
 
-  e! tests/fixtures/a\ filename\ with\ spaces
+  new
+  edit tests/fixtures/a\ filename\ with\ spaces
   let fname = expand('%:p')
-  let jobinfo = {'maker': maker, 'file_mode': 1, 'bufnr': bufnr('%')}
+  let jobinfo = NeomakeTestsFakeJobinfo()
+  let jobinfo.maker = maker
   let bound_maker = neomake#GetMaker(maker).fn(jobinfo)
   AssertEqual bound_maker.args, [&shellcmdflag, 'echo '.fname]
   AssertEqual bound_maker.append_file, 0
   AssertEqual bound_maker.exe, &shell
   AssertEqual bound_maker.remove_invalid_entries, 0
+  bwipe
 
 Execute (neomake#utils#Stringify):
   AssertEqual neomake#utils#Stringify(1), 1
@@ -374,13 +394,14 @@ Execute (neomake#utils#MakerFromCommand uses tempfile):
   let maker = neomake#utils#MakerFromCommand('echo')
 
   new
-  let b:neomake_tempfile_enabled = 1
-  let jobinfo = {'file_mode': 1, 'bufnr': bufnr('%'), 'ft': ''}
   file dir/\ with\ spaces
+  let b:neomake_tempfile_enabled = 1
+  let jobinfo = NeomakeTestsFakeJobinfo()
 
   set buftype=nofile
   let bound_maker = neomake#GetMaker(maker).fn(jobinfo)
-  let temp_file = jobinfo.tempfile_name
+  let make_info = values(neomake#GetStatus().make_info)[0]
+  let temp_file = make_info.tempfile
   AssertEqual bound_maker.args, [&shellcmdflag, 'echo '.temp_file]
   AssertEqual bound_maker.append_file, 0
   AssertEqual bound_maker.exe, &shell
@@ -402,7 +423,7 @@ Execute (neomake#utils#get_config_fts):
 Execute (neomake#utils#fnamemodify handles fugitive buffer):
   NeomakeTestsLoadPlugin 'fugitive'
   new
-  e! autoload/neomake.vim
+  edit autoload/neomake.vim
   let bufname = bufname('%')
   Gedit
   AssertNotEqual bufname, bufname('%')
@@ -411,4 +432,44 @@ Execute (neomake#utils#fnamemodify handles fugitive buffer):
   AssertEqual neomake#utils#fnamemodify(bufnr('%'), ''), bufname
   AssertEqual neomake#utils#fnamemodify(bufnr('%'), ':p'), fnamemodify(bufname, ':p')
   AssertEqual neomake#utils#fnamemodify(bufnr('%'), ':p:h'), fnamemodify(bufname, ':p:h')
+  bwipe
+
+Execute (neomake#utils#fnamemodify handles empty bufname):
+  new
+  AssertEqual bufname('%'), ''
+  AssertEqual neomake#utils#fnamemodify(bufnr('%'), ''), ''
+  AssertEqual neomake#utils#fnamemodify(bufnr('%'), ':p'), ''
+  bwipe
+
+Execute (neomake#utils#FindGlobFile):
+  let tempdir = tempname()
+  let slash = neomake#utils#Slash()
+  let subdir = tempdir . slash . 'sub'
+  call mkdir(subdir, 'p', 0700)
+
+  let tempfile = tempdir.slash.'temp-file'
+  call writefile([], tempfile)
+  let file_in_tempdir = tempdir.slash.'common-file'
+  call writefile([], file_in_tempdir)
+  let subfile = subdir.slash.'sub-file'
+  call writefile([], subfile)
+  let file_in_subdir = subdir.slash.'common-file'
+  call writefile([], file_in_subdir)
+
+  new
+  exe 'lcd' subdir
+  AssertEqual neomake#utils#FindGlobFile('doesnotexist'), ''
+  AssertEqual neomake#utils#FindGlobFile('sub-file'), subfile
+  AssertEqual neomake#utils#FindGlobFile('sub-file', tempdir), ''
+  AssertEqual neomake#utils#FindGlobFile('common-file'), file_in_subdir
+  AssertEqual neomake#utils#FindGlobFile('common-file', tempdir), file_in_tempdir
+
+  exe 'lcd' tempdir
+  AssertEqual neomake#utils#FindGlobFile('sub-file'), ''
+  AssertEqual neomake#utils#FindGlobFile('sub-file', subdir), subfile
+  AssertEqual neomake#utils#FindGlobFile('sub-file', tempdir), ''
+  AssertEqual neomake#utils#FindGlobFile('sub-file', tempname()), ''
+  AssertEqual neomake#utils#FindGlobFile('common-file'), file_in_tempdir
+  AssertEqual neomake#utils#FindGlobFile('common-file'), file_in_tempdir
+  AssertEqual neomake#utils#FindGlobFile('common-file', subdir), file_in_subdir
   bwipe
