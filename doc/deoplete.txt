@@ -803,6 +803,7 @@ gather_candidates
 		It is called to gather candidates.
 		It takes {self} and {context} as its parameter and returns a
 		list of {candidate}.
+		If the error is occurred, it must return None.
 		{candidate} must be String or Dictionary contains
 		|deoplete-candidate-attributes|.
 		Here, {context} is the context information when the source is
@@ -1215,9 +1216,10 @@ A: You can use it by the 'completeopt' option. >
 
 	set completeopt+=noinsert
 
-Q: I want to lock auto completion.
+Q: I want to disable the auto completion for certain filetypes.
 
-A: Please use |b:deoplete_disable_auto_complete|.
+A: Please use |b:deoplete_disable_auto_complete|. >
+	autocmd FileType tex let b:deoplete_disable_auto_complete = 1
 
 Q: Ruby omni completion does not work in neovim.
 

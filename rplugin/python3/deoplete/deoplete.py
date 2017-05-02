@@ -36,6 +36,7 @@ class Deoplete(logger.LoggingMixin):
         self.name = 'core'
         self._ignored_sources = set()
         self._ignored_filters = set()
+        self._loaded_paths = set()
         self._prev_results = {}
 
     def completion_begin(self, context):
@@ -52,7 +53,7 @@ class Deoplete(logger.LoggingMixin):
             complete_position = -1
             candidates = []
 
-        if is_async and self.use_previous_result(context):
+        if is_async:
             self._vim.call('deoplete#handler#_async_timer_start')
         else:
             self._vim.call('deoplete#handler#_async_timer_stop')
@@ -102,6 +103,7 @@ class Deoplete(logger.LoggingMixin):
                         self.use_previous_result(
                             context, self._prev_results[source.name])):
                     results.append(self._prev_results[source.name])
+                    continue
 
                 ctx['max_abbr_width'] = min(source.max_abbr_width,
                                             ctx['max_abbr_width'])
@@ -116,6 +118,9 @@ class Deoplete(logger.LoggingMixin):
                 self.profile_start(ctx, source.name)
                 ctx['candidates'] = source.gather_candidates(ctx)
                 self.profile_end(source.name)
+
+                if ctx['candidates'] is None:
+                    continue
 
                 ctx['candidates'] = convert2candidates(ctx['candidates'])
 
@@ -144,13 +149,8 @@ class Deoplete(logger.LoggingMixin):
         return results
 
     def merge_results(self, results, context_input):
-        if not results:
-            return (False, -1, [])
-
-        complete_position = min([x['context']['complete_position']
-                                 for x in results])
-
-        candidates = []
+        merged_results = []
+        all_candidates = []
         for result in [x for x in results
                        if not self.is_skip(x['context'],
                                            x['source'].disabled_syntaxes,
@@ -161,9 +161,16 @@ class Deoplete(logger.LoggingMixin):
 
             # Gather async results
             if result['is_async']:
-                result['context']['candidates'] += convert2candidates(
-                    source.gather_candidates(result['context']))
+                async_candidates = source.gather_candidates(
+                    result['context'])
                 result['is_async'] = result['context']['is_async']
+                if async_candidates is None:
+                    continue
+                result['context']['candidates'] += convert2candidates(
+                    async_candidates)
+
+            if not result['context']['candidates']:
+                continue
 
             context = copy.deepcopy(result['context'])
 
@@ -205,11 +212,25 @@ class Deoplete(logger.LoggingMixin):
             if hasattr(source, 'on_post_filter'):
                 context['candidates'] = source.on_post_filter(context)
 
+            if context['candidates']:
+                merged_results.append([context['candidates'], result])
+
+        is_async = len([x for x in results if x['context']['is_async']]) > 0
+
+        if not merged_results:
+            return (is_async, -1, [])
+
+        complete_position = min([x[1]['context']['complete_position']
+                                 for x in merged_results])
+
+        for [candidates, result] in merged_results:
+            context = result['context']
+            source = result['source']
             prefix = context['input'][
                 complete_position:context['complete_position']]
 
             mark = source.mark + ' '
-            for candidate in context['candidates']:
+            for candidate in candidates:
                 # Add prefix
                 candidate['word'] = prefix + candidate['word']
 
@@ -221,15 +242,14 @@ class Deoplete(logger.LoggingMixin):
                 if source.filetypes:
                     candidate['dup'] = 1
 
-            candidates += context['candidates']
+            all_candidates += candidates
 
         # self.debug(candidates)
         if context['vars']['deoplete#max_list'] > 0:
-            candidates = candidates[: context['vars']['deoplete#max_list']]
+            all_candidates = all_candidates[
+                : context['vars']['deoplete#max_list']]
 
-        is_async = len([x for x in results if x['context']['is_async']]) > 0
-
-        return (is_async, complete_position, candidates)
+        return (is_async, complete_position, all_candidates)
 
     def itersource(self, context):
         sources = sorted(self._sources.items(),
@@ -294,12 +314,11 @@ class Deoplete(logger.LoggingMixin):
 
     def load_sources(self, context):
         # Load sources from runtimepath
-        loaded_paths = [source.path for source in self._sources.values()]
         for path in find_rplugins(context, 'source'):
-            if path in self._ignored_sources:
+            if path in self._ignored_sources or path in self._loaded_paths:
                 continue
-            if path in loaded_paths:
-                continue
+            self._loaded_paths.add(path)
+
             name = os.path.splitext(os.path.basename(path))[0]
 
             source = None
@@ -332,12 +351,11 @@ class Deoplete(logger.LoggingMixin):
 
     def load_filters(self, context):
         # Load filters from runtimepath
-        loaded_paths = [filter.path for filter in self._filters.values()]
         for path in find_rplugins(context, 'filter'):
-            if path in self._ignored_filters:
+            if path in self._ignored_filters or path in self._loaded_paths:
                 continue
-            if path in loaded_paths:
-                continue
+            self._loaded_paths.add(path)
+
             name = os.path.splitext(os.path.basename(path))[0]
 
             f = None

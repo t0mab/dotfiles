@@ -12,8 +12,8 @@ function! deoplete#handler#_init() abort
     autocmd InsertCharPre * call s:on_insert_char_pre()
 
     autocmd TextChangedI * call s:completion_begin('TextChangedI')
-    autocmd InsertEnter * call s:completion_begin('InsertEnter')
-    autocmd InsertEnter * call s:timer_begin()
+    autocmd InsertEnter *
+          \ call s:completion_begin('InsertEnter') | call s:timer_begin()
     autocmd InsertLeave * call s:timer_end()
   augroup END
 
@@ -24,18 +24,14 @@ function! deoplete#handler#_init() abort
   call s:on_event('Init')
 endfunction
 
-function! s:completion_check(timer) abort
-  if mode() ==# 'i'
-    call s:do_complete()
-  endif
-endfunction
-function! s:do_complete() abort
+function! s:do_complete(timer) abort
   let context = g:deoplete#_context
   if !has_key(context, 'candidates')
         \ || empty(context.candidates)
         \ || (context.event !=# 'Manual'
         \     && s:prev_completion.complete_position == getpos('.')
         \     && s:prev_completion.candidates ==# context.candidates)
+        \ || (context.event !=# 'InsertEnter' && mode() !=# 'i')
     return
   endif
 
@@ -79,7 +75,7 @@ function! s:timer_begin() abort
 
   let delay = max([50, g:deoplete#auto_complete_delay])
   let s:completion_timer = timer_start(delay,
-            \ function('s:completion_check'), {'repeat': -1})
+            \ function('s:do_complete'), {'repeat': -1})
 
   let s:prev_completion = { 'complete_position': [], 'candidates': [] }
 endfunction
@@ -94,7 +90,7 @@ endfunction
 
 function! deoplete#handler#_async_timer_start() abort
   if exists('s:async_timer')
-    return
+    call deoplete#handler#_async_timer_stop()
   endif
 
   let s:async_timer = { 'event': 'Async', 'changedtick': b:changedtick }
@@ -114,9 +110,7 @@ function! s:completion_async(timer) abort
     return
   endif
 
-  if b:changedtick == s:async_timer.changedtick
-    call s:completion_begin(s:async_timer.event)
-  endif
+  call s:completion_begin(s:async_timer.event)
 endfunction
 
 function! s:completion_begin(event) abort
@@ -156,18 +150,26 @@ function! s:is_skip(event, context) abort
         \   'g:deoplete#disable_auto_complete')
 
   if &paste
-        \ || mode() !=# 'i'
         \ || (a:event !=# 'Manual' && disable_auto_complete)
         \ || (&l:completefunc !=# '' && &l:buftype =~# 'nofile')
+        \ || (a:event !=# 'InsertEnter' && mode() !=# 'i')
     return 1
   endif
 
   return 0
 endfunction
 function! s:is_skip_text(event) abort
+  let context = g:deoplete#_context
   let input = deoplete#util#get_input(a:event)
-  let displaywidth = strdisplaywidth(input) + 1
 
+  if has_key(context, 'input')
+        \ && a:event !=# 'Manual'
+        \ && a:event !=# 'Async'
+        \ && input ==# context['input']
+    return 1
+  endif
+
+  let displaywidth = strdisplaywidth(input) + 1
   if &l:formatoptions =~# '[tca]' && &l:textwidth > 0
         \     && displaywidth >= &l:textwidth
     if &l:formatoptions =~# '[ta]'
