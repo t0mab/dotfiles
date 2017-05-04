@@ -11,6 +11,7 @@ function pull-worktree {
 cd ~
 
 pull-worktree .config/nvim/bundle/airline https://github.com/bling/vim-airline.git
+pull-worktree .config/nvim/bundle/alchemist https://github.com/slashmili/alchemist.vim.git
 pull-worktree .config/nvim/bundle/ansible https://github.com/pearofducks/ansible-vim.git
 pull-worktree .config/nvim/bundle/ctrlp https://github.com/ctrlpvim/ctrlp.vim.git
 pull-worktree .config/nvim/bundle/deoplete https://github.com/Shougo/deoplete.nvim.git
