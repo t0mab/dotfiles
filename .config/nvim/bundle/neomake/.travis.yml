@@ -12,29 +12,31 @@ branches:
 
 env:
   global:
-    - NEOMAKE_DOCKER_IMAGE: neomake/vims-for-tests:2@sha256:46ce366ce5b2dcb9c4d81097f2858155e2d3b30b9045278652adeb9b6f93b93c
+    - NEOMAKE_DOCKER_IMAGE: neomake/vims-for-tests:4@sha256:8ca565fa0c8c0c3ae40b3f705c05a084e260b07022559fc56636c3675321c38b
   matrix:
     - ENV=vimlint
+    - ENV=docker_test MAKE_ARGS=DOCKER_VIM=neovim-v0.2.0
     - ENV=docker_test MAKE_ARGS=DOCKER_VIM=neovim-v0.1.7
     - ENV=docker_test MAKE_ARGS=DOCKER_VIM=vim-master
     - ENV=docker_test MAKE_ARGS=DOCKER_VIM=vim8069
     - ENV=docker_test MAKE_ARGS=DOCKER_VIM=vim74-xenial
     - ENV=docker_test MAKE_ARGS=DOCKER_VIM=vim73
-    - ENV=testnvim
+    # Same as neovim-v0.2.0 and the bot-ci script is broken currently, so skip it for now.
+    # - ENV=testnvim
     - ENV=testvim
     - ENV=check
     - ENV=vint
-    - ENV=docker_vimhelplint
 
 matrix:
   fast_finish: true
 
 install:
   - |
-    if [ "$ENV" = "docker_vimhelplint" ]; then
+    if [ "$ENV" = "check" ]; then
       echo "Looking for changed files in $TRAVIS_COMMIT_RANGE."
-      if git diff --exit-code --quiet "$TRAVIS_COMMIT_RANGE" doc/neomake.txt; then
-        SKIP_BUILD_REASON="docker_vimhelplint: No changed doc files."
+      if ! git diff --exit-code --quiet "$TRAVIS_COMMIT_RANGE" doc/neomake.txt; then
+        MAKE_ARGS="$MAKE_ARGS docker_vimhelplint"
+        echo 'doc/neomake.txt changed, running docker_vimhelplint'
       fi
     elif [ "$ENV" = "testnvim" ]; then
       eval "$(curl -Ss https://raw.githubusercontent.com/neovim/bot-ci/master/scripts/travis-setup.sh) nightly-x64"
@@ -48,16 +50,13 @@ install:
 
 script:
   - |
-    if [ -n "$SKIP_BUILD_REASON" ]; then
-      echo "Skipping job: $SKIP_BUILD_REASON"
-    else
-      if [[ "$ENV" = "testvim" ]]; then
-        vim --version
-        if ! vim --version 2>&1 | grep -F 'VIM - Vi IMproved 7.4' -A1 | grep -q '^Included patches: 1-52'; then
-          echo 'Unexpected Vim version (expected 7.4.52)' >&2
-          exit 1
-        fi
+    if [[ "$ENV" = "testvim" ]]; then
+      vim --version
+      if ! vim --version 2>&1 | grep -F 'VIM - Vi IMproved 7.4' -A1 | grep -q '^Included patches: 1-52'; then
+        echo 'Unexpected Vim version (expected 7.4.52)' >&2
+        exit 1
       fi
-      umask 022
-      make $ENV $MAKE_ARGS
     fi
+    umask 022
+    echo "===== running: make $ENV $MAKE_ARGS ====="
+    make $ENV $MAKE_ARGS

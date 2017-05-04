@@ -4,24 +4,30 @@ Execute (neomake#utils#LogMessage writes to logfile always):
   Save g:neomake_verbose, g:neomake_logfile
   let neomake_verbose = 0
   let g:neomake_logfile = tempname()
-  call neomake#utils#LogMessage(1, 'msg0')
-  call neomake#utils#LogMessage(1, 'msg1')
+  call neomake#utils#LogMessage(1, 'msg0.')
+  call neomake#utils#LogMessage(1, 'msg1.')
   if has('patch-7.4.503')
     let logfile_msg = readfile(g:neomake_logfile)[1]
   else
     let logfile_msg = readfile(g:neomake_logfile)[0]
   endif
-  Assert logfile_msg =~# '\v\d\d:\d\d:\d\d \[W      \] msg1$', 'unexpected msg: '.logfile_msg
+  Assert logfile_msg =~# '\v\d\d:\d\d:\d\d \[W      \] msg1.$', 'unexpected msg: '.logfile_msg
 
   sleep 10m
-  call neomake#utils#LogMessage(1, 'msg2')
+  call neomake#utils#LogMessage(1, 'msg2.')
   let logfile_msg = readfile(g:neomake_logfile)[-1]
-  Assert logfile_msg =~# '\v\d\d:\d\d:\d\d \[W \+0.0\d\] msg2$', 'Message does not match: '.logfile_msg
+  Assert logfile_msg =~# '\v\d\d:\d\d:\d\d \[W \+0.0\d\] msg2.$', 'Message does not match: '.logfile_msg
 
-Execute (NeomakeTestsEnsureExe creates exe):
+Execute (NeomakeTestsCreateExe creates exe):
   Assert !executable('boobar'), 'boobar is not executable'
-  call g:NeomakeTestsEnsureExe('boobar')
+  call g:NeomakeTestsCreateExe('boobar', [])
   Assert executable('boobar'), 'boobar is now executable'
+
+Execute (NeomakeTestsCreateExe overrides existing exe):
+  let true = system('which true')
+  Assert executable('true'), 'true is now executable'
+  call g:NeomakeTestsCreateExe('true', [])
+  AssertNotEqual system('which true'), true
 
 Execute (neomake#utils#CompressWhitespace):
   function! F(text)
@@ -423,7 +429,7 @@ Execute (neomake#utils#get_config_fts):
 Execute (neomake#utils#fnamemodify handles fugitive buffer):
   NeomakeTestsLoadPlugin 'fugitive'
   new
-  edit autoload/neomake.vim
+  edit autoload/neomake/debug.vim
   let bufname = bufname('%')
   Gedit
   AssertNotEqual bufname, bufname('%')
@@ -473,3 +479,22 @@ Execute (neomake#utils#FindGlobFile):
   AssertEqual neomake#utils#FindGlobFile('common-file'), file_in_tempdir
   AssertEqual neomake#utils#FindGlobFile('common-file', subdir), file_in_subdir
   bwipe
+
+Execute (neomake#utils#shellescape):
+  AssertEqual neomake#utils#shellescape('foo'), 'foo'
+  AssertEqual neomake#utils#shellescape('foo-bar'), 'foo-bar'
+  AssertEqual neomake#utils#shellescape('foo_bar'), 'foo_bar'
+  AssertEqual neomake#utils#shellescape('foo bar'), "'foo bar'"
+  AssertEqual neomake#utils#shellescape('foo bar "baz"'), "'foo bar \"baz\"'"
+
+  Save &shell
+  let &shell = 'cmd.exe'
+  AssertEqual neomake#utils#shellescape('foo'), 'foo'
+  AssertEqual neomake#utils#shellescape('foo-bar'), 'foo-bar'
+  AssertEqual neomake#utils#shellescape('foo_bar'), 'foo_bar'
+  AssertEqual neomake#utils#shellescape('foo bar'), '"foo bar"'
+  AssertEqual neomake#utils#shellescape('foo bar "baz"'), '"foo bar ""baz"""'
+
+  AssertEqual neomake#utils#shellescape('"foo"'), '"""foo"""'
+  AssertEqual neomake#utils#shellescape('"foo bar"'), '"""foo bar"""'
+  AssertEqual neomake#utils#shellescape('-c "foo bar"'), '"-c ""foo bar"""'
