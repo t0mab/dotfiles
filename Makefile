@@ -149,7 +149,7 @@ vimhelplint: | build/vimhelplint
 
 # Run tests in dockerized Vims.
 DOCKER_REPO:=neomake/vims-for-tests
-DOCKER_TAG:=3
+DOCKER_TAG:=4
 DOCKER_IMAGE:=$(if $(NEOMAKE_DOCKER_IMAGE),$(NEOMAKE_DOCKER_IMAGE),$(DOCKER_REPO):$(DOCKER_TAG))
 DOCKER_STREAMS:=-ti
 DOCKER=docker run $(DOCKER_STREAMS) --rm \
@@ -159,7 +159,7 @@ docker_image:
 docker_push:
 	docker push $(DOCKER_REPO):$(DOCKER_TAG)
 
-DOCKER_VIMS:=vim73 vim74-trusty vim74-xenial vim8069 vim-master neovim-v0.1.7 neovim-master
+DOCKER_VIMS:=vim73 vim74-trusty vim74-xenial vim8069 vim-master neovim-v0.1.7 neovim-v0.2.0 neovim-master
 _DOCKER_VIM_TARGETS:=$(addprefix docker_test-,$(DOCKER_VIMS))
 
 docker_test_all: $(_DOCKER_VIM_TARGETS)
@@ -201,7 +201,7 @@ check:
 	  (( ret+=2 )); \
 	fi; \
 	echo '== Checking for absent :Log calls'; \
-	if grep '^\s*Log\b' $(shell git ls-files tests/*.vader $(LINT_ARGS)); then \
+	if grep --line-number --color '^\s*Log\b' $(shell git ls-files tests/*.vader $(LINT_ARGS)); then \
 	  echo "Found Log commands."; \
 	  (( ret+=4 )); \
 	fi; \
@@ -213,6 +213,15 @@ check:
 	  echo "DOCKER_VIMS: $$docker_vims"; \
 	  echo "in image:    $$vims"; \
 	  (( ret+=8 )); \
+	fi; \
+	echo '== Checking tests'; \
+	output="$$(grep --line-number --color AssertThrows -A1 tests/*.vader \
+		| grep -E '^[^[:space:]]+- ' \
+		| grep -v g:vader_exception | sed -e s/-/:/ -e s/-//)"; \
+	if [[ -n "$$output" ]]; then \
+		echo 'AssertThrows used without checking g:vader_exception:' >&2; \
+		echo "$$output" >&2; \
+	  (( ret+=16 )); \
 	fi; \
 	echo '== Running custom checks'; \
 	contrib/vim-checks $(LINT_ARGS) || (( ret+= 16 )); \
