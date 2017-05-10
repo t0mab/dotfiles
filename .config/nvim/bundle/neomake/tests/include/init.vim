@@ -306,7 +306,7 @@ let g:sleep_efm_maker = {
     \ 'errorformat': '%f:%l:%t:%m',
     \ 'append_file': 0,
     \ }
-let g:sleep_maker = NeomakeTestsCommandMaker('sleep-maker', 'sleep .01; echo slept')
+let g:sleep_maker = NeomakeTestsCommandMaker('sleep-maker', 'sleep .05; echo slept')
 let g:error_maker = NeomakeTestsCommandMaker('error-maker', 'echo error; false')
 let g:success_maker = NeomakeTestsCommandMaker('success-maker', 'echo success')
 let g:doesnotexist_maker = {'exe': 'doesnotexist'}
@@ -399,6 +399,15 @@ function! s:After()
       unlet val  " for Vim without patch-7.4.1546
     endfor
   endfor
+
+  let new_buffers = filter(range(1, bufnr('$')), 'bufexists(v:val) && index(g:neomake_test_buffers_before, v:val) == -1')
+  if !empty(new_buffers)
+    call add(errors, 'Unexpected/not wiped buffers: '.join(new_buffers, ', '))
+    Log neomake#utils#redir('ls!')
+    for b in new_buffers
+      exe 'bwipe!' b
+    endfor
+  endif
 
   for k in keys(make_info)
     unlet make_info[k]

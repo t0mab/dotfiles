@@ -83,7 +83,7 @@ function! neomake#utils#LogMessage(level, msg, ...) abort
                     \ ? filter(copy(context), "index(['id', 'make_id', 'bufnr'], v:key) != -1")
                     \ : {}
         call add(g:neomake_test_messages, [a:level, a:msg, context])
-        if index(['.', '!', ')'], a:msg[-1:-1]) == -1
+        if index(['.', '!', ')', ']'], a:msg[-1:-1]) == -1
             Assert 0, 'Log msg does not end with punctuation: "'.a:msg.'".'
         endif
     elseif verbosity >= a:level
@@ -168,9 +168,9 @@ function! neomake#utils#WideMessage(msg) abort " {{{2
     let old_ruler = &ruler
     let old_showcmd = &showcmd
 
-    "This is here because it is possible for some error messages to
-    "begin with \n which will cause a "press enter" prompt.
-    let msg = substitute(a:msg, "\n", '', 'g')
+    " Replace newlines (typically in the msg) with a single space.  This
+    " might happen with writegood.
+    let msg = substitute(a:msg, '\r\?\n', ' ', 'g')
 
     "convert tabs to spaces so that the tabs count towards the window
     "width as the proper amount of characters
@@ -233,7 +233,7 @@ function! s:command_maker.fn(jobinfo) dict abort
     let command = self.__command
     let argv = split(&shell) + split(&shellcmdflag)
 
-    if a:jobinfo.file_mode && get(self, 'append_file', 1)
+    if get(self, 'append_file', a:jobinfo.file_mode)
         let fname = self._get_fname_for_buffer(a:jobinfo)
         let command .= ' '.fnamemodify(fname, ':p')
         let self.append_file = 0
@@ -554,17 +554,6 @@ function! neomake#utils#write_tempfile(bufnr, temp_file) abort
         endif
     endif
     call writefile(buflines, a:temp_file, 'b')
-endfunction
-
-function! neomake#utils#get_or_create_buffer(filename) abort
-    " TODO: Remove usage of this once not supplying a bufnr to process_output
-    " works if the filename is not opened in a buffer yet.
-    let nr = bufnr(a:filename)
-    if nr == -1
-        execute 'badd ' . substitute(a:filename, ' ', '\\ ', 'g')
-        let nr = bufnr(a:filename)
-    endif
-    return nr
 endfunction
 
 " Wrapper around fnamemodify that handles special buffers (e.g. fugitive).
