@@ -32,6 +32,7 @@ set showmatch " Highlight matching brackets
 set so=10 " Set 10 lines to the cursor when moving vertically
 set splitbelow " Split below by default
 set splitright " Split on the right side by default
+set title
 syntax on
 
 " Move around splits
@@ -90,6 +91,7 @@ autocmd BufWritePost *.adoc !asciidoctor -a source-highlighter=coderay -r asciid
 set completeopt-=preview
 set ttimeoutlen=50
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnamecollapse = 0
 let g:airline#extensions#virtualenv#enabled = 1
 let g:airline_powerline_fonts=1
 
