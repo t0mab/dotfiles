@@ -22,6 +22,7 @@ filetype plugin on
 
 " Interface
 set cursorline
+set hidden
 set mouse=
 set nowrap
 set number
