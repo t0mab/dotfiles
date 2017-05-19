@@ -195,21 +195,21 @@ You can define two optional properties on a maker object to process its
 output: `mapexpr` is applied to the maker's output before any processing, and
 `postprocess` is applied to each of the quickfix or location list entries.
 
-The `mapexpr` property will be passed directly into |map()| as the `expr`
-argument like so: >
+The `mapexpr` property gets passed directly into |map()| as the `expr`
+argument: >
     call map(lines, maker.mapexpr)
 <where `lines` contains the maker output.
 
 The following variables are available in the `mapexpr`:
 
  - `neomake_output_source`: either "stderr" or "stdout", depending on
-   where the output is coming from.  This will be "stdout" always for
+   where the output is coming from. This will be "stdout" always for
    non-async Vim.
  - `neomake_bufname` and `neomake_bufdir`: the buffer's name (|bufname()|) and
    directory, respectively.
 
-The `mapexpr` itself is being evaluated in the context of the affected buffer
-in file mode, and in the context of the buffer that is current when the maker
+The `mapexpr` itself gets evaluated in the context of the affected buffer in
+file mode, and in the context of the buffer that is current when the maker
 finished otherwise.
 
 The following `mapexpr` could be used to prefix the output type: >
@@ -619,16 +619,16 @@ get triggered, e.g. |WinEnter| for the qf window that gets opened/created): >
     augroup END
 <
                                                              *NeomakeFinished*
-The NeomakeFinished autocommand gets triggered after all jobs for a call to
-|:Neomake| etc have finished.
+The NeomakeFinished user autocommand gets triggered after all jobs of a build
+have finished.
 You can use this to e.g. close an empty location or quickfix window.
 Context:
  - `g:neomake_hook_context.jobinfo`: see |neomake-object-jobinfo|.
 
                                                         *NeomakeCountsChanged*
-The NeomakeCountsChanged autocommand gets triggered after counts for the
-location/quickfix list have changed, i.e. the list got reset or new errors
-have been added.
+The NeomakeCountsChanged user autocommand gets triggered after counts for the
+location/quickfix list have changed, either because the list got reset or new
+entries got added.
 You can use this to e.g. update the statusline.
 Context:
  - `g:neomake_hook_context.reset`: 1 if the list got reset, 0 otherwise.
