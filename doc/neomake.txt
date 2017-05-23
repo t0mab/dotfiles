@@ -143,12 +143,10 @@ name: >
     " working directory (runs "lint --option x"):
     :Neomake! c_lint
 <
-                                                        *neomake-{{makepath}}*
-                                                        *neomake-!!makepath!!*
+                                                           *neomake-args-file*
 When running a maker on a file with |:Neomake|, you may want to control where
 in the `args` list the file's path will appear. To do this, insert '%:p' in
-the `args` list. {{makepath}} and !!makepath!! are no longer used for this,
-but will be retained in the docs for discoverability: >
+the `args` list:  >
     let g:neomake_c_lint_maker = {
         \ 'exe': 'lint',
         \ 'args': ['%:p', '--option', 'x'],
@@ -311,6 +309,11 @@ but disable it for some maker only: >
         let g:neomake_tempfile_enabled = 1
         let g:neomake_<ft>_<name>_tempfile_enabled = 0
 <
+                                                *neomake-makers-output_stream*
+Default: "both" ("stdout", "stderr", "both")
+The `output_stream` setting specifies what stream gets used for output from
+the maker.
+Any output on a stream not configured here gets reported as unexpected output.
 
 Global Options                                               *neomake-options*
 
@@ -511,16 +514,15 @@ functions useful.
 *neomake#Make* (options)
 This is the main entrypoint to Neomake, used by the |:Neomake| (and
 |:Neomake!|) command.
-It will run all the given makers, in order.
 
 `options` is a dictionary, and might include:
 - `file_mode`: 1 if the makers should get run against a single file (typically
   used for linting). Default: 1.
 - `enabled_makers`: the makers to use (list). Default: uses configuration.
 
-Returns: a list of job ids.
+Returns: a list of jobinfo objects (|neomake-object-jobinfo|).
 
-Deprecated~
+Deprecated interface (with different return value)~
 The old and deprecated API will accept the following arguments instead of the
 `options` dict: filemode, enabled_makers[, exit_callback].
 The `exit_callback` (which should get replaced by using the
@@ -529,6 +531,7 @@ as its sole argument: >
     { 'status': <exit status of maker>,
     \ 'name': <maker name>,
     \ 'has_next': <1 if another maker follows, 0 otherwise> }
+Returns: a list of job ids.
 
 *neomake#Sh* (command[, callback])
 This function is called by the |:NeomakeSh| command. It runs the specified
@@ -675,7 +678,6 @@ using this option: >
 
     let g:quickfixsigns_protect_sign_rx = '^neomake_'
 <
-
 6.2 How to configure the makers to be used?~
 
 See |g:neomake_<ft>_enabled_makers| (press `<C-]>` on the link to go there).
