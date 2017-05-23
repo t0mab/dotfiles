@@ -18,6 +18,7 @@ Include (JSON): json.vader
 Include (Lists): lists.vader
 Include (Maker args): args.vader
 Include (Makers): makers.vader
+Include (Maker errors): maker_errors.vader
 Include (Mapexpr): mapexpr.vader
 Include (Postprocess): postprocess.vader
 Include (Processing): processing.vader
@@ -139,20 +140,37 @@ Execute (neomake#Make in project mode with no filetype and no makers):
   Save makeprg
   let &makeprg = 'sh -c "sleep 0.1"'
   let job_ids = neomake#Make(0, [])
+  AssertEqual len(job_ids), 1
+  let jobs = neomake#GetJobs()
   if neomake#has_async_support()
-    AssertEqual len(job_ids), 1
-    let jobs = neomake#GetJobs()
     let jobs_by_ids = neomake#GetJobs(job_ids)
     let job_by_id = neomake#GetJob(job_ids[0])
     AssertEqual len(jobs), 1
     AssertEqual jobs, [job_by_id]
     AssertEqual jobs, jobs_by_ids
     AssertEqual job_by_id.maker.name, 'makeprg'
+    NeomakeTestsWaitForFinishedJobs
   else
-    AssertEqual len(job_ids), 0
+    AssertEqual len(jobs), 0
   endif
 
-  NeomakeTestsWaitForFinishedJobs
+  " New interface to neomake#Make (dict).
+  let jobinfos = neomake#Make({'file_mode': 0})
+  AssertEqual len(jobinfos), 1
+  let jobs = neomake#GetJobs()
+  if neomake#has_async_support()
+    let job_ids = map(copy(jobinfos), 'v:val.id')
+    let jobs_by_ids = neomake#GetJobs(job_ids)
+    let job_by_id = neomake#GetJob(job_ids[0])
+    AssertEqual len(jobs), 1
+    AssertEqual jobs, [job_by_id]
+    AssertEqual jobs, jobs_by_ids
+    AssertEqual job_by_id.maker.name, 'makeprg'
+    AssertEqual job_by_id, jobinfos[0]
+    NeomakeTestsWaitForFinishedJobs
+  else
+    AssertEqual len(jobs), 0
+  endif
 
 Execute (neomake#GetMaker from g:neomake_foo_maker):
   let g:neomake_custom_maker = {
@@ -185,12 +203,8 @@ Execute (Reports exit status: 7):
 
 Execute (neomake#Sh: job_id):
   let job_id = neomake#Sh('true')
-  if neomake#has_async_support()
-    Assert job_id >= 0, 'Correct job_id for async.'
-    NeomakeTestsWaitForFinishedJobs
-  else
-    Assert job_id == -1, 'Correct job_id for sync.'
-  endif
+  Assert job_id > 0, 'Correct job_id: '.job_id
+  NeomakeTestsWaitForFinishedJobs
 
 Execute (neomake#CompleteJobs):
   if neomake#has_async_support()

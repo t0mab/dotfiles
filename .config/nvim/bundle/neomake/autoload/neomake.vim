@@ -4,6 +4,7 @@ scriptencoding utf-8
 let s:make_id = 0
 let s:job_id = 1
 let s:jobs = {}
+let s:map_job_ids = {}
 " A map of make_id to options, e.g. cwd when jobs where started.
 let s:make_info = {}
 let s:jobs_by_maker = {}
@@ -71,16 +72,22 @@ function! neomake#GetMakeOptions(...) abort
 endfunction
 
 function! neomake#ListJobs() abort
-    call neomake#utils#DebugMessage('call neomake#ListJobs()')
-    for jobinfo in values(s:jobs)
-        echom jobinfo.id.' '.jobinfo.name.' '.jobinfo.maker.name
+    let jobs = neomake#GetJobs()
+    if empty(jobs)
+        return
+    endif
+    echom 'make_id | job_id | name/maker'
+    for jobinfo in jobs
+        let desc = has_key(jobinfo, 'name')
+                    \ ? jobinfo.name. ' ('.jobinfo.maker.name.')'
+                    \ : jobinfo.maker.name
+        echom printf('%7d | %6d | %s', jobinfo.make_id, jobinfo.id, desc)
     endfor
 endfunction
 
 function! neomake#CancelJob(job_id, ...) abort
+    let job_id = type(a:job_id) == type({}) ? a:job_id.id : +a:job_id
     let remove_always = a:0 ? a:1 : 0
-    " Handle '1: foo' format from neomake#CompleteJobs.
-    let job_id = a:job_id + 0
     if !has_key(s:jobs, job_id)
         call neomake#utils#ErrorMessage('CancelJob: job not found: '.job_id.'.')
         return 0
@@ -95,7 +102,7 @@ function! neomake#CancelJob(job_id, ...) abort
         call neomake#utils#DebugMessage('Stopping job.', jobinfo)
         if has('nvim')
             try
-                call jobstop(job_id)
+                call jobstop(jobinfo.nvim_job)
                 let ret = 1
             catch /^Vim\%((\a\+)\)\=:\(E474\|E900\):/
                 call neomake#utils#LoudMessage(printf(
@@ -157,27 +164,31 @@ function! s:MakeJob(make_id, options) abort
     let s:job_id += 1
 
     " Optional:
-    "  - serialize (default: 0)
+    "  - serialize (default: 0 for async (and get_list_entries),
+    "                        1 for non-async)
     "  - serialize_abort_on_error (default: 0)
     "  - exit_callback (string/function, default: 0)
     let jobinfo = extend({
+        \ 'id': job_id,
         \ 'name': 'neomake_'.job_id,
         \ 'maker': a:options.maker,
         \ 'bufnr': a:options.bufnr,
         \ 'file_mode': a:options.file_mode,
         \ 'ft': a:options.ft,
+        \ 'output_stream': get(a:options, 'output_stream', get(a:options.maker, 'output_stream', 'both')),
         \ }, a:options)
 
     let maker = jobinfo.maker
 
     if has_key(maker, 'get_list_entries')
+        let jobinfo.serialize = 0
         call neomake#utils#LoudMessage(printf(
                     \ '%s: getting entries via get_list_entries.',
                     \ maker.name), jobinfo)
         let entries = maker.get_list_entries(jobinfo)
         call s:ProcessEntries(jobinfo, entries)
         call s:CleanJobinfo(jobinfo)
-        return
+        return jobinfo
     endif
 
     let [cd_error, cwd, cd_back_cmd] = s:cd_to_jobs_cwd(jobinfo)
@@ -232,7 +243,7 @@ function! s:MakeJob(make_id, options) abort
                 let opts = {
                     \ 'on_stdout': function('s:nvim_output_handler'),
                     \ 'on_stderr': function('s:nvim_output_handler'),
-                    \ 'on_exit': function('s:exit_handler')
+                    \ 'on_exit': function('s:nvim_exit_handler')
                     \ }
                 try
                     let job = jobstart(argv, opts)
@@ -248,7 +259,8 @@ function! s:MakeJob(make_id, options) abort
                         let error = printf('Failed to start Neovim job: %s: %s.',
                                     \ 'Executable not found', string(argv))
                     else
-                        let jobinfo.id = job
+                        let s:map_job_ids[job] = jobinfo.id
+                        let jobinfo.nvim_job = job
                         let s:jobs[jobinfo.id] = jobinfo
 
                         if get(jobinfo, 'uses_stdin', 0)
@@ -268,13 +280,14 @@ function! s:MakeJob(make_id, options) abort
                 try
                     let job = job_start(argv, opts)
                     " Get this as early as possible!
-                    let jobinfo.id = ch_info(job)['id']
+                    let channel_id = ch_info(job)['id']
                 catch
                     let error = printf('Failed to start Vim job: %s: %s',
                                 \ argv, v:exception)
                 endtry
                 if empty(error)
                     let jobinfo.vim_job = job
+                    let s:map_job_ids[channel_id] = jobinfo.id
                     let s:jobs[jobinfo.id] = jobinfo
                     call neomake#utils#DebugMessage(printf('Vim job: %s.',
                                 \ string(job_info(job))), jobinfo)
@@ -295,12 +308,31 @@ function! s:MakeJob(make_id, options) abort
                 return s:handle_next_maker(jobinfo)
             endif
         else
+            " vim-sync.
             let jobinfo.id = job_id
             let s:jobs[job_id] = jobinfo
             let s:make_info[a:make_id].active_jobs += [jobinfo]
-            call s:output_handler(job_id, split(system(argv), '\r\?\n', 1), 'stdout')
+
+            " Use a temporary file to capture stderr.
+            let stderr_file = tempname()
+            let argv .= ' 2>'.stderr_file
+
+            if get(jobinfo, 'uses_stdin', 0)
+                let output = system(argv, join(s:make_info[a:make_id].buffer_lines, "\n"))
+            else
+                let output = system(argv)
+            endif
+
+            call s:output_handler(job_id, split(output, '\r\?\n', 1), 'stdout')
+            let stderr_output = readfile(stderr_file)
+            if !empty(stderr_output)
+                call map(stderr_output, "substitute(v:val, '\\r$', '', '')")
+                call s:output_handler(job_id, stderr_output, 'stderr')
+            endif
+            call delete(stderr_file)
+
             call s:exit_handler(job_id, v:shell_error, 'exit')
-            return {}
+            return jobinfo
         endif
     finally
         if !empty(cd_back_cmd)
@@ -405,27 +437,18 @@ function! s:command_maker_base._get_fname_for_buffer(jobinfo) abort
     if !empty(temp_file)
         let bufname = temp_file
         let uses_stdin = get(a:jobinfo, 'uses_stdin', 0)
-        if uses_stdin && s:async
+        if uses_stdin
             if !has_key(make_info, 'buffer_lines')
                 let make_info.buffer_lines = getbufline(bufnr, 1, '$')
             endif
-        else
-            if uses_stdin
-                " Use a real temporary file to pass into system().
-                let temp_file = tempname()
-                call neomake#utils#DebugMessage(printf(
-                            \ 'Creating tempfile for non-async stdin: "%s".', temp_file),
-                            \ a:jobinfo)
-            endif
-            if !has_key(make_info, 'tempfiles')
-                let make_info.tempfiles = [temp_file]
-                let make_info.created_dirs = s:create_dirs_for_file(temp_file)
-                call neomake#utils#write_tempfile(bufnr, temp_file)
-            elseif temp_file !=# make_info.tempfiles[0]
-                call extend(make_info.created_dirs, s:create_dirs_for_file(temp_file))
-                call writefile(readfile(make_info.tempfiles[0], 'b'), temp_file, 'b')
-                call add(make_info.tempfiles, temp_file)
-            endif
+        elseif !has_key(make_info, 'tempfiles')
+            let make_info.tempfiles = [temp_file]
+            let make_info.created_dirs = s:create_dirs_for_file(temp_file)
+            call neomake#utils#write_tempfile(bufnr, temp_file)
+        elseif temp_file !=# make_info.tempfiles[0]
+            call extend(make_info.created_dirs, s:create_dirs_for_file(temp_file))
+            call writefile(readfile(make_info.tempfiles[0], 'b'), temp_file, 'b')
+            call add(make_info.tempfiles, temp_file)
         endif
         let a:jobinfo.tempfile = temp_file
     endif
@@ -524,12 +547,6 @@ function! s:command_maker_base._get_argv(jobinfo) abort dict
         else
             let argv = exe.' '.args
         endif
-        if get(a:jobinfo, 'uses_stdin', 0)
-            let tempfile = get(a:jobinfo, 'tempfile')
-            if !empty(tempfile)
-                let argv .= ' < '.tempfile
-            endif
-        endif
     endif
     return argv
 endfunction
@@ -604,7 +621,7 @@ function! neomake#GetMaker(name_or_maker, ...) abort
             \ 'errorformat': &errorformat,
             \ })
         for [key, default] in items(defaults)
-            let maker[key] = neomake#utils#GetSetting(key, maker, default, ft, bufnr)
+            let maker[key] = neomake#utils#GetSetting(key, maker, default, ft, bufnr, 1)
             unlet default  " for Vim without patch-7.4.1546
         endfor
     endif
@@ -908,18 +925,14 @@ function! s:Make(options) abort
 
     let w:neomake_make_ids = add(get(w:, 'neomake_make_ids', []), make_id)
 
-    " TODO: return jobinfos?!
-    let job_ids = []
+    let jobinfos = []
     while 1
         let jobinfo = s:handle_next_maker({})
         if empty(jobinfo)
             break
         endif
-        let job_id = jobinfo.id
-        if job_id >= 0
-            call add(job_ids, job_id)
-        endif
-        if get(jobinfo, 'serialize', 0)
+        call add(jobinfos, jobinfo)
+        if jobinfo.serialize
             break
         endif
     endwhile
@@ -928,7 +941,7 @@ function! s:Make(options) abort
         " Might have been removed through s:CleanJobinfo already.
         call s:clean_make_info(make_id)
     endif
-    return job_ids
+    return jobinfos
 endfunction
 
 function! s:AddExprCallback(jobinfo, prev_index) abort
@@ -969,7 +982,7 @@ function! s:AddExprCallback(jobinfo, prev_index) abort
                 endfor
             endif
         endif
-        if has_key(entry, 'bufnr') && entry.bufnr != a:jobinfo.bufnr
+        if entry.bufnr && entry.bufnr != a:jobinfo.bufnr
             call neomake#utils#DebugMessage(printf('WARN: entry.bufnr (%d) is different from jobinfo.bufnr (%d) (current buffer %d): %s.', entry.bufnr, a:jobinfo.bufnr, bufnr('%'), string(entry)))
         endif
         if !empty(s:postprocessors)
@@ -1054,6 +1067,7 @@ function! s:CleanJobinfo(jobinfo) abort
 
     if has_key(s:jobs, get(a:jobinfo, 'id', -1))
         call remove(s:jobs, a:jobinfo.id)
+        call filter(s:map_job_ids, 'v:val != a:jobinfo.id')
 
         if has_key(s:pending_outputs, a:jobinfo.id)
             unlet s:pending_outputs[a:jobinfo.id]
@@ -1129,6 +1143,15 @@ function! s:clean_make_info(make_id) abort
     endif
 
     unlet s:make_info[a:make_id]
+endfunction
+
+function! neomake#VimLeave() abort
+    for jobinfo in values(s:jobs)
+        call s:CleanJobinfo(jobinfo)
+    endfor
+    for make_id in keys(s:make_info)
+        call s:clean_make_info(make_id)
+    endfor
 endfunction
 
 function! s:CanProcessJobOutput() abort
@@ -1393,6 +1416,14 @@ function! s:ProcessJobOutput(jobinfo, lines, source) abort
         call s:create_locqf_list(a:jobinfo)
         let prev_list = file_mode ? getloclist(0) : getqflist()
 
+        if exists('g:loaded_qf')
+            let vimqf_var = file_mode ? 'qf_auto_open_loclist' : 'qf_auto_open_quickfix'
+            let vimqf_val = get(g:, vimqf_var, s:unset_dict)
+            if vimqf_val isnot# 0
+                let restore_vimqf = [vimqf_var, vimqf_val]
+                let g:[vimqf_var] = 0
+            endif
+        endif
         let olderrformat = &errorformat
         let &errorformat = maker.errorformat
         try
@@ -1405,6 +1436,13 @@ function! s:ProcessJobOutput(jobinfo, lines, source) abort
             let &errorformat = olderrformat
             if empty(cd_error)
                 exe cd_back_cmd
+            endif
+            if exists('restore_vimqf')
+                if restore_vimqf[1] is# s:unset_dict
+                    unlet g:[restore_vimqf[0]]
+                else
+                    let g:[restore_vimqf[0]] = restore_vimqf[1]
+                endif
             endif
         endtry
 
@@ -1517,6 +1555,17 @@ function! s:need_to_postpone_loclist(jobinfo) abort
 endfunction
 
 function! s:RegisterJobOutput(jobinfo, lines, source) abort
+    if a:jobinfo.output_stream !=# 'both' && a:jobinfo.output_stream !=# a:source
+        if !has_key(a:jobinfo, 'unexpected_output')
+            let a:jobinfo.unexpected_output = {}
+        endif
+        if !has_key(a:jobinfo.unexpected_output, a:source)
+            let a:jobinfo.unexpected_output[a:source] = []
+        endif
+        let a:jobinfo.unexpected_output[a:source] += a:lines
+        return
+    endif
+
     if s:CanProcessJobOutput() && !s:need_to_postpone_loclist(a:jobinfo)
         if !empty(s:pending_outputs)
             call s:ProcessPendingOutputs()
@@ -1528,7 +1577,8 @@ function! s:RegisterJobOutput(jobinfo, lines, source) abort
 endfunction
 
 function! s:vim_output_handler(channel, output, event_type) abort
-    let job_id = ch_info(a:channel)['id']
+    let channel_id = ch_info(a:channel)['id']
+    let job_id = s:map_job_ids[channel_id]
     let jobinfo = s:jobs[job_id]
 
     let data = split(a:output, '\v\r?\n', 1)
@@ -1571,8 +1621,13 @@ function! s:vim_output_handler_stderr(channel, output) abort
 endfunction
 
 function! s:vim_exit_handler(channel) abort
+    let channel_id = ch_info(a:channel)['id']
     let job_info = job_info(ch_getjob(a:channel))
-    let job_id = ch_info(a:channel)['id']
+    if !has_key(s:map_job_ids, channel_id)
+        call neomake#utils#QuietMessage(printf('exit: job not found: %s (%s).', channel_id, job_info))
+        return
+    endif
+    let job_id = s:map_job_ids[channel_id]
 
     " Handle failing starts from Vim here.
     let status = job_info['exitval']
@@ -1593,18 +1648,20 @@ endfunction
 if has('nvim-0.2.0')
 " @vimlint(EVL108, 0)
     function! s:nvim_output_handler(job_id, data, event_type) abort
+        let job_id = s:map_job_ids[a:job_id]
         let data = map(copy(a:data), "substitute(v:val, '\\r$', '', '')")
-        call s:output_handler(a:job_id, data, a:event_type)
+        call s:output_handler(job_id, data, a:event_type)
     endfunction
 else
-    " Noevim: register output from jobs as quick as possible, and trigger its
+    " Neovim: register output from jobs as quick as possible, and trigger
     " processing through a timer.
     " This works around https://github.com/neovim/neovim/issues/5889).
     let s:nvim_output_handler_queue = []
     function! s:nvim_output_handler(job_id, data, event_type) abort
+        let job_id = s:map_job_ids[a:job_id]
         let data = map(copy(a:data), "substitute(v:val, '\\r$', '', '')")
-        let jobinfo = s:jobs[a:job_id]
-        let args = [a:job_id, data, a:event_type]
+        let jobinfo = s:jobs[job_id]
+        let args = [job_id, data, a:event_type]
         call add(s:nvim_output_handler_queue, args)
         if !exists('jobinfo._nvim_in_handler')
             let jobinfo._nvim_in_handler = 1
@@ -1639,11 +1696,15 @@ else
     " @vimlint(EVL103, 0, a:timer)
 endif
 
-function! s:exit_handler(job_id, data, event_type) abort
-    if !has_key(s:jobs, a:job_id)
+function! s:nvim_exit_handler(job_id, data, event_type) abort
+    if !has_key(s:map_job_ids, a:job_id)
         call neomake#utils#QuietMessage(printf('exit: job not found: %s.', a:job_id))
         return
     endif
+    return s:exit_handler(s:map_job_ids[a:job_id], a:data, a:event_type)
+endfunction
+
+function! s:exit_handler(job_id, data, event_type) abort
     let jobinfo = s:jobs[a:job_id]
     if get(jobinfo, 'canceled')
         call neomake#utils#DebugMessage('exit: job was canceled.', jobinfo)
@@ -1706,6 +1767,17 @@ function! s:exit_handler(job_id, data, event_type) abort
             let jobinfo.pending_output = 1
         endif
         let jobinfo.finished = 1
+    endif
+
+    if has_key(jobinfo, 'unexpected_output')
+        redraw
+        for [source, output] in items(jobinfo.unexpected_output)
+            let msg = printf('%s: unexpected output on %s: %s', maker.name, source, join(output, "\n"))
+            call neomake#utils#DebugMessage(msg.'.', jobinfo)
+            echom 'Neomake: '.msg
+        endfor
+        call neomake#utils#ErrorMessage(printf(
+                    \ '%s: unexpected output. See :messages for more information.', maker.name), jobinfo)
     endif
     call s:handle_next_maker(jobinfo)
 endfunction
@@ -1783,27 +1855,28 @@ function! s:handle_next_maker(prev_jobinfo) abort
         endif
 
         " Serialization of jobs, always for non-async Vim.
-        if !s:async
-                    \ || neomake#utils#GetSetting('serialize', maker, 0, options.ft, options.bufnr)
-            let options.serialize = 1
+        if !has_key(options, 'serialize')
+            if !s:async || neomake#utils#GetSetting('serialize', maker, 0, options.ft, options.bufnr)
+                let options.serialize = 1
+            else
+                let options.serialize = 0
+            endif
         endif
-
         try
             let jobinfo = s:MakeJob(make_id, options)
-            if !empty(jobinfo)
-                return jobinfo
-            endif
         catch /^Neomake: /
             let error = substitute(v:exception, '^Neomake: ', '', '')
             call neomake#utils#ErrorMessage(error, {'make_id': make_id})
 
-            if get(options, 'serialize', 0)
-                        \ && neomake#utils#GetSetting('serialize_abort_on_error', maker, 0, options.ft, options.bufnr)
+            if options.serialize && neomake#utils#GetSetting('serialize_abort_on_error', maker, 0, options.ft, options.bufnr)
                 call s:abort_next_makers(make_id)
                 break
             endif
             continue
         endtry
+        if !empty(jobinfo)
+            return jobinfo
+        endif
     endwhile
     return {}
 endfunction
@@ -1958,7 +2031,7 @@ function! neomake#Make(file_mode_or_options, ...) abort
             let options.exit_callback = a:2
         endif
     endif
-    return s:Make(options)
+    return map(copy(s:Make(options)), 'v:val.id')
 endfunction
 
 function! neomake#ShCommand(bang, sh_command, ...) abort
@@ -1967,11 +2040,15 @@ function! neomake#ShCommand(bang, sh_command, ...) abort
     let maker.buffer_output = !a:bang
     let maker.errorformat = '%m'
     let maker.default_entry_type = ''
-    let options = {'enabled_makers': [maker], 'file_mode': 0}
+    let options = {
+                \ 'enabled_makers': [maker],
+                \ 'file_mode': 0,
+                \ 'output_stream': 'both'}
     if a:0
         call extend(options, a:1)
     endif
-    return get(s:Make(options), 0, -1)
+    let jobinfos = s:Make(options)
+    return empty(jobinfos) ? -1 : jobinfos[0].id
 endfunction
 
 function! neomake#Sh(sh_command, ...) abort

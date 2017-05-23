@@ -58,7 +58,7 @@ Execute (Test Neomake on errors.sh with shellcheck):
         \ "tests/fixtures/errors.sh:5:4: error: Trying to declare parameters? Don't. Use () and refer to params as $1, $2.. [SC1065]",
         \ ]
   if executable('shellcheck')
-    let real_output = systemlist('shellcheck -fgcc tests/fixtures/errors.sh')
+    let real_output = neomake#compat#systemlist('shellcheck -fgcc tests/fixtures/errors.sh')
     AssertEqual real_output, shellcheck_output
   endif
   let shellcheck_contents = ['#!/bin/sh']
@@ -384,6 +384,19 @@ Execute (NeomakeInfo: displays issues):
     Assert i > idx, 'line not found: "'.line.'" (idx: '.idx.')'
     let idx = i
   endfor
+
+Execute (NeomakeListJobs):
+  let maker1 = NeomakeTestsCommandMaker('cmd maker 1', 'sleep .1')
+  let maker2 = NeomakeTestsCommandMaker('cmd maker 2', 'sleep .1')
+  let jobs1 = neomake#Make({'enabled_makers': [maker1]})
+  let jobs2 = neomake#Make({'enabled_makers': [maker2], 'name': 'My custom name'})
+  let info = split(neomake#utils#redir('NeomakeListJobs'), '\n')
+  AssertEqual info, [
+  \        'make_id | job_id | name/maker',
+  \ printf('     %d |     %d | neomake_%d (cmd maker 1)', jobs1[0].make_id, jobs1[0].id, jobs1[0].id),
+  \ printf('     %d |     %d | My custom name (cmd maker 2)', jobs2[0].make_id, jobs2[0].id),
+  \ ]
+  NeomakeTestsWaitForFinishedJobs
 
 Execute (Having an invalid &errorformat is OK):
   Save &errorformat
