@@ -1,10 +1,11 @@
 [options]
 cursor_blink = on
-browser = firefox
-font = Monospace 10
+browser = chromium
+font = Monospace 9
+#font = Roboto Mono 10
 allow_bold = false
 scrollback_lines = 1000
-dynamic_title = true
+# dynamic_title = true
 mouse_autohide = true
 
 [colors]

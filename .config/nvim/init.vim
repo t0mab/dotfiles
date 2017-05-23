@@ -33,7 +33,6 @@ set showmatch " Highlight matching brackets
 set so=10 " Set 10 lines to the cursor when moving vertically
 set splitbelow " Split below by default
 set splitright " Split on the right side by default
-set title
 syntax on
 
 " Move around splits
