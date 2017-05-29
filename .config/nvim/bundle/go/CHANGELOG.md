@@ -10,6 +10,7 @@ IMPROVEMENTS
 
 * :GoMetaLinter can now exclude linters with the new `g:go_metalinter_excludes` option [gh-1253]
 * Override `<C-LeftMouse>` mapping so `:GoDef` is used by default (as we do the same for `CTRL-]`, `gd`, etc. [gh-1264]
+* add support for `go_list_type` setting in `:GoFmt` and `:GoImports` commands [gh-1304]
 
 BUG FIXES:
 
@@ -17,6 +18,8 @@ BUG FIXES:
 * internal: fix system calls when using tcsh [gh-1276]
 * path: return the unmodified GOPATH if autodetect is disabled [gh-1280]
 * fix jumping to quickfix window when autom gometalinter on save was enabled [gh-1293]
+* fix highlighting for `interface` and `structs` words when `go_highlight_types` is enabled [gh-1301]
+* fix cwd for running :GoRun when used with NeoVim [gh-1296]
 
 BACKWARDS INCOMPATIBILITIES:
 
