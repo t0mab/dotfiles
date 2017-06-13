@@ -211,3 +211,23 @@ alias post_json="curl -X POST --header 'Content-Type: application/json' -d"
 # Launch a test RabbitMQ container
 alias docker_rabbitmq="docker run -it --rm -p 5672:5672 -p 15672:15672 rabbitmq:management-alpine"
 alias docker_redis="docker run -it --rm -p 6379:6379 redis:alpine"
+
+function postgres_get_last_backup {
+  scp 10.0.0.13:/backups/postgresql/$1/$1-$(date +%d).dump $1.dump
+}
+
+function postgres_get_port {
+  docker inspect postgres_$1 | jq -M -r  '.[0].NetworkSettings.Ports."5432/tcp"[0].HostPort'
+}
+
+function postgres_launch {
+  docker run -it --rm --name postgres_$1 -e POSTGRES_USER=$1 -v $HOME/Databases/$1:/var/lib/postgresql/data -p $2:5432 postgres:9.6
+}
+
+function postgres_psql {
+  psql -h localhost -U $1 -p $(postgres_get_port $1)
+}
+
+function postgres_restore {
+  pg_restore -d $1 -j $(grep -c processor /proc/cpuinfo) -O -x -h localhost -p $(postgres_get_port $1) -U $1 $1.dump
+}
