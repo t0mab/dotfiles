@@ -3,7 +3,6 @@
 
 function! s:wait_for_jobs(filter)
   let max = 45
-  let filter = a:filter
   while 1
     let jobs = copy(neomake#GetJobs())
     if len(a:filter)
@@ -15,7 +14,7 @@ function! s:wait_for_jobs(filter)
     let max -= 1
     if max == 0
       for j in jobs
-        Log "Remaining job: ".string(j)
+        call vader#log('Remaining job: '.string(neomake#utils#fix_self_ref(j)))
       endfor
       call neomake#CancelJobs(1)
       throw len(jobs).' jobs did not finish after 3s.'
@@ -300,7 +299,7 @@ function! s:monkeypatch_highlights() abort
   runtime autoload/neomake/highlights.vim
   Save g:neomake_tests_highlight_lengths
   let g:neomake_tests_highlight_lengths = []
-  function! neomake#highlights#AddHighlight(entry, type) abort
+  function! neomake#highlights#AddHighlight(entry, ...) abort
     call add(g:neomake_tests_highlight_lengths,
     \ [get(a:entry, 'lnum', -1), get(a:entry, 'length', -1)])
   endfunction
@@ -426,6 +425,18 @@ function! s:After()
   for k in keys(make_info)
     unlet make_info[k]
   endfor
+
+  " Check that no new global functions are defined.
+  redir => output_func
+    silent function /\C^[A-Z]
+  redir END
+  let funcs = map(split(output_func, '\n'),
+        \ "substitute(v:val, '\\v^function (.*)\\(.*$', '\\1', '')")
+  let new_funcs = filter(copy(funcs), 'index(g:neomake_test_funcs_before, v:val) == -1')
+  if !empty(new_funcs)
+    call add(errors, 'New global functions (use script-local ones, or :delfunction to clean them): '.string(new_funcs))
+    call extend(g:neomake_test_funcs_before, new_funcs)
+  endif
 
   if !empty(errors)
     throw len(errors).' error(s) in teardown: '.join(errors, "\n")

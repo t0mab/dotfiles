@@ -100,11 +100,11 @@ Execute (Neomake: handle result for current window):
     NeomakeTestsWaitForFinishedJobs
     AssertEqual len(g:neomake_test_countschanged), 0
     AssertEqual len(g:neomake_test_finished), 0, "output pending"
-    AssertEqual map(copy(getloclist(0)), 'v:val.text'), []
+    AssertEqual map(getloclist(0), 'v:val.text'), []
     let bufnr = bufnr('%')
     quit
     AssertEqual winnr(), orig_winnr
-    AssertEqual map(copy(getloclist(0)), 'v:val.text'), ['error message', 'warning', 'error2']
+    AssertEqual map(getloclist(0), 'v:val.text'), ['error message', 'warning', 'error2']
   endif
   AssertEqual len(g:neomake_test_finished), 1
   AssertEqual len(g:neomake_test_countschanged), 1
@@ -249,7 +249,7 @@ Execute (NeomakeSh!: handle unfinished output on exit):
   if neomake#has_async_support()
     for i in range(0, 10)
       if len(g:neomake_test_countschanged) == 1
-        AssertEqual map(copy(getqflist()), 'v:val.text'), ['1'],
+        AssertEqual map(getqflist(), 'v:val.text'), ['1'],
         \ "only the first line should be there (buffer_output=0)"
         break
       endif
@@ -259,7 +259,7 @@ Execute (NeomakeSh!: handle unfinished output on exit):
     NeomakeTestsWaitForFinishedJobs
   endif
   AssertEqual len(g:neomake_test_finished), 1
-  AssertEqual map(copy(getqflist()), 'v:val.text'), ['1', '23']
+  AssertEqual map(getqflist(), 'v:val.text'), ['1', '23']
   AssertEqual len(g:neomake_test_countschanged), 2
 
 Execute (NeomakeSh: buffers output):
@@ -276,7 +276,7 @@ Execute (NeomakeSh: buffers output):
     NeomakeTestsWaitForFinishedJobs
   endif
   AssertEqual len(g:neomake_test_finished), 1
-  AssertEqual map(copy(getqflist()), 'v:val.text'), ['1', '23']
+  AssertEqual map(getqflist(), 'v:val.text'), ['1', '23']
   AssertEqual len(g:neomake_test_countschanged), 1
 
 Execute (NeomakeSh: project: handle removed window on exit (quit)):
@@ -290,7 +290,7 @@ Execute (NeomakeSh: project: handle removed window on exit (quit)):
     AssertEqual len(g:neomake_test_finished), 0
     NeomakeTestsWaitForFinishedJobs
   endif
-  AssertEqual map(copy(getqflist()), 'v:val.text'), ['finished']
+  AssertEqual map(getqflist(), 'v:val.text'), ['finished']
   AssertEqual len(g:neomake_test_finished), 1
   AssertEqual len(g:neomake_test_countschanged), 1
   exe 'bwipe' bufnr
@@ -307,7 +307,7 @@ Execute (NeomakeSh: project: handle removed window on exit (bwipe)):
     AssertEqual len(g:neomake_test_finished), 0
     NeomakeTestsWaitForFinishedJobs
   endif
-  AssertEqual map(copy(getqflist()), 'v:val.text'), ['finished']
+  AssertEqual map(getqflist(), 'v:val.text'), ['finished']
   AssertEqual len(g:neomake_test_finished), 1
   AssertEqual len(g:neomake_test_countschanged), 1
 
@@ -388,14 +388,18 @@ Execute (NeomakeInfo: displays issues):
 Execute (NeomakeListJobs):
   let maker1 = NeomakeTestsCommandMaker('cmd maker 1', 'sleep .1')
   let maker2 = NeomakeTestsCommandMaker('cmd maker 2', 'sleep .1')
-  let jobs1 = neomake#Make({'enabled_makers': [maker1]})
-  let jobs2 = neomake#Make({'enabled_makers': [maker2], 'name': 'My custom name'})
+  let maker3 = {'exe': 'sleep', 'args': '.1', 'append_file': 0, 'name': ''}
+  let job1 = neomake#Make({'enabled_makers': [maker1]})[0]
+  let job2 = neomake#Make({'enabled_makers': [maker2], 'name': 'My custom name'})[0]
+  let job3 = neomake#Make({'enabled_makers': [maker3]})[0]
+
   let info = split(neomake#utils#redir('NeomakeListJobs'), '\n')
   if neomake#has_async_support()
     AssertEqual info, [
     \        'make_id | job_id | name/maker',
-    \ printf('     %d |     %d | neomake_%d (cmd maker 1)', jobs1[0].make_id, jobs1[0].id, jobs1[0].id),
-    \ printf('     %d |     %d | My custom name (cmd maker 2)', jobs2[0].make_id, jobs2[0].id),
+    \ printf('     %d |     %d | cmd maker 1', job1.make_id, job1.id),
+    \ printf('     %d |     %d | My custom name (cmd maker 2)', job2.make_id, job2.id),
+    \ printf('     %d |     %d | neomake_%d', job3.make_id, job3.id, job3.id),
     \ ]
     NeomakeTestsWaitForFinishedJobs
   else
@@ -475,7 +479,7 @@ Execute (Neomake!: two jobs after each other):
     let b:neomake_enabled_makers = ['maker1', 'maker2']
     Neomake! maker1 maker2
     NeomakeTestsWaitForFinishedJobs
-    AssertEqual sort(map(copy(getqflist()), 'v:val.text')), ['1', '2']
+    AssertEqual sort(map(getqflist(), 'v:val.text')), ['1', '2']
     AssertEqual len(g:neomake_test_countschanged), 2, 'counts have changed: '.len(g:neomake_test_countschanged)
     AssertEqual len(g:neomake_test_finished), 1
     bwipe
@@ -507,7 +511,7 @@ Execute (Neomake!: non-existing and proper job):
     Neomake! maker1 maker2
     NeomakeTestsWaitForFinishedJobs
     AssertNeomakeMessage "Exe (doesnotexist) of maker 1 is not executable.", 0
-    AssertEqual map(copy(getqflist()), 'v:val.text'), ['1']
+    AssertEqual map(getqflist(), 'v:val.text'), ['1']
     " AssertEqual len(g:neomake_test_finished), 1
     AssertEqual len(g:neomake_test_countschanged), 1,
       \ 'counts have changed'
@@ -599,7 +603,7 @@ Execute (Neomake! for project maker via g:neomake_enabled_makers):
   \ }
   Neomake!
   NeomakeTestsWaitForFinishedJobs
-  AssertEqual map(copy(getqflist()), 'v:val.text'), ['mycargo']
+  AssertEqual map(getqflist(), 'v:val.text'), ['mycargo']
 
 Execute (Neomake: remove_invalid_entries and default entry type):
   let maker = neomake#utils#MakerFromCommand('echo invalid; echo "E: valid"')
@@ -712,38 +716,64 @@ Execute (Quickfix list should be cleared only after maker finished):
 Execute (neomake#Sh: exit_callback):
   Save g:neomake_test_cb
   let g:neomake_test_cb = []
-  function! g:NeomakeTestsAfterExit(job_status) dict
+  function! NeomakeTestsAfterExit(job_status) dict
     call add(g:neomake_test_cb, [self, a:job_status])
   endfunction
-  call neomake#Sh('true', function('g:NeomakeTestsAfterExit'))
+  call neomake#Sh('true', function('NeomakeTestsAfterExit'))
   NeomakeTestsWaitForFinishedJobs
   AssertEqual len(g:neomake_test_cb), 1
   AssertEqual g:neomake_test_cb[0][1], {'status': 0, 'name': 'sh: true', 'has_next': 0}
+  delfunction NeomakeTestsAfterExit
 
 Execute (neomake#Make: exit_callback):
   Save g:neomake_test_cb
   let g:neomake_test_cb = []
-  function! g:NeomakeTestsAfterExit(job_status) dict
+  function! NeomakeTestsAfterExit(job_status) dict
     call add(g:neomake_test_cb, [self, a:job_status])
   endfunction
   let maker = {'exe': 'true', 'serialize': 1}
-  call neomake#Make(0, [maker, maker], function('g:NeomakeTestsAfterExit'))
+  call neomake#Make(0, [maker, maker], function('NeomakeTestsAfterExit'))
   NeomakeTestsWaitForFinishedJobs
   AssertEqual len(g:neomake_test_cb), 2
   AssertEqual g:neomake_test_cb[0][1], {'status': 0, 'name': 'unnamed_maker', 'has_next': 1}
   AssertEqual g:neomake_test_cb[1][1], {'status': 0, 'name': 'unnamed_maker', 'has_next': 0}
+  delfunction NeomakeTestsAfterExit
 
 Execute (neomake#Make: exit_callback with maker names):
   Save g:neomake_test_cb
   let g:neomake_test_cb = []
-  function! g:NeomakeTestsAfterExit(job_status) dict
+  function! NeomakeTestsAfterExit(job_status) dict
     call add(g:neomake_test_cb, [self, a:job_status])
   endfunction
   Save g:neomake_mymaker_maker
   let g:neomake_mymaker_maker = {'exe': 'true'}
-  call neomake#Make(0, ['mymaker'], function('g:NeomakeTestsAfterExit'))
+  call neomake#Make(0, ['mymaker'], function('NeomakeTestsAfterExit'))
   NeomakeTestsWaitForFinishedJobs
   AssertEqual g:neomake_test_cb[0][1], {'status': 0, 'name': 'mymaker', 'has_next': 0}
+  delfunction NeomakeTestsAfterExit
+
+Execute (neomake#Make: exit_callback with unknown function (E700)):
+  call neomake#Make({
+  \ 'enabled_makers': [g:true_maker],
+  \ 'exit_callback': 'NeomakeUnknownFunction',
+  \ })
+  NeomakeTestsWaitForFinishedJobs
+  AssertNeomakeMessage 'Error during exit_callback: Vim(let):E700: Unknown function: NeomakeUnknownFunction.'
+
+Execute (neomake#Make: exit_callback with wrong script function):
+  function! s:NeomakeScriptFunction()
+  endfunction
+  call neomake#Make({
+  \ 'enabled_makers': [g:true_maker],
+  \ 'exit_callback': function('s:NeomakeScriptFunction'),
+  \ })
+  NeomakeTestsWaitForFinishedJobs
+
+  if v:version > 703 || (v:version == 703 && has('patch1058'))
+    AssertNeomakeMessage '\mError during exit_callback: Vim(call):E118: Too many arguments for function: .*NeomakeScriptFunction.', 0
+  else
+    AssertNeomakeMessage '\mError during exit_callback: Vim(call):E117: Unknown function: s:NeomakeScriptFunction.', 0
+  endif
 
 Execute (Location list should be cleared only after first output):
   call g:NeomakeSetupAutocmdWrappers()
@@ -789,14 +819,13 @@ Execute (Highlights should be cleared after successful run):
   let maker_success = NeomakeTestsCommandMaker('success-maker', 'true')
   let maker_error = NeomakeTestsCommandMaker('error-maker', 'echo error')
   let maker_error.errorformat = '%E%m'
-  function! PostProcess(entry) abort
+  function! maker_error.postprocess(entry) abort
     let e = a:entry
     let a:entry.lnum = 1
     let a:entry.col = 1
     let a:entry.length = 5
     let a:entry.bufnr = bufnr('%')
   endfunction
-  let maker_error.postprocess = function('PostProcess')
 
   call neomake#Make(1, [maker_error])
   NeomakeTestsWaitForFinishedJobs
