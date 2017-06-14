@@ -1,0 +1,80 @@
+# Programs
+
+super + Return
+  termite
+
+super + b
+  chromium
+
+super + e
+  thunar
+
+# Close/Kill & Exit
+
+super + {_,shift + }q
+  bspc node -{c,k}
+
+super + shift + e
+  bspc quit
+
+# Focus/Swap
+
+super + {_,shift + }{h,j,k,l}
+  bspc node -{f,s} {west,south,north,east}
+
+# Resize
+
+super + alt + {h,j,k,l}
+  bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+super + alt + shift + {h,j,k,l}
+  bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# Desktops
+
+super + {_,shift + }{1-5}
+  bspc {desktop -f,node -d} '^{1-5}'
+
+# Reload configuration
+super + shift + r
+  pkill -USR1 -x sxhkd
+
+# Preselection
+
+super + ctrl + {h,j,k,l}
+  bspc node -p {west,south,north,east}
+
+super + ctrl + {1-9}
+  bspc node -o 0.{1-9}
+
+# Volume
+{XF86AudioRaiseVolume}
+  amixer set Master playback 5%+
+
+{XF86AudioLowerVolume}
+  amixer set Master playback 5%-
+
+{XF86AudioMute}
+  amixer set Master toggle
+
+# Backlight
+
+{XF86MonBrightnessDown}
+  xbacklight -dec 5
+
+{XF86MonBrightnessUp}
+  xbacklight -inc 5
+
+# Music
+
+{XF86AudioPlay}
+  mpc -q toggle
+
+{XF86AudioStop}
+  mpc -q stop
+
+{XF86AudioPrev}
+  mpc -q prev
+
+{XF86AudioNext}
+  mpc -q next

@@ -1,7 +1,7 @@
 [options]
 cursor_blink = on
 browser = chromium
-font = Monospace 9
+font = Monospace 16
 #font = Roboto Mono 10
 allow_bold = false
 scrollback_lines = 1000

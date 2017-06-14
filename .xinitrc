@@ -19,9 +19,6 @@ export XMODIFIERS=@im=fcitx
 
 fcitx &
 
-# Bind multimedia keys
-xbindkeys
-
 # Use a compositor to avoir tearing screen
 /usr/bin/compton -CG --backend glx --paint-on-overlay --glx-no-stencil --glx-no-rebind-pixmap --vsync opengl-swc &
 
@@ -29,4 +26,4 @@ xbindkeys
 
 /usr/bin/start-pulseaudio-x11 &
 
-exec i3
+exec bspwm

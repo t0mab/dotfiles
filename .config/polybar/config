@@ -1,0 +1,81 @@
+[colors]
+background = #282828
+foreground = #ebdbb2
+aqua = #689d6a
+blue = #458588
+purple = #b16286
+yellow = #d79921
+red = #cc241d
+
+[bar/dark]
+monitor =
+bottom = false
+modules-left = bspwm
+modules-center = clock
+modules-right = volume cpu date
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+font-0 = "DejaVu:pizelsize=12;2"
+font-1 = "FontAwesome:pixelsize=10;2"
+
+width = 100%
+height = 30
+module-margin = 1
+module-padding = 2
+underline-size = 4
+
+wm-restack = bspwm
+
+[module/bspwm]
+type = internal/bspwm
+format = <label-state>
+
+label-focused = 
+label-focused-padding = ${root.module-padding}
+
+label-occupied = 
+label-occupied-padding = ${root.module-padding}
+
+label-empty = 
+label-empty-padding = ${root.module-padding}
+
+[module/clock]
+type = internal/date
+date = %H:%M
+label = %date%
+format = <label>
+format-padding = ${root.module-padding}
+format-underline = ${colors.blue}
+
+[module/cpu]
+type = internal/cpu
+label = %percentage%
+format =   <label>
+format-padding = ${root.module-padding}
+format-underline = ${colors.aqua}
+format-suffix = %
+
+[module/date]
+type = internal/date
+date = %Y-%m-%d
+label = %date%
+format =   <label>
+format-padding = ${root.module-padding}
+format-underline = ${colors.purple}
+
+[module/volume]
+type = internal/volume
+master-mixer = Master
+mapping = false
+
+format-volume = <ramp-volume>  <label-volume>
+label-muted =   muted
+ramp-volume-0 = 
+ramp-volume-1 = 
+
+format-volume-underline = ${colors.yellow}
+format-volume-padding = ${root.module-padding}
+format-muted-underline = ${colors.yellow}
+format-muted-padding = ${root.module-padding}
