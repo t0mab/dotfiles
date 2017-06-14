@@ -47,6 +47,9 @@ super + ctrl + {h,j,k,l}
 super + ctrl + {1-9}
   bspc node -o 0.{1-9}
 
+super + ctrl + space
+  bspc node -p cancel
+
 # Volume
 {XF86AudioRaiseVolume}
   amixer set Master playback 5%+
