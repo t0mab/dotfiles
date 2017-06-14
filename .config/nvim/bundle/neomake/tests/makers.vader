@@ -184,7 +184,7 @@ Execute (maker.fn can set env var):
   call neomake#Make(1, [maker])
   AssertEqual maker, prev_maker
   NeomakeTestsWaitForFinishedJobs
-  AssertEqual map(copy(getloclist(0)), 'v:val.text'), ['MYENV:custom']
+  AssertEqual map(getloclist(0), 'v:val.text'), ['MYENV:custom']
 
 Execute (Set env from maker config):
   Save g:neomake_rust_cargo_maker
@@ -223,18 +223,16 @@ Execute (Makers: process_output):
     \ 'type': 'E',
     \ }]
 
-  function! Neomake_test_maker_process_output(context) abort
-    AssertEqual ['maker_output'], a:context.output
-    AssertEqual 'stdout', a:context.source
-    return deepcopy(g:neomake_test_entries)
-  endfunction
-
   let maker = {
   \ 'name': 'mymaker',
   \ 'exe': 'printf',
   \ 'args': ['maker_output'],
-  \ 'append_file': 0,
-  \ 'process_output': function('Neomake_test_maker_process_output')}
+  \ 'append_file': 0}
+  function! maker.process_output(context) abort
+    AssertEqual ['maker_output'], a:context.output
+    AssertEqual 'stdout', a:context.source
+    return deepcopy(g:neomake_test_entries)
+  endfunction
 
   call neomake#Make(1, [maker])
   NeomakeTestsWaitForFinishedJobs
@@ -289,7 +287,24 @@ Execute (Makers: get_list_entries):
   AssertEqual len(g:neomake_test_jobfinished), 1
   AssertEqual len(g:neomake_test_finished), 1
 
+Execute (Makers: get_list_entries with non-list return value):
+  call neomake#statusline#ResetCounts()
+  call g:NeomakeSetupAutocmdWrappers()
+
+  let maker = {}
+  function! maker.get_list_entries(...) abort dict
+  endfunction
+
+  CallNeomake 1, [maker]
+  AssertNeomakeMessage 'unnamed_maker: getting entries via get_list_entries.'
+  AssertNeomakeMessage 'The get_list_entries method for maker unnamed_maker did not return a list, but: 0.', 0
+
+  AssertEqual len(g:neomake_test_countschanged), 0
+  AssertEqual len(g:neomake_test_jobfinished), 1
+  AssertEqual len(g:neomake_test_finished), 1
+
 Execute (Makers: get_list_entries via config):
+  call g:NeomakeSetupAutocmdWrappers()
   let maker = {'name': 'mymaker', 'exe': 'doesnotexist'}
 
   Save g:neomake_test_entries
@@ -333,6 +348,7 @@ Execute (Makers: get_list_entries via config):
   AssertEqual len(g:neomake_test_finished), 1
   bwipe
   bwipe unloaded_filename_without_bufnr
+  delfunction NeomakeTestGetEntries
 
 Execute (get_list_entries: based on example from doc):
   NeomakeTestsMonkeypatchHighlights

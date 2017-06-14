@@ -133,10 +133,11 @@ build/vimlint: | build
 	git clone --depth=1 https://github.com/syngan/vim-vimlint $@
 build/vimlparser: | build
 	git clone --depth=1 https://github.com/ynkdir/vim-vimlparser $@
+VIMLINT_OPTIONS=-u -e EVL102.l:_=1
 vimlint: build/vimlint build/vimlparser
-	build/vimlint/bin/vimlint.sh -u -l build/vimlint -p build/vimlparser $(LINT_ARGS)
+	build/vimlint/bin/vimlint.sh $(VIMLINT_OPTIONS) -l build/vimlint -p build/vimlparser $(LINT_ARGS)
 vimlint-errors: build/vimlint build/vimlparser
-	build/vimlint/bin/vimlint.sh -u -E -l build/vimlint -p build/vimlparser $(LINT_ARGS)
+	build/vimlint/bin/vimlint.sh $(VIMLINT_OPTIONS) -E -l build/vimlint -p build/vimlparser $(LINT_ARGS)
 
 build build/neovim-test-home:
 	mkdir $@
@@ -152,7 +153,7 @@ vimhelplint: | build/vimhelplint
 
 # Run tests in dockerized Vims.
 DOCKER_REPO:=neomake/vims-for-tests
-DOCKER_TAG:=5
+DOCKER_TAG:=6
 NEOMAKE_DOCKER_IMAGE?=
 DOCKER_IMAGE:=$(if $(NEOMAKE_DOCKER_IMAGE),$(NEOMAKE_DOCKER_IMAGE),$(DOCKER_REPO):$(DOCKER_TAG))
 DOCKER_STREAMS:=-ti
@@ -204,7 +205,8 @@ travis_test:
 	  travis_run_make vim-master    "docker_test DOCKER_VIM=vim-master"    || (( ret+=4  )); \
 	  travis_run_make vim8069       "docker_test DOCKER_VIM=vim8069"       || (( ret+=8  )); \
 	  travis_run_make vim73         "docker_test DOCKER_VIM=vim73"         || (( ret+=16 )); \
-	  travis_run_make check         "check"                                || (( ret+=32 )); \
+	  travis_run_make vim-xenail    "docker_test DOCKER_VIM=vim74-xenial"  || (( ret+=32 )); \
+	  travis_run_make check         "check"                                || (( ret+=64 )); \
 	exit $$ret
 
 travis_lint:
