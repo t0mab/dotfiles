@@ -81,3 +81,7 @@ super + ctrl + space
 
 {XF86AudioNext}
   mpc -q next
+
+# Lockscreen
+ctrl + alt + l
+  i3lock -c 282828
