@@ -1,0 +1,61 @@
+- package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - adobe-source-code-pro-fonts
+    - adobe-source-han-sans-jp-fonts
+    - adobe-source-han-sans-otc-fonts
+    - adobe-source-sans-pro-fonts
+    - adobe-source-serif-pro-fonts
+    - adwaita-icon-theme
+    - awesome-terminal-fonts
+    - bspwm
+    - compton
+    - evince
+    - feh
+    - firefox
+    - gimp
+    - gparted
+    - gpicview
+    - i3lock
+    - inkscape
+    - mcomix
+    - pulseaudio-alsa
+    - redshift
+    - rofi
+    - rxvt-unicode
+    - termite
+    - thunar-media-tags-plugin
+    - transmission-gtk
+    - tumbler
+    - vlc
+    - zathura-cb
+    - zathura-pdf-mupdf
+
+- file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: directory
+    mode: "0700"
+  with_items:
+    - .config/bspwm
+    - .config/fcitx
+    - .config/fontconfig
+    - .config/mpv
+    - .config/polybar
+    - .config/sxhkd
+    - .config/termite
+
+- copy:
+    src: "{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/{{ item.dest }}"
+    mode: "{{ item.mode|default('0400') }}"
+  with_items:
+    - { src: bspwmrc, dest: .config/bspwm/bspwmrc, mode: "0500" }
+    - { src: fcitx.profile, dest: .config/fcitx/profile }
+    - { src: fonts.conf, dest: .config/fontconfig/fonts.conf }
+    - { src: gtkrc-2.0, dest: .gtkrc-2.0 }
+    - { src: mpv.conf, dest: .config/mpv/mpv.conf }
+    - { src: polybar.ini, dest: .config/polybar/config }
+    - { src: sxhkdrc, dest: .config/sxhkd/sxhkdrc }
+    - { src: termite.ini, dest: .config/termite/config }
+    - { src: xinitrc, dest: .xinitrc }

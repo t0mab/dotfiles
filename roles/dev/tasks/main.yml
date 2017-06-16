@@ -1,0 +1,109 @@
+- package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - elixir
+    - git
+    - go
+    - ipython
+    - neovim
+    - postgresql
+    - python-neovim
+
+- file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: directory
+    mode: "0700"
+  with_items:
+    - .config/nvim
+    - .config/nvim/autoload
+    - .config/nvim/bundle
+    - .config/nvim/templates
+
+- copy:
+    src: "{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/{{ item.dest }}"
+    mode: "0400"
+  with_items:
+    - { src: gitconfig, dest: .gitconfig }
+    - { src: psqlrc, dest: .psqlrc }
+    - { src: pathogen.vim, dest: .config/nvim/autoload/pathogen.vim }
+    - { src: python.py, dest: .config/nvim/templates/python.py }
+    - { src: init.vim, dest: .config/nvim/init.vim }
+
+- git:
+    repo: "{{ item.repo }}"
+    dest: "{{ ansible_user_dir }}/{{ item.dest }}"
+  with_items:
+    - {
+        repo: "https://github.com/bling/vim-airline.git",
+        dest: ".config/nvim/bundle/airline"
+      }
+    - {
+        repo: "https://github.com/slashmili/alchemist.vim.git",
+        dest: ".config/nvim/bundle/alchemist"
+      }
+    - {
+        repo: "https://github.com/pearofducks/ansible-vim.git",
+        dest: ".config/nvim/bundle/ansible"
+      }
+    - {
+        repo: "https://github.com/ctrlpvim/ctrlp.vim.git",
+        dest: ".config/nvim/bundle/ctrlp"
+      }
+    - {
+        repo: "https://github.com/Shougo/deoplete.nvim.git",
+        dest: ".config/nvim/bundle/deoplete"
+      }
+    - {
+        repo: "https://github.com/zchee/deoplete-go.git",
+        dest: ".config/nvim/bundle/deoplete-go"
+      }
+    - {
+        repo: "https://github.com/zchee/deoplete-jedi.git",
+        dest: ".config/nvim/bundle/deoplete-jedi"
+      }
+    - {
+        repo: "https://github.com/elixir-lang/vim-elixir.git",
+        dest: ".config/nvim/bundle/elixir"
+      }
+    - {
+        repo: "https://github.com/ElmCast/elm-vim.git",
+        dest: ".config/nvim/bundle/elm"
+      }
+    - {
+        repo: "https://github.com/tpope/vim-fugitive.git",
+        dest: ".config/nvim/bundle/fugitive"
+      }
+    - {
+        repo: "https://github.com/airblade/vim-gitgutter.git",
+        dest: ".config/nvim/bundle/gitgutter"
+      }
+    - {
+        repo: "https://github.com/fatih/vim-go.git",
+        dest: ".config/nvim/bundle/go"
+      }
+    - {
+        repo: "https://github.com/morhetz/gruvbox.git",
+        dest: ".config/nvim/bundle/gruvbox",
+      }
+    - {
+        repo: "https://github.com/othree/html5.vim.git",
+        dest: ".config/nvim/bundle/html5"
+      }
+    - {
+        repo: "https://github.com/mitsuhiko/jinja2.git",
+        dest: ".config/nvim/bundle/jinja2"
+      }
+    - {
+        repo: "https://github.com/benekastah/neomake",
+        dest: ".config/nvim/bundle/neomake"
+      }
+    - {
+        repo: "https://github.com/tpope/vim-surround.git",
+        dest: ".config/nvim/bundle/surround"
+      }
+    - {
+        repo: "https://github.com/tomtom/tcomment_vim.git",
+        dest: ".config/nvim/bundle/tcomment_vim"
+      }

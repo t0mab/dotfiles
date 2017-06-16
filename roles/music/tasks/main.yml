@@ -1,0 +1,26 @@
+- package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - beets
+    - mpc
+    - mpd
+    - ncmpcpp
+
+- file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: directory
+    mode: "0700"
+  with_items:
+    - .config/beets
+    - .ncmpcpp
+
+- copy:
+    src: "{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/{{ item.dest }}"
+    mode: "0400"
+  with_items:
+    - { src: beets.yml, dest: .config/beets/config.yaml }
+    - { src: mpdconf, dest: .mpdconf }
+    - { src: ncmpcpp.bindings, dest: .ncmpcpp/bindings }
+    - { src: ncmpcpp.config, dest: .ncmpcpp/config }

@@ -1,0 +1,11 @@
+- hosts: all
+  vars:
+    ansible_connection: local
+  roles:
+    - dev
+    - dvdburner
+    - mail
+    - music
+    - photography
+    - terminal
+    - window_manager

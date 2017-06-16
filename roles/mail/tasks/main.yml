@@ -1,0 +1,28 @@
+- package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - isync
+    - mutt
+    - notmuch-mutt
+
+- file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: directory
+    mode: "0700"
+  with_items:
+    - .mutt
+
+- copy:
+    src: "{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/{{ item.dest }}"
+    mode: "0400"
+  with_items:
+    - { src: ca-bundle.crt, dest: .mutt/ca-bundle.crt }
+    - { src: mailcap, dest: .mutt/mailcap }
+    - { src: mairixrc, dest: .mairixrc }
+    - { src: mbsyncrc, dest: .mbsyncrc }
+    - { src: msmtprc, dest: .msmtprc }
+    - { src: muttrc, dest: .muttrc }
+    - { src: notmuch-config, dest: .notmuch-config }
+    - { src: signature, dest: .mutt/signature }

@@ -1,0 +1,39 @@
+- package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bind-tools
+    - curl
+    - ddrescue
+    - dfc
+    - dos2unix
+    - dosfstools
+    - exfat-utils
+    - figlet
+    - gpart
+    - gptfdisk
+    - graphicsmagick
+    - parallel
+    - zsh
+
+- file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: directory
+    mode: "0700"
+  with_items:
+    - .gnupg
+    - .parallel
+    - .ssh
+    - Scripts
+
+- copy:
+    src: "{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/{{ item.dest }}"
+    mode: "{{ item.mode|default('0400') }}"
+  with_items:
+    - { src: backup-iphone.sh, dest: Scripts/backup-iphone.sh, mode: "0500" }
+    - { src: gpg-agent.conf, dest: .gnupg/gpg-agent.conf }
+    - { src: inputrc, dest: .inputrc }
+    - { src: ssh.config, dest: .ssh/config }
+    - { src: will-cite, dest: .parallel/will-cite }
+    - { src: zshrc, dest: .zshrc }
